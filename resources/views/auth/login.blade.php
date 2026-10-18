@@ -74,6 +74,18 @@
                 </div>
             </div>
 
+            @if(config('services.cloudflare.turnstile.enabled'))
+                @if(config('services.cloudflare.turnstile.site_key'))
+                    <div class="flex justify-center">
+                        <div class="cf-turnstile" data-sitekey="{{ config('services.cloudflare.turnstile.site_key') }}" data-action="admin_login" data-theme="light" data-size="compact"></div>
+                    </div>
+                @else
+                    <p class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
+                        Sign-in protection is enabled but not configured. Please contact the site administrator.
+                    </p>
+                @endif
+            @endif
+
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <input id="remember" name="remember" type="checkbox"
@@ -103,5 +115,8 @@
             window.lucide.createIcons();
         }
     </script>
+    @if(config('services.cloudflare.turnstile.enabled') && config('services.cloudflare.turnstile.site_key'))
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    @endif
 </body>
 </html>

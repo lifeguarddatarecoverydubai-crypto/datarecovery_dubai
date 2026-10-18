@@ -40,4 +40,12 @@ return [
         'search_console_verification' => env('GOOGLE_SEARCH_CONSOLE_VERIFICATION'),
     ],
 
+    'cloudflare' => [
+        'turnstile' => [
+            'enabled' => env('CLOUDFLARE_TURNSTILE_ENABLED', false),
+            'site_key' => env('CLOUDFLARE_TURNSTILE_SITE_KEY'),
+            'secret_key' => env('CLOUDFLARE_TURNSTILE_SECRET_KEY'),
+        ],
+    ],
+
 ];

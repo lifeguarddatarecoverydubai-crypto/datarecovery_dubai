@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -29,10 +31,24 @@ class LoginController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
+        $turnstileEnabled = (bool) config('services.cloudflare.turnstile.enabled');
+
+        $validationRules = [
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
-        ]);
+        ];
+
+        if ($turnstileEnabled) {
+            $validationRules['cf-turnstile-response'] = ['required', 'string', 'max:2048'];
+        }
+
+        $credentials = $request->validate($validationRules);
+
+        if ($turnstileEnabled && ! $this->verifyTurnstile($request, $credentials['cf-turnstile-response'])) {
+            return back()->withInput($request->only('email', 'remember'))->withErrors([
+                'cf-turnstile-response' => 'Security verification failed. Please try again.',
+            ]);
+        }
 
         $remember = $request->boolean('remember');
 
@@ -59,6 +75,35 @@ class LoginController extends Controller
         }
 
         return redirect()->route('login.two-factor.setup');
+    }
+
+    /**
+     * Verify the single-use login challenge with Cloudflare.
+     */
+    private function verifyTurnstile(Request $request, string $token): bool
+    {
+        try {
+            $response = Http::asForm()
+                ->connectTimeout(3)
+                ->timeout(5)
+                ->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                    'secret' => config('services.cloudflare.turnstile.secret_key'),
+                    'response' => $token,
+                ]);
+        } catch (ConnectionException $exception) {
+            report($exception);
+
+            return false;
+        }
+
+        $expectedHostname = strtolower((string) parse_url((string) config('app.url'), PHP_URL_HOST));
+        $verifiedHostname = strtolower((string) $response->json('hostname'));
+
+        return $response->successful()
+            && $response->json('success') === true
+            && $expectedHostname !== ''
+            && hash_equals($expectedHostname, $verifiedHostname)
+            && hash_equals('admin_login', (string) $response->json('action'));
     }
 
     /**
