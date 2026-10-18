@@ -12,7 +12,7 @@
     <meta property="og:description" content="{{ $service->og_description ?: $service->summary }}">
     <meta property="og:type" content="service">
     <meta property="og:url" content="{{ url($service->slug) }}">
-    <meta property="og:image" content="{{ $service->featured_image_url ?: 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg' }}">
+    <meta property="og:image" content="{{ $service->featured_image_url ?: asset('media-bundle/media/pages/aboutus.webp') }}">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Schema.org Service JSON-LD -->
@@ -131,7 +131,7 @@
 
                 <div class="lg:col-span-4">
                     <div class="rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 aspect-[4/3] relative">
-                        <img src="{{ $service->featured_image_url ?: 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg' }}" 
+                        <img src="{{ $service->featured_image_url ?: asset('media-bundle/media/pages/aboutus.webp') }}"
                              alt="{{ $service->title }} Dubai" 
                              class="w-full h-full object-cover">
                         <div class="absolute bottom-3 left-3 right-3 p-3 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-xs text-white flex items-center justify-between">

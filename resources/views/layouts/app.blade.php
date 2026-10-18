@@ -38,7 +38,7 @@
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:site_name" content="LifeGuard Data Recovery">
-        <meta property="og:image" content="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg">
+        <meta property="og:image" content="{{ asset('media-bundle/media/pages/aboutus.webp') }}">
         <meta name="twitter:card" content="summary_large_image">
     @endif
 

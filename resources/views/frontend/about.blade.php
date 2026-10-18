@@ -114,7 +114,7 @@
 
             <div class="lg:col-span-6">
                 <div class="rounded-3xl overflow-hidden shadow-2xl border border-slate-200">
-                    <img src="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg" 
+                    <img src="{{ asset('media-bundle/media/pages/aboutus.webp') }}"
                          alt="LifeGuard Data Recovery Laboratory Dubai" 
                          class="w-full h-96 object-cover">
                 </div>

@@ -247,6 +247,10 @@ Route::get('/wp-content/uploads/{path}', function (string $path) {
     $cleanPath = ltrim($path, '/');
     $webpPath = preg_replace('/\.(jpe?g|png|gif)$/i', '.webp', $cleanPath);
 
+    if (strtolower($cleanPath) === '2022/03/aboutus.jpg') {
+        return redirect(asset('media-bundle/media/pages/aboutus.webp'), 301);
+    }
+
     if (is_file(public_path('storage/media/'.$webpPath)) || is_file(public_path('media-bundle/media/'.$webpPath))) {
         return redirect('/storage/media/'.$webpPath, 301);
     }

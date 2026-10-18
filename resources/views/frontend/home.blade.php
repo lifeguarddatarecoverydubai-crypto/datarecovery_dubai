@@ -10,7 +10,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('home') }}">
     <meta property="og:site_name" content="LifeGuard Data Recovery">
-    <meta property="og:image" content="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg">
+    <meta property="og:image" content="{{ asset('media-bundle/media/pages/aboutus.webp') }}">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Schema.org FAQPage JSON-LD -->
@@ -373,7 +373,7 @@
 
                 <div class="lg:col-span-5 space-y-4">
                     <div class="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl bg-slate-900">
-                        <img src="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg" 
+                        <img src="{{ asset('media-bundle/media/pages/aboutus.webp') }}"
                              alt="LifeGuard Data Recovery Cleanroom Lab Dubai" 
                              class="w-full h-64 object-cover">
                         <div class="p-5 space-y-2">

@@ -222,7 +222,7 @@ ROBOTS;
             'changefreq' => 'daily',
             'priority' => '1.0',
             'image' => [
-                'loc' => 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg',
+                'loc' => $this->formatSitemapUrl('/media-bundle/media/pages/aboutus.webp'),
                 'title' => 'LifeGuard Data Recovery Dubai - #1 Trusted Data Recovery Lab',
             ],
         ];

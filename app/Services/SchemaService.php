@@ -21,7 +21,7 @@ class SchemaService
             'alternateName' => ['LifeGuard Data Recovery', 'Data Recovery Dubai', 'LifeGuard Data Lab'],
             'url' => 'https://lifeguarddatarecovery.com',
             'logo' => 'https://lifeguarddatarecovery.com/wp-content/uploads/2024/12/Desktop-2-7.png',
-            'image' => 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg',
+            'image' => asset('media-bundle/media/pages/aboutus.webp'),
             'telephone' => '+97143933082',
             'email' => 'info@lifeguarddatarecovery.com',
             'priceRange' => 'AED',
@@ -64,7 +64,7 @@ class SchemaService
      */
     public static function getArticleSchema(Post $post): array
     {
-        $imageUrl = $post->featured_image_url ?: 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg';
+        $imageUrl = $post->featured_image_url ?: asset('media-bundle/media/pages/aboutus.webp');
 
         return [
             '@context' => 'https://schema.org',
