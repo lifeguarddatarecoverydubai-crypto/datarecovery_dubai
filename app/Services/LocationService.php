@@ -419,8 +419,8 @@ class LocationService
             ],
             [
                 'title' => 'iPhone & Mobile Phone Recovery',
-                'slug' => 'iphone-data-recovery',
-                'url' => url('iphone-data-recovery'),
+                'slug' => 'iphone-data-recovery-dubai',
+                'url' => url('iphone-data-recovery-dubai'),
                 'icon' => 'smartphone',
                 'category' => 'iOS & Android Smart Devices',
                 'turnaround' => '24 - 48 Hours',

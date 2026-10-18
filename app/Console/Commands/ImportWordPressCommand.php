@@ -713,7 +713,7 @@ class ImportWordPressCommand extends Command
             ],
             [
                 'title' => 'iPhone & Mobile Data Recovery',
-                'slug' => 'iphone-data-recovery',
+                'slug' => 'iphone-data-recovery-dubai',
                 'tagline' => 'Water damage, dead motherboard, and logic board micro-soldering',
                 'icon' => 'smartphone',
                 'summary' => 'Advanced mobile data recovery for liquid-damaged, dropped, bent, or completely unresponsive iPhones and Android smartphones with chip-level motherboard restoration.',
@@ -807,7 +807,7 @@ class ImportWordPressCommand extends Command
             ['title' => 'Server Recovery', 'url' => '/server-data-recovery-dubai'],
             ['title' => 'CCTV Footage Recovery', 'url' => '/cctv-footage-recovery-dubai'],
             ['title' => 'SD Card / Flash Recovery', 'url' => '/sd-card-data-recovery'],
-            ['title' => 'iPhone / Mobile Recovery', 'url' => '/iphone-data-recovery'],
+            ['title' => 'iPhone / Mobile Recovery', 'url' => '/iphone-data-recovery-dubai'],
             ['title' => 'MacBook Data Recovery', 'url' => '/mac-data-recovery'],
             ['title' => 'Ransomware Recovery', 'url' => '/ransomware-data-recovery'],
         ];

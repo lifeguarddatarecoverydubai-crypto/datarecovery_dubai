@@ -12,6 +12,9 @@
     # 2. Prevent access to files with sensitive extensions
     RewriteRule \.(env|yml|yaml|json|lock|sql|sqlite|log|sh|bak|swp|dist|md)$ - [F,L,NC]
 
+    # Remove the implementation directory from legacy or manually copied URLs.
+    RewriteRule ^public/(.*)$ /$1 [R=301,L,NE]
+
     # 3. Route all legitimate web traffic into the /public folder
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]

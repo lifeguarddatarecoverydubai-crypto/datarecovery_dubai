@@ -73,7 +73,7 @@ class SeoInternalLinker
 
         // 6. iPhone & Mobile
         if (str_contains($haystack, 'iphone') || str_contains($haystack, 'android') || str_contains($haystack, 'smartphone') || str_contains($haystack, 'mobile')) {
-            $service = $services->firstWhere('slug', 'iphone-data-recovery');
+            $service = $services->firstWhere('slug', 'iphone-data-recovery-dubai');
             if ($service) {
                 return $service;
             }
@@ -120,7 +120,7 @@ class SeoInternalLinker
             'nas-data-recovery-dubai' => ['nas', 'synology', 'qnap', 'storage', 'network'],
             'server-data-recovery-dubai' => ['server', 'database', 'sql', 'dell', 'hp'],
             'ssd-drive-data-recovery-in-dubai' => ['ssd', 'nvme', 'flash', 'nand', 'speed'],
-            'iphone-data-recovery' => ['iphone', 'mobile', 'android', 'phone', 'photos'],
+            'iphone-data-recovery-dubai' => ['iphone', 'mobile', 'android', 'phone', 'photos'],
             'mac-data-recovery' => ['macbook', 'mac', 'apple', 'apfs', 'laptop'],
             'sd-card-data-recovery' => ['sd', 'card', 'usb', 'camera', 'photos'],
             'ransomware-data-recovery' => ['ransomware', 'malware', 'security', 'backup', 'encrypted'],
