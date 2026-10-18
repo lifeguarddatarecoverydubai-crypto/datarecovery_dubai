@@ -28,7 +28,7 @@ class ContactController extends Controller
     {
         // 1. Silent Bot Honeypot: Discard automated spam bots cleanly
         if ($request->filled('_hp_website') || $request->filled('bot_check')) {
-            return back()->with('success', 'Thank you for contacting Generator Dubai! We have received your request.');
+            return back()->with('success', 'Thank you for contacting LifeGuard Data Recovery! Your evaluation request has been received.');
         }
 
         $validated = $request->validate([
@@ -38,7 +38,9 @@ class ContactController extends Controller
             'company' => ['nullable', 'string', 'max:255'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['nullable', 'string', 'max:5000'],
-            'kva_capacity' => ['nullable', 'string', 'max:100'],
+            'device_type' => ['nullable', 'string', 'max:100'],
+            'capacity' => ['nullable', 'string', 'max:100'],
+            'symptoms' => ['nullable', 'string', 'max:255'],
             'emirate' => ['nullable', 'string', 'max:100'],
             'device_model' => ['nullable', 'string', 'max:255'],
             'pickup_requested' => ['nullable', 'string', 'max:20'],
@@ -46,36 +48,31 @@ class ContactController extends Controller
         ]);
 
         $messageParts = [];
-        if (! empty($validated['kva_capacity'])) {
-            $messageParts[] = 'Power Requirement: '.strip_tags($validated['kva_capacity']);
+        if (! empty($validated['device_type'])) {
+            $messageParts[] = 'Storage Media Type: '.strip_tags($validated['device_type']);
+        }
+        if (! empty($validated['capacity'])) {
+            $messageParts[] = 'Storage Capacity: '.strip_tags($validated['capacity']);
+        }
+        if (! empty($validated['symptoms'])) {
+            $messageParts[] = 'Reported Failure Symptoms: '.strip_tags($validated['symptoms']);
         }
         if (! empty($validated['emirate'])) {
-            $messageParts[] = 'Location / Emirate: '.strip_tags($validated['emirate']);
+            $messageParts[] = 'Location / Branch: '.strip_tags($validated['emirate']);
         }
         if (! empty($validated['device_model'])) {
-            $messageParts[] = 'Equipment Model / Asset: '.strip_tags($validated['device_model']);
+            $messageParts[] = 'Brand & Model / Serial: '.strip_tags($validated['device_model']);
         }
         if (! empty($validated['pickup_requested']) && in_array(strtolower($validated['pickup_requested']), ['yes', '1', 'true', 'on'])) {
-            $messageParts[] = 'Service Request: Priority On-Site Site Inspection Requested';
+            $messageParts[] = 'Courier Service: Free Courier Pickup Requested';
         }
         if (! empty($validated['message'])) {
-            $messageParts[] = 'Details / Scope: '.strip_tags($validated['message']);
+            $messageParts[] = 'Incident Description: '.strip_tags($validated['message']);
         }
 
         $fullMessage = ! empty($messageParts) ? implode("\n\n", $messageParts) : (! empty($validated['message']) ? strip_tags($validated['message']) : null);
 
-        $type = $validated['type'] ?? 'contact';
-        if (empty($validated['type'])) {
-            if (! empty($validated['kva_capacity']) || stripos($validated['subject'], 'quote') !== false || stripos($validated['subject'], 'generator') !== false) {
-                $type = 'quote';
-            } elseif (! empty($validated['device_model']) || stripos($validated['subject'], 'evaluation') !== false) {
-                $type = 'evaluation';
-            } elseif (stripos($validated['subject'], 'odoo') !== false) {
-                $type = 'odoo_demo';
-            } elseif (stripos($validated['subject'], 'demo') !== false) {
-                $type = 'demo';
-            }
-        }
+        $type = $validated['type'] ?? 'evaluation';
 
         Inquiry::create([
             'name' => strip_tags(trim($validated['name'])),
@@ -88,6 +85,6 @@ class ContactController extends Controller
             'is_read' => false,
         ]);
 
-        return back()->with('success', 'Thank you for contacting Generator Dubai! We have received your inquiry and our power engineering team will reach out to you shortly.');
+        return back()->with('success', 'Thank you for contacting LifeGuard Data Recovery! Your emergency evaluation request has been registered. Our senior cleanroom engineer will reach out to you within 15 minutes.');
     }
 }

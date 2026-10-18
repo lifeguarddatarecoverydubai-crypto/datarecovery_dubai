@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Models\Service;
 use App\Services\SeoInternalLinker;
 use Illuminate\Http\Request;
@@ -38,11 +37,6 @@ class ServiceController extends Controller
 
         $relatedPosts = $linker->getRelatedPostsForService($service, 4);
 
-        $fleetProducts = Product::where('status', 'published')
-            ->orderBy('order', 'asc')
-            ->take(6)
-            ->get();
-
-        return view('frontend.services.show', compact('service', 'otherServices', 'relatedPosts', 'fleetProducts'));
+        return view('frontend.services.show', compact('service', 'otherServices', 'relatedPosts'));
     }
 }

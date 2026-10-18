@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Services\YoastSeoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -13,6 +14,8 @@ use Illuminate\View\View;
 
 class PostController extends Controller
 {
+    use HandlesFeaturedImageUpload;
+
     /**
      * Display a listing of posts.
      */
@@ -71,7 +74,8 @@ class PostController extends Controller
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug'],
             'excerpt' => ['nullable', 'string'],
             'content' => ['nullable', 'string'],
-            'featured_image' => ['nullable', 'string'],
+            'featured_image' => ['nullable'],
+            'featured_image_file' => ['nullable', 'file', 'image', 'max:20480'],
             'status' => ['required', 'in:draft,published,scheduled'],
             'published_at' => ['nullable', 'date'],
             'categories' => ['nullable', 'array'],
@@ -92,6 +96,8 @@ class PostController extends Controller
             'schema_markup' => ['nullable', 'string'],
         ]);
 
+        $featuredImage = $this->handleFeaturedImage($request, null, 'media/blog');
+
         $slug = ! empty($validated['slug'])
             ? Post::createUniqueSlug($validated['slug'])
             : Post::createUniqueSlug($validated['title']);
@@ -109,7 +115,7 @@ class PostController extends Controller
             'slug' => $slug,
             'excerpt' => $validated['excerpt'] ?? null,
             'content' => $validated['content'] ?? '',
-            'featured_image' => $validated['featured_image'] ?? null,
+            'featured_image' => $featuredImage,
             'status' => $validated['status'],
             'published_at' => $publishedAt,
             // SEO
@@ -119,7 +125,7 @@ class PostController extends Controller
             'canonical_url' => $validated['canonical_url'] ?? null,
             'og_title' => $validated['og_title'] ?? null,
             'og_description' => $validated['og_description'] ?? null,
-            'og_image' => $validated['og_image'] ?? null,
+            'og_image' => ! empty($validated['og_image']) ? $validated['og_image'] : $featuredImage,
             'is_indexable' => $request->has('is_indexable'),
             'focus_keyword' => $validated['focus_keyword'] ?? null,
             'seo_score' => (int) ($validated['seo_score'] ?? 0),
@@ -162,7 +168,8 @@ class PostController extends Controller
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug,'.$post->id],
             'excerpt' => ['nullable', 'string'],
             'content' => ['nullable', 'string'],
-            'featured_image' => ['nullable', 'string'],
+            'featured_image' => ['nullable'],
+            'featured_image_file' => ['nullable', 'file', 'image', 'max:20480'],
             'status' => ['required', 'in:draft,published,scheduled'],
             'published_at' => ['nullable', 'date'],
             'categories' => ['nullable', 'array'],
@@ -183,6 +190,8 @@ class PostController extends Controller
             'schema_markup' => ['nullable', 'string'],
         ]);
 
+        $featuredImage = $this->handleFeaturedImage($request, $post->featured_image, 'media/blog');
+
         $slug = ! empty($validated['slug'])
             ? Post::createUniqueSlug($validated['slug'], $post->id)
             : Post::createUniqueSlug($validated['title'], $post->id);
@@ -199,7 +208,7 @@ class PostController extends Controller
             'slug' => $slug,
             'excerpt' => $validated['excerpt'] ?? null,
             'content' => $validated['content'] ?? '',
-            'featured_image' => $validated['featured_image'] ?? null,
+            'featured_image' => $featuredImage,
             'status' => $validated['status'],
             'published_at' => $publishedAt,
             // SEO
@@ -209,7 +218,7 @@ class PostController extends Controller
             'canonical_url' => $validated['canonical_url'] ?? null,
             'og_title' => $validated['og_title'] ?? null,
             'og_description' => $validated['og_description'] ?? null,
-            'og_image' => $validated['og_image'] ?? null,
+            'og_image' => ! empty($validated['og_image']) ? $validated['og_image'] : ($post->og_image ?: $featuredImage),
             'is_indexable' => $request->has('is_indexable'),
             'focus_keyword' => $validated['focus_keyword'] ?? null,
             'seo_score' => (int) ($validated['seo_score'] ?? 0),
@@ -286,16 +295,15 @@ class PostController extends Controller
 
         $score = $validated['seo_score'] ?? null;
         if ($score === null || $score <= 0) {
-            $score = 40;
-            if (! empty($validated['focus_keyword'])) {
-                $score += 30;
-            }
-            if (! empty($validated['meta_title'])) {
-                $score += 15;
-            }
-            if (! empty($validated['meta_description'])) {
-                $score += 15;
-            }
+            $computed = YoastSeoService::calculateScores(
+                $validated['focus_keyword'] ?? null,
+                $post->title,
+                $validated['meta_title'] ?? null,
+                $validated['meta_description'] ?? null,
+                $post->slug,
+                $post->content
+            );
+            $score = $computed['seo_score'];
         }
 
         $post->update([

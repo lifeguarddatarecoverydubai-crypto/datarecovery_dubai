@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Services\YoastSeoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PageController extends Controller
 {
+    use HandlesFeaturedImageUpload;
+
     /**
      * Display a listing of pages.
      */
@@ -65,7 +68,8 @@ class PageController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:pages,slug'],
             'content' => ['nullable', 'string'],
-            'featured_image' => ['nullable', 'string'],
+            'featured_image' => ['nullable'],
+            'featured_image_file' => ['nullable', 'file', 'image', 'max:20480'],
             'template' => ['required', 'string', 'in:default,full-width,contact,home,about,fleet,services,industries,used-generators,locations,location-detail'],
             'status' => ['required', 'in:draft,published'],
             // SEO
@@ -83,6 +87,8 @@ class PageController extends Controller
             'schema_markup' => ['nullable', 'string'],
         ]);
 
+        $featuredImage = $this->handleFeaturedImage($request, null, 'media/pages');
+
         $slug = ! empty($validated['slug'])
             ? Page::createUniqueSlug($validated['slug'])
             : Page::createUniqueSlug($validated['title']);
@@ -92,7 +98,7 @@ class PageController extends Controller
             'title' => $validated['title'],
             'slug' => $slug,
             'content' => $validated['content'] ?? '',
-            'featured_image' => $validated['featured_image'] ?? null,
+            'featured_image' => $featuredImage,
             'template' => $validated['template'],
             'status' => $validated['status'],
             'meta_title' => $validated['meta_title'] ?? null,
@@ -101,7 +107,7 @@ class PageController extends Controller
             'canonical_url' => $validated['canonical_url'] ?? null,
             'og_title' => $validated['og_title'] ?? null,
             'og_description' => $validated['og_description'] ?? null,
-            'og_image' => $validated['og_image'] ?? null,
+            'og_image' => ! empty($validated['og_image']) ? $validated['og_image'] : $featuredImage,
             'is_indexable' => $request->has('is_indexable'),
             'focus_keyword' => $validated['focus_keyword'] ?? null,
             'seo_score' => (int) ($validated['seo_score'] ?? 0),
@@ -144,7 +150,8 @@ class PageController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:pages,slug,'.$page->id],
             'content' => ['nullable', 'string'],
-            'featured_image' => ['nullable', 'string'],
+            'featured_image' => ['nullable'],
+            'featured_image_file' => ['nullable', 'file', 'image', 'max:20480'],
             'template' => ['required', 'string', 'in:default,full-width,contact,home,about,fleet,services,industries,used-generators,locations,location-detail'],
             'status' => ['required', 'in:draft,published'],
             // SEO
@@ -162,6 +169,8 @@ class PageController extends Controller
             'schema_markup' => ['nullable', 'string'],
         ]);
 
+        $featuredImage = $this->handleFeaturedImage($request, $page->featured_image, 'media/pages');
+
         $slug = ! empty($validated['slug'])
             ? Page::createUniqueSlug($validated['slug'], $page->id)
             : Page::createUniqueSlug($validated['title'], $page->id);
@@ -170,7 +179,7 @@ class PageController extends Controller
             'title' => $validated['title'],
             'slug' => $slug,
             'content' => $validated['content'] ?? '',
-            'featured_image' => $validated['featured_image'] ?? null,
+            'featured_image' => $featuredImage,
             'template' => $validated['template'],
             'status' => $validated['status'],
             'meta_title' => $validated['meta_title'] ?? null,
@@ -179,7 +188,7 @@ class PageController extends Controller
             'canonical_url' => $validated['canonical_url'] ?? null,
             'og_title' => $validated['og_title'] ?? null,
             'og_description' => $validated['og_description'] ?? null,
-            'og_image' => $validated['og_image'] ?? null,
+            'og_image' => ! empty($validated['og_image']) ? $validated['og_image'] : ($page->og_image ?: $featuredImage),
             'is_indexable' => $request->has('is_indexable'),
             'focus_keyword' => $validated['focus_keyword'] ?? null,
             'seo_score' => (int) ($validated['seo_score'] ?? 0),
@@ -218,16 +227,15 @@ class PageController extends Controller
 
         $score = $validated['seo_score'] ?? null;
         if ($score === null || $score <= 0) {
-            $score = 40;
-            if (! empty($validated['focus_keyword'])) {
-                $score += 30;
-            }
-            if (! empty($validated['meta_title'])) {
-                $score += 15;
-            }
-            if (! empty($validated['meta_description'])) {
-                $score += 15;
-            }
+            $computed = YoastSeoService::calculateScores(
+                $validated['focus_keyword'] ?? null,
+                $page->title,
+                $validated['meta_title'] ?? null,
+                $validated['meta_description'] ?? null,
+                $page->slug,
+                $page->content
+            );
+            $score = $computed['seo_score'];
         }
 
         $page->update([

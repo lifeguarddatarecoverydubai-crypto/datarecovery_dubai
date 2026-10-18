@@ -108,7 +108,7 @@ class Product extends Model
      */
     public function getSeoTitleAttribute(): string
     {
-        return $this->meta_title ?: ($this->title.' - Generator Dubai');
+        return $this->meta_title ?: ($this->title.' - LifeGuard Data Recovery');
     }
 
     /**
@@ -128,7 +128,7 @@ class Product extends Model
             return Str::limit(strip_tags($this->content), 160);
         }
 
-        return "Hire {$this->title} in Dubai and across the UAE. Turnkey setup, 24/7 fuel support, and rapid emergency power deployment from Generator Dubai.";
+        return "{$this->title} - Professional data recovery equipment and cleanroom diagnostics by LifeGuard Data Recovery Dubai.";
     }
 
     /**

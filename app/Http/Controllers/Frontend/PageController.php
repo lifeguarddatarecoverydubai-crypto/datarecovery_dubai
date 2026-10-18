@@ -5,87 +5,56 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\Service;
+use App\Services\LocationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class PageController extends Controller
 {
     /**
-     * Display the Industries We Serve page.
+     * Display the Locations Hub page featuring all branch offices.
      */
-    public function industries(): View
+    public function locationsHub(): View
     {
-        $jsonPath = storage_path('industries.json');
-        $industries = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
-
-        $page = Page::where('slug', 'industries')->first();
-
-        return view('frontend.pages.industries', compact('industries', 'page'));
-    }
-
-    /**
-     * Display the Used & Refurbished Generators and Portacabins page.
-     */
-    public function usedGenerators(): View
-    {
-        $jsonPath = storage_path('used_generators.json');
-        $items = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
-
-        $page = Page::where('slug', 'used-refurbished-generators')->first();
-
-        return view('frontend.pages.used-generators', compact('items', 'page'));
-    }
-
-    /**
-     * Display the Regional Locations overview page.
-     */
-    public function locations(): View
-    {
-        $jsonPath = storage_path('locations.json');
-        $locations = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
+        $locations = LocationService::all();
+        $services = LocationService::getServicesCatalog();
+        $uaeAreas = LocationService::getUaeAreaHubs();
 
         $page = Page::where('slug', 'locations')->first();
-
-        return view('frontend.pages.locations', compact('locations', 'page'));
-    }
-
-    /**
-     * Display a specific regional location hub detail page.
-     */
-    public function locationDetail(string $city): View
-    {
-        $jsonPath = storage_path('all_cities_data.json');
-        $allCities = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
-
-        $cityKey = strtolower($city);
-        if (! isset($allCities[$cityKey])) {
-            abort(404);
+        if (! $page) {
+            $page = new Page([
+                'title' => 'Our Office Locations & Cleanroom Laboratories',
+                'slug' => 'locations',
+                'meta_title' => 'LifeGuard Data Recovery Locations | Dubai, Abu Dhabi, Sharjah, India & Kenya',
+                'meta_description' => 'Find your nearest LifeGuard Data Recovery laboratory or drop-off office in Dubai, Abu Dhabi, Sharjah, India, and Kenya. Free evaluation and 24/7 emergency dispatch.',
+                'status' => 'published',
+                'is_indexable' => true,
+            ]);
         }
 
-        $cityData = $allCities[$cityKey];
-        $page = Page::where('slug', 'locations/'.$cityKey)->first();
-
-        return view('frontend.pages.location-detail', compact('cityData', 'allCities', 'cityKey', 'page'));
+        return view('frontend.pages.locations', compact('locations', 'services', 'uaeAreas', 'page'));
     }
 
     /**
-     * Display a static CMS page.
+     * Display a static CMS page or verified branch location page for LifeGuard Data Recovery.
      */
     public function show(string $slug): View|RedirectResponse
     {
         // 301 Redirect common alias permalinks to their canonical routes
         $canonicalRedirects = [
-            'home' => route('home'),
+            'home' => url('/'),
             'about' => route('about'),
             'about-us' => route('about'),
-            'fleet' => route('fleet.index'),
-            'products' => route('fleet.index'),
-            'services' => route('service.index'),
+            'services' => route('services.index'),
             'contact' => route('contact'),
             'contact-us' => route('contact'),
-            'industries' => route('page.industries'),
-            'used-refurbished-generators' => route('page.used-generators'),
+            'blog' => route('blog.index'),
+            'articles' => route('blog.index'),
             'locations' => route('locations.index'),
+            'all-locations' => route('locations.index'),
+            'our-locations' => route('locations.index'),
+            'location' => route('locations.index'),
+            'data-recovery-kenya' => url('/data-recovery-service-in-kenya'),
         ];
 
         if (isset($canonicalRedirects[$slug])) {
@@ -99,11 +68,44 @@ class PageController extends Controller
 
         // Handle location sub-paths if called via slug like locations/dubai
         if (str_starts_with($slug, 'locations/')) {
-            $city = str_replace('locations/', '', $slug);
+            $childSlug = substr($slug, 10);
+            if (LocationService::isLocationSlug($childSlug)) {
+                $matched = LocationService::find($childSlug);
 
-            return redirect()->route('locations.show', ['city' => $city], 301);
+                return redirect(url($matched['slug']), 301);
+            }
+
+            return redirect()->route('locations.index', [], 301);
         }
 
+        // 1. Check if slug is an official branch location
+        if ($location = LocationService::find($slug)) {
+            $pageQuery = Page::with('user')->where('slug', $slug);
+            if (! auth()->check() || ! auth()->user()->canManageContent()) {
+                $pageQuery->where('status', 'published');
+            }
+            $page = $pageQuery->first();
+
+            if (! $page) {
+                $page = new Page([
+                    'title' => $location['full_name'],
+                    'slug' => $location['slug'],
+                    'meta_title' => 'Data Recovery Services in '.$location['name'].' | LifeGuard Lab',
+                    'meta_description' => 'Certified Data Recovery in '.$location['name'].'. Visit our office at '.$location['address'].' or call '.$location['phone'].'. Cleanroom recovery for HDD, SSD, RAID & mobile with No Data No Fee guarantee.',
+                    'template' => 'location',
+                    'status' => 'published',
+                    'is_indexable' => true,
+                ]);
+            }
+
+            $services = LocationService::getServicesCatalog();
+            $otherLocations = LocationService::getOtherLocations($slug);
+            $uaeAreas = LocationService::getUaeAreaHubs();
+
+            return view('frontend.pages.location-detail', compact('page', 'location', 'services', 'otherLocations', 'uaeAreas'));
+        }
+
+        // 2. Standard CMS Page Query
         $pageQuery = Page::with('user')->where('slug', $slug);
 
         if (! auth()->check() || ! auth()->user()->canManageContent()) {
@@ -113,10 +115,25 @@ class PageController extends Controller
         $page = $pageQuery->firstOrFail();
 
         $viewName = match ($page->template) {
+            'locations' => 'frontend.pages.locations',
+            'location' => 'frontend.pages.location-detail',
             'full-width' => 'frontend.pages.full-width',
             'contact' => 'frontend.pages.contact',
             default => 'frontend.pages.show',
         };
+
+        if ($viewName === 'frontend.pages.locations') {
+            return $this->locationsHub();
+        }
+
+        if ($viewName === 'frontend.pages.location-detail') {
+            $location = LocationService::find($slug) ?? LocationService::all()['dubai'];
+            $services = LocationService::getServicesCatalog();
+            $otherLocations = LocationService::getOtherLocations($slug);
+            $uaeAreas = LocationService::getUaeAreaHubs();
+
+            return view('frontend.pages.location-detail', compact('page', 'location', 'services', 'otherLocations', 'uaeAreas'));
+        }
 
         return view($viewName, compact('page'));
     }

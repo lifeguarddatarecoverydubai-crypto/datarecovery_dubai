@@ -20,10 +20,10 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <span>Power & Generator Services</span>
+                <span>Data Recovery Services</span>
                 <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">{{ $counts['all'] }}</span>
             </h1>
-            <p class="text-xs text-slate-500 mt-1">Manage diesel generator fleet services, temporary power plants, AMC contracts, used portacabins, and 24/7 emergency repair.</p>
+            <p class="text-xs text-slate-500 mt-1">Manage certified cleanroom data recovery services across Hard Drives, SSD, RAID arrays, NAS, CCTV, and mobile devices.</p>
         </div>
         <a href="{{ route('admin.services.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition self-start sm:self-auto">
             <i data-lucide="plus" class="w-4 h-4"></i> Add New Service

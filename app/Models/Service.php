@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasFeaturedImage;
+use App\Services\YoastSeoService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFeaturedImage;
 
     protected $fillable = [
         'title',
@@ -55,11 +57,27 @@ class Service extends Model
     }
 
     /**
+     * Model booted hooks.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Service $service) {
+            if ($service->seo_score === null || $service->seo_score <= 0) {
+                $scores = YoastSeoService::calculateForModel($service);
+                $service->seo_score = $scores['seo_score'];
+                if ($service->readability_score === null || $service->readability_score <= 0) {
+                    $service->readability_score = $scores['readability_score'];
+                }
+            }
+        });
+    }
+
+    /**
      * Get effective hero badge with standard default.
      */
     public function getEffectiveHeroBadgeAttribute(): string
     {
-        return $this->hero_badge ?: 'UAE Commercial Power Hub • ISO 8528 Certified Diesel Gensets';
+        return $this->hero_badge ?: 'UAE Cleanroom Lab • ISO-5 Class 100 & PC-3000 Certified Data Recovery';
     }
 
     /**
@@ -68,11 +86,11 @@ class Service extends Model
     public function getEffectiveBenchmarksAttribute(): array
     {
         $defaults = [
-            'standard' => 'ISO 8528-1:2018 / DEWA & ADDC Compliant',
-            'evaluation' => 'Free Site Assessment & kVA Sizing',
-            'guarantee' => '99.98% Power Uptime & Rapid Replacement SLA',
-            'turnaround' => '2-Hour Emergency Mobilization Across 7 Emirates',
-            'support' => '24/7 On-Site Mechanical & Electrical Support',
+            'standard' => 'ISO-5 Class 100 Cleanroom & PC-3000 Hardware Tools',
+            'evaluation' => 'Free In-Lab Diagnostics & Assessment',
+            'guarantee' => 'No Data, No Recovery Fee Guarantee',
+            'turnaround' => '24/7 Emergency Mobilization Across Dubai & UAE',
+            'support' => 'Dedicated Recovery Engineer & Direct Lab Updates',
         ];
 
         return array_merge($defaults, is_array($this->benchmarks) ? $this->benchmarks : []);
@@ -103,35 +121,11 @@ class Service extends Model
     }
 
     /**
-     * Featured image URL accessor.
-     */
-    public function getFeaturedImageUrlAttribute(): ?string
-    {
-        if (! $this->featured_image) {
-            return null;
-        }
-
-        if (str_starts_with($this->featured_image, 'http')) {
-            return $this->featured_image;
-        }
-
-        if (str_starts_with($this->featured_image, '/storage/')) {
-            return asset(ltrim($this->featured_image, '/'));
-        }
-
-        if (str_starts_with($this->featured_image, 'storage/')) {
-            return asset($this->featured_image);
-        }
-
-        return asset('storage/'.ltrim($this->featured_image, '/'));
-    }
-
-    /**
      * SEO Title fallback.
      */
     public function getSeoTitleAttribute(): string
     {
-        return $this->meta_title ?: ($this->title.' - Generator Dubai');
+        return $this->meta_title ?: ($this->title.' - LifeGuard Data Recovery');
     }
 
     /**

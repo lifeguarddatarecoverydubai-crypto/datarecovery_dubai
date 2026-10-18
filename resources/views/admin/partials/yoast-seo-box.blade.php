@@ -185,7 +185,7 @@
                         <div class="flex items-center gap-2 text-xs text-slate-600">
                             <span class="w-4 h-4 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-bold">G</span>
                             <div class="flex items-center gap-1 truncate text-[11px]">
-                                <span class="font-medium text-slate-900">{{ config('app.name', 'Generator Dubai') }}</span>
+                                <span class="font-medium text-slate-900">{{ config('app.name', 'LifeGuard Data Recovery') }}</span>
                                 <span class="text-slate-400">&rsaquo;</span>
                                 <span class="text-slate-500 truncate" x-text="currentSlug ? urlPrefix + '/' + currentSlug : urlPrefix"></span>
                             </div>
@@ -341,7 +341,7 @@
                             </template>
                         </div>
                         <div class="p-3.5 space-y-1 bg-slate-50 border-t border-slate-100">
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">GENERATORDUBAI.COM</span>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">LIFEGUARDDATARECOVERY.COM</span>
                             <h5 class="text-xs font-bold text-slate-900 truncate" x-text="ogTitle || metaTitle || effectiveTitle || 'Shared Title'"></h5>
                             <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed" x-text="ogDescription || metaDescription || effectiveDescription || 'Shared description snippet.'"></p>
                         </div>
@@ -355,7 +355,7 @@
             <div>
                 <label for="canonicalUrlInput" class="block text-xs font-bold text-slate-700 mb-1.5">Canonical URL</label>
                 <input type="url" id="canonicalUrlInput" name="canonical_url" value="{{ $canonicalUrl }}"
-                       placeholder="https://generatordubai.com/original-page"
+                       placeholder="https://lifeguarddatarecovery.com/original-page"
                        class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600">
                 <p class="text-[11px] text-slate-400 mt-1">Leave empty to use this item's default permalink.</p>
             </div>
@@ -827,8 +827,8 @@ document.addEventListener('alpine:init', () => {
         },
 
         insertSchemaTemplate(type) {
-            const currentTitle = this.effectiveTitle || this.metaTitle || 'Generator Dubai';
-            const currentDesc = this.effectiveDescription || this.metaDescription || 'Premium generator rental and sales services in Dubai, UAE.';
+            const currentTitle = this.effectiveTitle || this.metaTitle || 'LifeGuard Data Recovery Dubai';
+            const currentDesc = this.effectiveDescription || this.metaDescription || 'Professional ISO-5 Class 100 cleanroom data recovery services in Dubai & across UAE.';
             let tpl = {};
 
             if (type === 'article') {
@@ -839,15 +839,15 @@ document.addEventListener('alpine:init', () => {
                     "description": currentDesc,
                     "author": {
                         "@type": "Organization",
-                        "name": "Generator Dubai Engineering Team",
-                        "url": "https://generatordubai.com"
+                        "name": "LifeGuard Data Recovery Engineering Team",
+                        "url": "https://lifeguarddatarecovery.com"
                     },
                     "publisher": {
                         "@type": "Organization",
-                        "name": "Generator Dubai",
+                        "name": "LifeGuard Data Recovery",
                         "logo": {
                             "@type": "ImageObject",
-                            "url": "https://generatordubai.com/assets/images/logo.png"
+                            "url": "https://lifeguarddatarecovery.com/assets/images/logo.png"
                         }
                     },
                     "inLanguage": "en-AE"
@@ -860,14 +860,14 @@ document.addEventListener('alpine:init', () => {
                     "description": currentDesc,
                     "brand": {
                         "@type": "Brand",
-                        "name": "Cummins / Perkins / Caterpillar"
+                        "name": "LifeGuard Cleanroom Diagnostics"
                     },
                     "offers": {
                         "@type": "AggregateOffer",
                         "priceCurrency": "AED",
-                        "lowPrice": "1500",
-                        "highPrice": "45000",
-                        "offerCount": "12",
+                        "lowPrice": "500",
+                        "highPrice": "4500",
+                        "offerCount": "10",
                         "availability": "https://schema.org/InStock",
                         "areaServed": {
                             "@type": "AdministrativeArea",
@@ -880,16 +880,16 @@ document.addEventListener('alpine:init', () => {
                     ["@" + "context"]: "https://schema.org",
                     "@type": "Service",
                     "name": currentTitle,
-                    "serviceType": "Diesel Generator Rental & Maintenance",
+                    "serviceType": "Cleanroom Data Recovery & Forensic Investigation",
                     "description": currentDesc,
                     "provider": {
                         "@type": "LocalBusiness",
-                        "name": "Generator Dubai",
-                        "telephone": "+971501234567",
-                        "url": "https://generatordubai.com",
+                        "name": "LifeGuard Data Recovery",
+                        "telephone": "+97143933082",
+                        "url": "https://lifeguarddatarecovery.com",
                         "address": {
                             "@type": "PostalAddress",
-                            "streetAddress": "Al Quoz Industrial Area 3",
+                            "streetAddress": "Bayat Center S25, Computer Street, Bur Dubai",
                             "addressLocality": "Dubai",
                             "addressCountry": "AE"
                         }
@@ -903,18 +903,18 @@ document.addEventListener('alpine:init', () => {
                     "mainEntity": [
                         {
                             "@type": "Question",
-                            "name": "How quickly can a generator be deployed to our site in Dubai?",
+                            "name": "What is the No Data, No Charge policy at LifeGuard Data Recovery?",
                             "acceptedAnswer": {
                                 "@type": "Answer",
-                                "text": "We provide rapid deployment within 2 to 4 hours across Dubai, Sharjah, and Ajman, complete with cabling, ATS, and fuel tanks."
+                                "text": "If our cleanroom engineers are unable to recover your critical files, you owe nothing. Diagnostic evaluation is 100% free with no obligation."
                             }
                         },
                         {
                             "@type": "Question",
-                            "name": "What generator capacities are available for rent?",
+                            "name": "How fast can you evaluate my failed hard drive or SSD in Dubai?",
                             "acceptedAnswer": {
                                 "@type": "Answer",
-                                "text": "Our rental fleet ranges from 50 kVA up to 1250 kVA soundproof diesel generators, suitable for 50°C UAE weather."
+                                "text": "We provide rapid diagnostic triage within 2 to 4 hours in our ISO-5 Class 100 cleanroom lab in Bur Dubai or Al Barsha."
                             }
                         }
                     ]
@@ -923,14 +923,14 @@ document.addEventListener('alpine:init', () => {
                 tpl = {
                     ["@" + "context"]: "https://schema.org",
                     "@type": "LocalBusiness",
-                    "name": "Generator Dubai",
-                    "image": "https://generatordubai.com/assets/images/hero-gen.jpg",
-                    "telephone": "+971501234567",
-                    "email": "hello@generatordubai.com",
-                    "url": "https://generatordubai.com",
+                    "name": "LifeGuard Data Recovery",
+                    "image": "https://lifeguarddatarecovery.com/assets/images/cleanroom-lab.jpg",
+                    "telephone": "+97143933082",
+                    "email": "info@lifeguarddatarecovery.com",
+                    "url": "https://lifeguarddatarecovery.com",
                     "address": {
                         "@type": "PostalAddress",
-                        "streetAddress": "Al Quoz Industrial Area 3",
+                        "streetAddress": "Bayat Center S25, Computer Street, Bur Dubai",
                         "addressLocality": "Dubai",
                         "addressRegion": "Dubai",
                         "postalCode": "00000",
@@ -938,14 +938,14 @@ document.addEventListener('alpine:init', () => {
                     },
                     "geo": {
                         "@type": "GeoCoordinates",
-                        "latitude": "25.1325",
-                        "longitude": "55.2345"
+                        "latitude": "25.2532",
+                        "longitude": "55.2974"
                     },
                     "openingHoursSpecification": {
                         "@type": "OpeningHoursSpecification",
-                        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                        "opens": "00:00",
-                        "closes": "23:59"
+                        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                        "opens": "09:00",
+                        "closes": "21:00"
                     }
                 };
             }

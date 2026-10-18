@@ -380,7 +380,7 @@
     // 2. Media insertion into product editor
     function chooseMediaForProduct() {
         openMediaModal(function(item) {
-            const imgHtml = `\n<img src="${item.url}" alt="${item.name || 'Generator Dubai Fleet'}" class="rounded-2xl max-w-full h-auto my-4 shadow-sm" />\n`;
+            const imgHtml = `\n<img src="${item.url}" alt="${item.name || 'LifeGuard Data Recovery'}" class="rounded-2xl max-w-full h-auto my-4 shadow-sm" />\n`;
             const codeArea = document.getElementById('productCodeTextarea');
             const vis = document.getElementById('productVisualEditorContainer');
             const hiddenInput = document.getElementById('productContentInput');

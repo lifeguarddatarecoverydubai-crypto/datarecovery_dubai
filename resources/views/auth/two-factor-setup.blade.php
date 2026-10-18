@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Set Up Google Authenticator - {{ config('app.name', 'Generator Dubai') }}</title>
+    <title>Set Up Google Authenticator - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
         <!-- Header -->
         <div class="text-center">
             <a href="{{ route('home') }}" class="inline-block mb-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Generator Dubai" class="h-12 w-auto mx-auto object-contain">
+                <img src="{{ asset('images/logo.png') }}" alt="LifeGuard Data Recovery" class="h-12 w-auto mx-auto object-contain">
             </a>
 
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 mb-3 border border-brand-100 shadow-sm">
@@ -40,7 +40,7 @@
 
             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Set Up Google Authenticator</h2>
             <p class="mt-2 text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
-                Two-Factor Authentication is mandatory for all accounts on Generator Dubai. Link your Google Authenticator app to secure <strong class="text-slate-800">{{ $user->email }}</strong>.
+                Two-Factor Authentication is mandatory for all accounts on LifeGuard Data Recovery CMS. Link your Google Authenticator app to secure <strong class="text-slate-800">{{ $user->email }}</strong>.
             </p>
         </div>
 
@@ -101,7 +101,7 @@
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                         <span x-text="secretCopied ? 'Copied to Clipboard!' : 'Copy Secret Key'"></span>
                     </button>
-                    <p class="text-[11px] text-slate-400">Account: Generator Dubai ({{ $user->email }}) • Type: Time-based</p>
+                    <p class="text-[11px] text-slate-400">Account: LifeGuard Data Recovery Dubai ({{ $user->email }}) • Type: Time-based</p>
                 </div>
             </div>
         </div>
@@ -194,7 +194,7 @@
                     setTimeout(() => this.codesCopied = false, 3000);
                 },
                 downloadCodes() {
-                    const content = "GENERATOR DUBAI CMS - EMERGENCY 2FA RECOVERY CODES\n" +
+                    const content = "LIFEGUARD DATA RECOVERY CMS - EMERGENCY 2FA RECOVERY CODES\n" +
                                     "User: {{ $user->email }}\n" +
                                     "Generated: " + new Date().toISOString() + "\n\n" +
                                     this.codes.join("\n") + "\n\n" +
@@ -203,7 +203,7 @@
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'generatordubai-2fa-backup-codes.txt';
+                    link.download = 'lifeguard-2fa-backup-codes.txt';
                     link.click();
                     URL.revokeObjectURL(url);
                 }

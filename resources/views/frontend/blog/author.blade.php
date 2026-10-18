@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('seo_meta')
-    <title>{{ $author->name }}'s Articles - {{ config('app.name', 'Generator Dubai') }}</title>
+    <title>{{ $author->name }}'s Articles - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
     <meta name="description" content="Read articles written by {{ $author->name }} on {{ config('app.name') }}.">
     <link rel="canonical" href="{{ request()->query('page') && request()->query('page') > 1 ? route('author.show', ['slug' => $author->slug, 'page' => request()->query('page')]) : route('author.show', $author->slug) }}">
     @if($posts->previousPageUrl())

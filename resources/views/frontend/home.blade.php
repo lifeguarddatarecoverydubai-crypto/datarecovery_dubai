@@ -1,82 +1,47 @@
 @extends('layouts.app')
 
 @section('seo_meta')
-    <title>Generator Rental in Dubai & UAE | 50 kVA to 2500 kVA Silent Power Hire</title>
-    <meta name="description" content="Rent silent diesel generators across Dubai, Abu Dhabi, Sharjah & all 7 Emirates. 50 kVA to 2500 kVA fleet, 24/7 emergency dispatch within 60-120 minutes, fuel management & turnkey setup.">
-    <meta name="keywords" content="generator rental dubai, generator rental uae, diesel generator hire dubai, silent generator rental, temporary power solutions dubai, 500 kva generator rental, industrial generator hire uae">
+    <title>#1 Data Recovery Dubai - Trusted Data Recovery Services Dubai | LifeGuard</title>
+    <meta name="description" content="LifeGuard is the best Data Recovery service provider in Dubai with 30 years of experience. Certified Class 100 cleanroom lab for HDD, SSD, RAID, NAS, CCTV, and mobile devices.">
+    <meta name="keywords" content="data recovery dubai, hard drive recovery dubai, ssd data recovery dubai, raid recovery dubai, nas recovery uae, cctv footage recovery dubai, macbook data recovery dubai, data recovery cost dubai">
     <link rel="canonical" href="{{ route('home') }}">
-    <meta property="og:title" content="Generator Rental in Dubai & UAE | Turnkey Diesel Power Hire">
-    <meta property="og:description" content="50 kVA to 2500 kVA soundproof diesel generator rental, multi-megawatt synchronized power plants, and 24/7 emergency dispatch across all 7 Emirates.">
+    <meta property="og:title" content="#1 Data Recovery Dubai - Trusted Data Recovery Services Dubai">
+    <meta property="og:description" content="LifeGuard is the best Data Recovery service provider in Dubai with 30 years of experience. Experts in recovering data from HDD, SSD, RAID, NAS, CCTV, and mobile devices.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('home') }}">
+    <meta property="og:site_name" content="LifeGuard Data Recovery">
+    <meta property="og:image" content="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Schema.org WebSite JSON-LD with Sitelinks Searchbox -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'WebSite',
-      'name' => 'Generator Dubai',
-      'url' => route('home'),
-      'potentialAction' => [
-        '@type' => 'SearchAction',
-        'target' => [
-          '@type' => 'EntryPoint',
-          'urlTemplate' => route('blog.index') . '?q={search_term_string}',
-        ],
-        'query-input' => 'required name=search_term_string',
-      ],
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode(\App\Services\SchemaService::getWebSiteSchema(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
     </script>
 
     <!-- Schema.org FAQPage JSON-LD -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'FAQPage',
-      'mainEntity' => [
+    {!! json_encode(\App\Services\SchemaService::getFaqPageSchema([
         [
-          '@type' => 'Question',
-          'name' => 'How much does it cost to rent a generator in Dubai and the UAE?',
-          'acceptedAnswer' => [
-            '@type' => 'Answer',
-            'text' => 'Generator rental costs depend on required capacity (kVA/kW), rental duration (daily, weekly, or monthly), delivery distance, and whether fuel logistics are included. A 50 kVA silent unit typically starts from competitive daily or monthly rates, while large industrial generators (500-1250 kVA) are quoted on customized commercial project terms. Contact Generator Dubai for an immediate, transparent, itemized quote with zero hidden charges.',
-          ],
+            'question' => 'What is the cost of data recovery in Dubai?',
+            'answer' => 'Data recovery costs in Dubai depend on the storage device type (HDD, SSD, RAID, NAS, Flash drive) and the underlying failure mechanism (logical deletion vs mechanical cleanroom head replacement). At LifeGuard Data Recovery, we offer a 100% Free Diagnostic Evaluation and operate strictly on a No Data – No Charge policy with upfront itemized pricing before work commences.',
         ],
         [
-          '@type' => 'Question',
-          'name' => 'How quickly can Generator Dubai deliver an emergency rental generator to my site?',
-          'acceptedAnswer' => [
-            '@type' => 'Answer',
-            'text' => 'We maintain 24/7 emergency dispatch centers across Dubai, Abu Dhabi, and Sharjah. For critical power failures, transformer outages, or emergency site shutdowns, our mobile crane trailers mobilize and deliver generators to most UAE locations within 60 to 120 minutes of confirmation.',
-          ],
+            'question' => 'What should I do immediately if my hard drive is clicking or making strange noises?',
+            'answer' => 'Power down your computer or external hard drive immediately and unplug the cable. A clicking noise indicates that the physical read/write heads are failing or contacting the magnetic platters. Continuing to run the drive can scrape off the magnetic layer and cause permanent, irrecoverable data loss. Bring it to an ISO-5 Class 100 cleanroom lab for safe head replacement.',
         ],
         [
-          '@type' => 'Question',
-          'name' => 'What generator sizes (kVA/kW) do you have available for immediate hire?',
-          'acceptedAnswer' => [
-            '@type' => 'Answer',
-            'text' => 'Our active rental fleet ranges from 50 kVA (40 kW) up to 2500 kVA (2000 kW) single units, running on premium Cummins, Perkins, and Caterpillar engines. For massive power demands, we synchronize multiple containerized generators in parallel to create temporary power plants up to 20 Megawatts.',
-          ],
+            'question' => 'Can data be recovered from dead or unreadable SSDs and NVMe drives?',
+            'answer' => 'Yes. Even if an SSD is completely dead, not detected by the BIOS, or showing 0GB / RAW partition, our flash recovery engineers use hardware PC-3000 Flash systems to desolder NAND flash memory chips, read the raw flash dumps directly, and reconstruct the proprietary translation table without relying on the damaged controller.',
         ],
         [
-          '@type' => 'Question',
-          'name' => 'Do you supply silent generators suitable for residential areas and VIP events?',
-          'acceptedAnswer' => [
-            '@type' => 'Answer',
-            'text' => 'Yes. Our silent generator fleet is housed in specialized acoustic, sound-attenuated steel canopies with residential-grade internal silencers that keep sound levels below 65 dBA at 7 meters, fully complying with UAE municipal environmental noise regulations.',
-          ],
+            'question' => 'How long does a data recovery process take?',
+            'answer' => 'Standard evaluations are completed within 2 to 4 hours. Standard recovery typically takes 1 to 3 business days. For emergency mission-critical enterprise RAID arrays, database servers, and corporate cases, we provide a 24/7 Priority Emergency Service with around-the-clock cleanroom engineering.',
         ],
         [
-          '@type' => 'Question',
-          'name' => 'Is electrical installation, cabling, and technical setup included with the rental?',
-          'acceptedAnswer' => [
-            '@type' => 'Answer',
-            'text' => 'Yes. Generator Dubai provides complete turnkey power solutions. Our certified electrical technicians handle delivery, offloading, positioning, armored cable connection, automatic transfer switch (ATS) installation, and comprehensive load-testing before site handover.',
-          ],
+            'question' => 'Is my data kept confidential and secure during recovery?',
+            'answer' => 'Yes. LifeGuard Data Recovery maintains rigorous military-grade security protocols, signed Non-Disclosure Agreements (NDAs), encrypted clone storage, and isolated offline forensic workstations fully compliant with UAE data protection and privacy regulations.',
         ],
-      ],
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    ]), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
     </script>
 
     <!-- Custom Schema.org JSON-LD (from Dashboard) -->
@@ -88,88 +53,149 @@
 
     <!-- ================= 1. HERO SECTION ================= -->
     <section class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-32 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <!-- Ambient Power Glows -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-amber-500/15 blur-[140px] rounded-full pointer-events-none"></div>
-        <div class="absolute top-10 left-10 w-72 h-72 bg-sky-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <!-- Ambient High-Tech Glows -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cyan-600/15 blur-[140px] rounded-full pointer-events-none"></div>
+        <div class="absolute top-10 left-10 w-72 h-72 bg-blue-600/10 blur-[100px] rounded-full pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
                 <!-- Left Column: Copy & Actions -->
                 <div class="lg:col-span-7 space-y-6 text-left">
-                    <!-- Hero Top Badge -->
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-bold text-amber-300 shadow-lg shadow-amber-950/40">
-                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                        <span>50 kVA - 2500 kVA Power Fleet</span>
-                        <span class="text-white/40">|</span>
-                        <span class="text-slate-300 font-semibold">24/7 Emergency Mobilization</span>
+                    <!-- Cleanroom Badge -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-bold tracking-wide">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <span>ISO-5 CLASS 100 CLEANROOM • 30+ YEARS EXPERIENCE</span>
                     </div>
 
                     <!-- Main Headline -->
-                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight leading-[1.1] text-white">
-                        Turnkey Diesel Generator Rental in Dubai & <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200">Temporary Power Solutions Across UAE</span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-tight">
+                        #1 Data Recovery Dubai <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400">
+                            Trusted Cleanroom Lab
+                        </span>
                     </h1>
 
-                    <!-- Paragraph 1 & 2 -->
-                    <p class="text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-                        Generator Dubai is the UAE's premier provider of heavy-duty temporary power solutions, delivering fuel-efficient, sound-attenuated diesel generators from <strong>50 kVA to 2500 kVA</strong> across Dubai, Abu Dhabi, Sharjah, and all Northern Emirates. Engineered to perform reliably in extreme desert temperatures exceeding 50°C.
-                    </p>
-                    <p class="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed hidden sm:block">
-                        From rapid emergency blackout restoration to synchronized multi-megawatt temporary power plants, every generator is load-bank tested and deployed with certified electrical technicians, automatic transfer switches (ATS), external bunded fuel storage, and complete turnkey distribution.
+                    <!-- Subtitle -->
+                    <p class="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
+                        Don’t panic and do not power on your damaged drive. LifeGuard recovers critical lost files from failed <strong>Hard Drives, SSDs, RAID Servers, NAS, CCTV, and Mobile Phones</strong> with a proven <strong>98.6% recovery rate</strong> under our strict <strong>No Data – No Charge policy</strong>.
                     </p>
 
-                    <!-- CTAs -->
-                    <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                        <a href="tel:+971569213754" 
-                           class="px-8 py-4 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-extrabold text-sm shadow-xl shadow-amber-500/30 hover:scale-105 transition-all flex items-center justify-center gap-2 group">
-                            <i data-lucide="phone-call" class="w-4 h-4 text-slate-950"></i>
-                            <span>Call 24/7 Hotline: +971 56 921 3754</span>
+                    <!-- Trust Metric Highlights -->
+                    <div class="grid grid-cols-3 gap-4 pt-2 pb-2 border-y border-slate-800/80 max-w-xl">
+                        <div>
+                            <span class="block text-2xl sm:text-3xl font-black text-cyan-400">98.6%</span>
+                            <span class="text-[11px] text-slate-400 uppercase font-semibold">Success Rate</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl sm:text-3xl font-black text-white">100%</span>
+                            <span class="text-[11px] text-slate-400 uppercase font-semibold">No Data, No Charge</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl sm:text-3xl font-black text-emerald-400">24/7</span>
+                            <span class="text-[11px] text-slate-400 uppercase font-semibold">Emergency Support</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="{{ route('contact') }}" 
+                           class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5">
+                            <i data-lucide="microchip" class="w-4 h-4 stroke-[2.2]"></i>
+                            <span>Book Free Evaluation</span>
                         </a>
-                        <a href="#kva-selector" 
-                           class="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 backdrop-blur-md transition flex items-center justify-center gap-2">
-                            <span>Browse Fleet Capacities</span>
-                            <i data-lucide="arrow-down" class="w-4 h-4 text-amber-400"></i>
+
+                        <a href="tel:+97143933082" 
+                           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold text-sm transition">
+                            <i data-lucide="phone-call" class="w-4 h-4 text-cyan-400"></i>
+                            <span>+971 43 933 082</span>
+                        </a>
+
+                        <a href="https://wa.me/971554838545" target="_blank"
+                           class="inline-flex items-center gap-2 px-5 py-3.5 rounded-full bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-bold text-sm transition">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>WhatsApp</span>
                         </a>
                     </div>
 
-                    <!-- Trust Micro-Badges -->
-                    <div class="pt-4 flex flex-wrap items-center gap-5 text-xs text-slate-400 font-medium">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
-                            <span>ISO 8528 Certified Fleet</span>
+                    <!-- Verified Google Rating -->
+                    <div class="flex items-center gap-3 pt-2 text-xs text-slate-400">
+                        <div class="flex text-amber-400">
+                            ★★★★★
                         </div>
-                        <span class="text-slate-700 hidden sm:inline">&bull;</span>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
-                            <span>&lt;60 Min Emergency Dispatch</span>
-                        </div>
-                        <span class="text-slate-700 hidden sm:inline">&bull;</span>
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="award" class="w-4 h-4 text-sky-400"></i>
-                            <span>99.98% Power Uptime SLA</span>
-                        </div>
+                        <span class="font-semibold text-slate-200">4.9 / 5.0 Rating</span>
+                        <span class="text-slate-600">•</span>
+                        <span>Over 540+ Verified UAE Client Reviews</span>
                     </div>
                 </div>
 
-                <!-- Right Column: Hero Visual Card -->
+                <!-- Right Column: Interactive Quick Evaluation Card -->
                 <div class="lg:col-span-5">
-                    <div class="relative rounded-3xl overflow-hidden border border-slate-800 bg-slate-900/60 shadow-2xl p-2">
-                        <img src="{{ asset('storage/media/2026/09/1-y7ja6x.webp') }}" 
-                             alt="Diesel Generator Rental Fleet in Dubai" 
-                             width="800"
-                             height="500"
-                             loading="eager"
-                             fetchpriority="high"
-                             class="w-full h-80 sm:h-96 object-cover rounded-2xl shadow-inner">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent rounded-2xl"></div>
-                        <div class="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700/60 text-white space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-extrabold uppercase text-amber-400 tracking-wider">Heavy Power Ready</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">In Stock</span>
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden" 
+                         x-data="{ deviceType: 'hdd', failureType: 'clicking', name: '', phone: '', submitted: false }">
+                        
+                        <div class="flex items-center justify-between pb-5 border-b border-slate-800">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-white">Instant Diagnostic Assessment</h3>
+                                <p class="text-xs text-slate-400">Select your device symptom for instant triage</p>
                             </div>
-                            <h4 class="text-sm font-bold text-white">Tier-1 Cummins, Perkins & Caterpillar Gensets</h4>
-                            <p class="text-xs text-slate-300">Synchronized containers up to 20MW with residential-grade super-silent sound attenuation (&lt;65 dBA).</p>
+                            <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">FREE</span>
                         </div>
+
+                        <form action="{{ route('contact.submit') }}" method="POST" class="mt-6 space-y-4">
+                            @csrf
+                            <input type="hidden" name="source" value="Homepage Hero Diagnostic Tool">
+
+                            <!-- Device Selector -->
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Storage Device</label>
+                                <select name="device_type" x-model="deviceType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                    <option value="hdd">External / Desktop Hard Drive (HDD)</option>
+                                    <option value="ssd">Solid State Drive (SSD / NVMe / M.2)</option>
+                                    <option value="raid">RAID Server Array (0, 1, 5, 6, 10, 50, 60)</option>
+                                    <option value="nas">NAS Network Storage (Synology, QNAP, TrueNAS)</option>
+                                    <option value="cctv">CCTV DVR / NVR Security Footage</option>
+                                    <option value="mobile">iPhone / Android Mobile Phone</option>
+                                    <option value="macbook">MacBook / Apple Silicon Logic Board</option>
+                                    <option value="usb">USB Flash Drive / Camera SD Card</option>
+                                </select>
+                            </div>
+
+                            <!-- Failure Symptom Selector -->
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Primary Problem / Symptom</label>
+                                <select name="failure_type" x-model="failureType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                    <option value="clicking">Clicking, Beeping, or Grinding Sounds</option>
+                                    <option value="not_detected">Not Detected / Drive Won't Spin Up</option>
+                                    <option value="deleted">Formatted Partition or Accidentally Deleted Files</option>
+                                    <option value="dropped">Physically Dropped or Liquid / Water Damaged</option>
+                                    <option value="burnt">Burnt Circuit Board / Electrical Surge / Smell</option>
+                                    <option value="ransomware">Encrypted by Ransomware / Corrupted File System</option>
+                                </select>
+                            </div>
+
+                            <!-- Contact Inputs -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Your Name</label>
+                                    <input type="text" name="name" required placeholder="Ahmed Al-Mansoor" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Phone / WhatsApp</label>
+                                    <input type="text" name="phone" required placeholder="+971 50 123 4567" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span>Request Free Lab Evaluation & Priority Pickup</span>
+                            </button>
+
+                            <p class="text-[10px] text-center text-slate-500">
+                                Strictly confidential. We sign Non-Disclosure Agreements (NDA). Zero spam guarantee.
+                            </p>
+                        </form>
                     </div>
                 </div>
 
@@ -177,312 +203,63 @@
         </div>
     </section>
 
-    <!-- ================= 2. STATS STRIP ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-14 relative z-20">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xl">
-            <div class="text-center p-4 border-r border-slate-100 last:border-none">
-                <div class="text-3xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">50-2500</div>
-                <div class="text-xs font-bold text-amber-600 uppercase tracking-wider mt-1">kVA Fleet Capacity</div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Single & Parallel Units</p>
-            </div>
-            <div class="text-center p-4 border-r border-slate-100 last:border-none">
-                <div class="text-3xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">&lt;60 Min</div>
-                <div class="text-xs font-bold text-amber-600 uppercase tracking-wider mt-1">Emergency Dispatch</div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Across All 7 Emirates</p>
-            </div>
-            <div class="text-center p-4 border-r border-slate-100 last:border-none">
-                <div class="text-3xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">99.98%</div>
-                <div class="text-xs font-bold text-amber-600 uppercase tracking-wider mt-1">Power Uptime SLA</div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Guaranteed Reliability</p>
-            </div>
-            <div class="text-center p-4">
-                <div class="text-3xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">7</div>
-                <div class="text-xs font-bold text-amber-600 uppercase tracking-wider mt-1">Emirates Covered</div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Plus Cross-Border Oman</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= 3. KVA CAPACITY SELECTOR GRID ================= -->
-    <section id="kva-selector" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 text-xs font-extrabold uppercase tracking-wider border border-amber-500/20">
-                <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
-                <span>Capacity Selector</span>
-            </div>
-            <h2 class="text-2xl sm:text-4xl font-black font-display text-slate-950 tracking-tight">
-                Generator Fleet by kVA Output — Tailored for UAE Site Demands
+    <!-- ================= 2. CORE SPECIALIZED SERVICES ================= -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+            <span class="text-xs font-extrabold tracking-widest uppercase text-cyan-600">Enterprise & Personal Recovery</span>
+            <h2 class="text-3xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">
+                Specialized Data Recovery Services
             </h2>
-            <p class="text-sm text-slate-600">
-                From compact auxiliary site generators to massive synchronized multi-megawatt configurations, select the optimal kVA rating for your project:
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @php
-                $kvaList = [
-                    ['kva' => '50', 'kw' => '40', 'label' => '50 kVA (40 kW)', 'desc' => 'Compact power for commercial site offices, telecom masts, and temporary retail kiosks.', 'consumption' => '9.1 L/hr'],
-                    ['kva' => '100', 'kw' => '80', 'label' => '100 kVA (80 kW)', 'desc' => 'Versatile three-phase power for tower cranes, concrete vibrators, and outdoor event stages.', 'consumption' => '16.5 L/hr'],
-                    ['kva' => '150', 'kw' => '120', 'label' => '150 kVA (120 kW)', 'desc' => 'Steady electrical supply for medium construction sites, workshops, and commercial facilities.', 'consumption' => '24.5 L/hr'],
-                    ['kva' => '200', 'kw' => '160', 'label' => '200 kVA (160 kW)', 'desc' => 'Reliable capacity for construction hoist motors, dewatering pumps, and batching plants.', 'consumption' => '31.0 L/hr'],
-                    ['kva' => '250', 'kw' => '200', 'label' => '250 kVA (200 kW)', 'desc' => 'High-performance workhorse for industrial fabrication yards and large residential compounds.', 'consumption' => '38.2 L/hr'],
-                    ['kva' => '300', 'kw' => '240', 'label' => '300 kVA (240 kW)', 'desc' => 'Heavy-duty power for multi-crane civil sites, camp accommodations, and event lighting rigs.', 'consumption' => '45.5 L/hr'],
-                    ['kva' => '350', 'kw' => '280', 'label' => '350 kVA (280 kW)', 'desc' => 'Continuous prime power for deep foundation drilling rigs and water treatment facilities.', 'consumption' => '52.8 L/hr'],
-                    ['kva' => '500', 'kw' => '400', 'label' => '500 kVA (400 kW)', 'desc' => 'Industrial-grade output supporting major infrastructure, asphalt plants, and hotel chiller backup.', 'consumption' => '74.0 L/hr'],
-                    ['kva' => '600', 'kw' => '480', 'label' => '600 kVA (480 kW)', 'desc' => 'Sustained continuous power for heavy manufacturing lines, marine docks, and quarry crushers.', 'consumption' => '89.0 L/hr'],
-                    ['kva' => '800', 'kw' => '640', 'label' => '800 kVA (640 kW)', 'desc' => 'High-capacity generator for large-scale industrial projects, cooling plants, and hospital backups.', 'consumption' => '118.0 L/hr'],
-                    ['kva' => '1000', 'kw' => '800', 'label' => '1000 kVA (800 kW)', 'desc' => 'Containerized megawatt unit for oil & gas terminals, major developments, and data centers.', 'consumption' => '145.0 L/hr'],
-                    ['kva' => '1250', 'kw' => '1000', 'label' => '1250 kVA (1000 kW)', 'desc' => 'Utility-grade synchronized power for sub-stations, refinery turnarounds, and multi-MW plants.', 'consumption' => '185.0 L/hr'],
-                ];
-            @endphp
-
-            @foreach($kvaList as $item)
-                <div class="group relative rounded-2xl bg-white border border-slate-200 p-6 hover:border-amber-400 hover:shadow-xl transition-all flex flex-col justify-between">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-800 text-xs font-black">
-                                {{ $item['kva'] }} kVA
-                            </span>
-                            <span class="text-[11px] text-slate-500 font-semibold flex items-center gap-1">
-                                <i data-lucide="fuel" class="w-3.5 h-3.5 text-amber-500"></i>
-                                <span>{{ $item['consumption'] }}</span>
-                            </span>
-                        </div>
-                        <h3 class="text-base font-extrabold text-slate-900 group-hover:text-amber-600 transition">
-                            {{ $item['label'] }}
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            {{ $item['desc'] }}
-                        </p>
-                    </div>
-
-                    <div class="pt-5 mt-4 border-t border-slate-100 flex items-center justify-between">
-                        <a href="{{ route('fleet.show', $item['kva'] . '-kva') }}" class="text-xs font-bold text-amber-600 group-hover:text-amber-700 flex items-center gap-1">
-                            <span>Full Specifications</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
-                        </a>
-                        <a href="tel:+971569213754" class="p-2 rounded-lg bg-slate-100 hover:bg-amber-500 text-slate-700 hover:text-slate-950 transition" title="Inquire by phone">
-                            <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-                        </a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-    <!-- ================= 4. ENGINEERED FLEET CATEGORIES ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="rounded-3xl bg-slate-950 text-white p-8 sm:p-12 lg:p-16 border border-slate-800 relative overflow-hidden">
-            <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-            <div class="max-w-3xl space-y-3 mb-12">
-                <span class="text-xs font-extrabold uppercase tracking-widest text-amber-400">Engineered Fleet</span>
-                <h2 class="text-2xl sm:text-4xl font-black font-display tracking-tight text-white">
-                    Industrial & Commercial Power Generation Systems Available for Hire
-                </h2>
-                <p class="text-sm text-slate-300">
-                    Every job site presents distinct load profiles and environmental constraints. Explore our primary generator categories designed for precision power delivery across the UAE:
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Cat 1 -->
-                <div class="flex flex-col sm:flex-row gap-5 p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 transition">
-                    <img src="{{ asset('storage/media/2026/10/2-im4l8z.jpg') }}" alt="Silent Canopy Diesel Generator" width="300" height="300" loading="lazy" class="w-full sm:w-36 h-36 object-cover rounded-xl shrink-0">
-                    <div class="space-y-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">50 - 500 kVA</span>
-                        <h3 class="text-lg font-bold text-white">Silent Canopy Diesel Generators</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Acoustic steel canopies dampening noise below 65 dBA @ 7m. Ideal for luxury film shoots, VIP events, hotels, medical centers, and residential developments where quiet operation is mandatory.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Cat 2 -->
-                <div class="flex flex-col sm:flex-row gap-5 p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 transition">
-                    <img src="{{ asset('storage/media/2026/10/3-ki2rou.jpg') }}" alt="Heavy-Duty Prime Power Sets" width="300" height="300" loading="lazy" class="w-full sm:w-36 h-36 object-cover rounded-xl shrink-0">
-                    <div class="space-y-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">500 - 1250 kVA</span>
-                        <h3 class="text-lg font-bold text-white">Heavy-Duty Prime & Continuous Power Sets</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Rugged skid-mounted and containerized packages designed for unrelenting 24/7 prime electrical supply. Built to handle heavy inductive motor starting currents on civil infrastructure and batching plants.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Cat 3 -->
-                <div class="flex flex-col sm:flex-row gap-5 p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 transition">
-                    <img src="{{ asset('storage/media/2026/10/4-s0ctda.jpg') }}" alt="Mobile Fast-Tow Trailer Gensets" width="300" height="300" loading="lazy" class="w-full sm:w-36 h-36 object-cover rounded-xl shrink-0">
-                    <div class="space-y-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">50 - 250 kVA</span>
-                        <h3 class="text-lg font-bold text-white">Mobile Fast-Tow Trailer Gensets</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Road-homologated mobile units built with heavy-duty torsion axles, trailer brakes, and integrated fuel tanks for rapid relocation between sites, linear pipeline works, and emergency recovery.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Cat 4 -->
-                <div class="flex flex-col sm:flex-row gap-5 p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 transition">
-                    <img src="{{ asset('storage/media/2026/10/5-5gbsbw.jpg') }}" alt="Synchronized Multi-Megawatt Containerized Plants" width="300" height="300" loading="lazy" class="w-full sm:w-36 h-36 object-cover rounded-xl shrink-0">
-                    <div class="space-y-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">1 MW - 20 MW</span>
-                        <h3 class="text-lg font-bold text-white">Synchronized Multi-Megawatt Plants</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            20ft and 40ft ISO containerized modules equipped with intelligent Deep Sea Electronics (DSE) paralleling controllers. Operating seamlessly in parallel for utilities, refineries, and data centers.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= 5. ISO 8528 STANDARDS: PRIME VS STANDBY ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Engineering Standards</span>
-            <h2 class="text-2xl sm:text-3xl font-black font-display text-slate-950">
-                Understanding ISO 8528 Standards: Prime Power (PRP) vs Emergency Standby (ESP)
-            </h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-md space-y-4">
-                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
-                    <i data-lucide="zap" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-black font-display text-slate-900">Prime Rated Power (PRP)</h3>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Engineered to supply continuous, variable electrical power for unlimited operating hours per year in off-grid environments. Features a mandatory <strong>10% overload capability for 1 hour every 12 hours</strong>. The essential choice for civil construction projects, remote desert installations, and exploration camps where no municipal DEWA or SEWA grid exists.
-                </p>
-                <div class="text-xs font-bold text-amber-700 bg-amber-50 p-3 rounded-xl border border-amber-200">
-                    &check; Mandatory 10% overload margin &bull; Unlimited running hours &bull; Continuous duty
-                </div>
-            </div>
-
-            <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-md space-y-4">
-                <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-600 flex items-center justify-center">
-                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-black font-display text-slate-900">Emergency Standby Power (ESP)</h3>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Calibrated to deliver reliable backup power for the duration of a utility outage or scheduled transformer maintenance. Operates without overload allowance to maintain life-safety lighting, computer servers, hospital equipment, and cold storage facilities until the main power grid is safely re-energized.
-                </p>
-                <div class="text-xs font-bold text-sky-700 bg-sky-50 p-3 rounded-xl border border-sky-200">
-                    &check; Zero-overload safety &bull; Instant ATS changeover &bull; Max uptime protection
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= 6. TECHNICAL FUEL CONSUMPTION TABLE ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="rounded-3xl bg-white border border-slate-200 shadow-xl overflow-hidden p-6 sm:p-10">
-            <div class="max-w-3xl space-y-2 mb-8">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600">Technical Specifications</span>
-                <h2 class="text-xl sm:text-3xl font-black font-display text-slate-900">
-                    Technical Comparison & Fuel Consumption Specifications
-                </h2>
-                <p class="text-xs text-slate-500">
-                    *Fuel consumption figures are based on 75% prime load and standard ambient conditions. Actual fuel burn varies with ambient temperature, altitude, and dynamic inductive loads.
-                </p>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm text-slate-600">
-                    <thead class="bg-slate-100 text-slate-900 uppercase font-extrabold text-[11px] tracking-wider border-b border-slate-200">
-                        <tr>
-                            <th class="py-4 px-4 sm:px-6">Configuration</th>
-                            <th class="py-4 px-4 sm:px-6">kVA Range</th>
-                            <th class="py-4 px-4 sm:px-6">Est. Fuel Burn @ 75%</th>
-                            <th class="py-4 px-4 sm:px-6">Primary Site Use Case</th>
-                            <th class="py-4 px-4 sm:px-6">Standard Terms</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-4 px-4 sm:px-6 font-bold text-slate-900">Silent Canopy Generator</td>
-                            <td class="py-4 px-4 sm:px-6 font-semibold text-amber-600">50 - 100 kVA</td>
-                            <td class="py-4 px-4 sm:px-6">8.5 - 16.0 L/hr</td>
-                            <td class="py-4 px-4 sm:px-6">Commercial site offices, events, retail kiosks</td>
-                            <td class="py-4 px-4 sm:px-6">Daily, weekly, or monthly hire</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-4 px-4 sm:px-6 font-bold text-slate-900">Soundproof Prime Generator</td>
-                            <td class="py-4 px-4 sm:px-6 font-semibold text-amber-600">150 - 300 kVA</td>
-                            <td class="py-4 px-4 sm:px-6">24.0 - 48.0 L/hr</td>
-                            <td class="py-4 px-4 sm:px-6">Tower cranes, dewatering pumps, medium civil sites</td>
-                            <td class="py-4 px-4 sm:px-6">Monthly to multi-month project rental</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-4 px-4 sm:px-6 font-bold text-slate-900">Heavy-Duty Industrial Genset</td>
-                            <td class="py-4 px-4 sm:px-6 font-semibold text-amber-600">350 - 600 kVA</td>
-                            <td class="py-4 px-4 sm:px-6">55.0 - 95.0 L/hr</td>
-                            <td class="py-4 px-4 sm:px-6">Concrete batching plants, manufacturing, chillers</td>
-                            <td class="py-4 px-4 sm:px-6">Project-based and long-term lease</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-4 px-4 sm:px-6 font-bold text-slate-900">Containerized Power Module</td>
-                            <td class="py-4 px-4 sm:px-6 font-semibold text-amber-600">800 - 2500 kVA</td>
-                            <td class="py-4 px-4 sm:px-6">125.0 - 240.0 L/hr</td>
-                            <td class="py-4 px-4 sm:px-6">Data centers, oil & gas fields, utility substations</td>
-                            <td class="py-4 px-4 sm:px-6">Long-term contracts & seasonal peak shaving</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="pt-6 mt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <span class="text-xs text-slate-500 font-medium">Need customized load profile assessment for your motors or cranes?</span>
-                <a href="tel:+971569213754" class="px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-xs hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-2">
-                    <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-                    <span>Speak with Sizing Engineer: +971 56 921 3754</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= 7. TURNKEY SERVICES & DISTRIBUTION ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Comprehensive Solutions</span>
-            <h2 class="text-2xl sm:text-4xl font-black font-display text-slate-950 tracking-tight">
-                Turnkey Electrical Engineering & Site Support Services
-            </h2>
-            <p class="text-sm text-slate-600">
-                Beyond temporary generator rentals, Generator Dubai delivers full-lifecycle electrical engineering, preventative maintenance, cooling, and modular infrastructure:
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Cleanroom hardware diagnostics and proprietary software extraction across all digital storage media.
             </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach(\App\Models\Service::published()->ordered()->get() as $svc)
-                <div class="group rounded-3xl bg-white border border-slate-200 p-7 hover:border-amber-400 hover:shadow-xl transition-all flex flex-col justify-between">
+            @foreach($services as $service)
+                <div class="group bg-white rounded-3xl p-8 border border-slate-200/80 hover:border-cyan-500/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                     <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 group-hover:bg-amber-500 group-hover:text-slate-950 flex items-center justify-center transition-colors">
-                            <i data-lucide="{{ $svc->icon ?: 'zap' }}" class="w-6 h-6"></i>
+                        <!-- Icon & Order Badge -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-cyan-50 group-hover:bg-gradient-to-tr group-hover:from-cyan-600 group-hover:to-blue-600 text-cyan-600 group-hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm">
+                                <i data-lucide="{{ $service->icon ?: 'hard-drive' }}" class="w-6 h-6 stroke-[2]"></i>
+                            </div>
+                            <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                                98.6% SUCCESS
+                            </span>
                         </div>
-                        <h3 class="text-lg font-black font-display text-slate-900 group-hover:text-amber-600 transition">
-                            {{ $svc->title }}
+
+                        <!-- Title -->
+                        <h3 class="text-xl font-black text-slate-900 group-hover:text-cyan-700 transition-colors">
+                            {{ $service->title }}
                         </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            {{ $svc->summary }}
+
+                        <!-- Summary -->
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
+                            {{ $service->summary }}
                         </p>
-                        @if(!empty($svc->features))
-                            <ul class="pt-2 space-y-1.5 text-xs text-slate-500">
-                                @foreach(array_slice($svc->features, 0, 3) as $f)
-                                    <li class="flex items-start gap-1.5">
-                                        <i data-lucide="check" class="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5"></i>
-                                        <span>{{ $f }}</span>
+
+                        <!-- Key Features -->
+                        @if(!empty($service->features) && is_array($service->features))
+                            <ul class="space-y-1.5 pt-2 border-t border-slate-100">
+                                @foreach(array_slice($service->features, 0, 3) as $feat)
+                                    <li class="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                                        <i data-lucide="check" class="w-3.5 h-3.5 text-cyan-600 shrink-0"></i>
+                                        <span class="truncate">{{ $feat }}</span>
                                     </li>
                                 @endforeach
                             </ul>
                         @endif
                     </div>
 
-                    <div class="pt-6 mt-6 border-t border-slate-100">
-                        <a href="{{ route('service.show', $svc->slug) }}" class="text-xs font-bold text-amber-600 group-hover:text-amber-700 flex items-center gap-1.5">
-                            <span>Explore Solution Details</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+                    <!-- Action Link -->
+                    <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
+                        <a href="{{ url($service->slug) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 group-hover:text-cyan-700 transition">
+                            <span>Explore Recovery Details</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"></i>
+                        </a>
+                        <a href="{{ route('contact') }}" class="text-[11px] font-semibold text-slate-400 hover:text-slate-800">
+                            Get Quote &rarr;
                         </a>
                     </div>
                 </div>
@@ -490,288 +267,259 @@
         </div>
     </section>
 
-    <!-- ================= 8. 6-STEP ISO DEPLOYMENT LIFECYCLE ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="rounded-3xl bg-slate-950 text-white p-8 sm:p-14 border border-slate-800">
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-                <span class="text-xs font-extrabold uppercase tracking-widest text-amber-400">Deployment Lifecycle</span>
-                <h2 class="text-2xl sm:text-4xl font-black font-display tracking-tight text-white">
-                    Our Seamless 6-Step Engineering Deployment Process
+    <!-- ================= 3. OUR 4-STEP PROVEN PROCESS ================= -->
+    <section class="bg-slate-900 text-white py-20 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                <span class="text-xs font-extrabold tracking-widest uppercase text-cyan-400">Streamlined & Transparent</span>
+                <h2 class="text-3xl sm:text-4xl font-black font-display tracking-tight text-white">
+                    Our 4-Step Cleanroom Recovery Process
                 </h2>
-                <p class="text-xs sm:text-sm text-slate-400">
-                    From initial electrical audit through demobilization, our ISO-compliant process ensures safe, compliant, and zero-downtime power installation:
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Zero guesswork, strict data confidentiality, and no payment required until your critical files are recovered and verified.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @php
-                    $steps = [
-                        ['num' => '01', 'title' => 'Technical Consultation & Load Analysis', 'desc' => 'Our power engineers evaluate connected machinery, motor starting profiles (DOL/VFD), running amperages, and location constraints to specify the exact kVA requirement.'],
-                        ['num' => '02', 'title' => 'Customized Engineering Proposal & SLA', 'desc' => 'You receive a transparent, itemized quotation detailing generator rating, fuel plan, distribution accessories, delivery timeline, and guaranteed maintenance service levels.'],
-                        ['num' => '03', 'title' => 'On-Site Civil & Safety Audit', 'desc' => 'For complex deployments, our safety team conducts an on-site survey confirming crane access, ground load-bearing capacity, exhaust ventilation, and civil defense clearances.'],
-                        ['num' => '04', 'title' => 'Rapid Mobilization & Rigging', 'desc' => 'Our heavy transport fleet delivers the generator, places it securely, lays armored copper cabling, connects distribution panels, and installs proper earth grounding rods.'],
-                        ['num' => '05', 'title' => 'Commissioning & Load-Bank Testing', 'desc' => 'We perform phased load testing, verify automatic transfer switch changeover, calibrate synchronisation panels, and provide resident technician support.'],
-                        ['num' => '06', 'title' => 'Safe Decommissioning & Handover', 'desc' => 'Upon project completion, our technicians safely disconnect cabling, pump out residual fuel, de-rig all equipment, and arrange timely removal without impacting daily operations.'],
-                    ];
-                @endphp
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="bg-slate-950/70 border border-slate-800 p-6 rounded-2xl space-y-3 relative">
+                    <span class="text-3xl font-black text-cyan-500/30">01</span>
+                    <h3 class="text-base font-bold text-white">Free Diagnostic Evaluation</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Drop off your drive or book a complimentary Dubai courier pickup. Our certified engineers inspect the hardware in our lab within 2–4 hours.
+                    </p>
+                </div>
 
-                @foreach($steps as $s)
-                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                        <div class="text-xs font-black text-amber-400 tracking-wider font-mono">STEP {{ $s['num'] }}</div>
-                        <h4 class="text-base font-bold text-white">{{ $s['title'] }}</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">{{ $s['desc'] }}</p>
+                <!-- Step 2 -->
+                <div class="bg-slate-950/70 border border-slate-800 p-6 rounded-2xl space-y-3 relative">
+                    <span class="text-3xl font-black text-cyan-500/30">02</span>
+                    <h3 class="text-base font-bold text-white">Fixed Quote & File List</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        We provide an exact diagnostic report with an itemized price quote and expected turnaround. You decide whether to proceed with zero obligation.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-950/70 border border-slate-800 p-6 rounded-2xl space-y-3 relative">
+                    <span class="text-3xl font-black text-cyan-500/30">03</span>
+                    <h3 class="text-base font-bold text-white">Class 100 Cleanroom Extraction</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Mechanical head swaps, PCB micro-soldering, and raw NAND dumps are carried out inside laminar flow benches using DeepSpar & PC-3000 gear.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-slate-950/70 border border-slate-800 p-6 rounded-2xl space-y-3 relative">
+                    <span class="text-3xl font-black text-cyan-500/30">04</span>
+                    <h3 class="text-base font-bold text-white">Verification & Safe Delivery</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        You inspect and verify your recovered folders. Once completely satisfied, your restored data is released on an encrypted transfer drive.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 4. WHY LIFEGUARD (CERTIFIED CLEANROOM LAB) ================= -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white rounded-3xl p-8 sm:p-12 lg:p-16 border border-slate-800 relative overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+                <div class="lg:col-span-7 space-y-6">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Advanced Cleanroom Facilities</span>
+                    <h2 class="text-3xl sm:text-4xl font-black font-display tracking-tight leading-tight">
+                        Why Dubai Businesses Trust LifeGuard Data Recovery
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Hard drive platters operate with microscopic clearance under 3 nanometers. Opening a mechanical disk outside a certified cleanroom immediately ruins it through dust particle contamination. LifeGuard maintains verified ISO-5 Class 100 cleanroom environments right here in Dubai.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">No Data, No Charge Policy</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">If we cannot recover your critical files, you pay nothing for the recovery service.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                                <i data-lucide="lock" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">Strict Non-Disclosure (NDA)</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">Full confidentiality compliance for banks, hospitals, legal firms, and corporate databases.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                                <i data-lucide="cpu" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">PC-3000 & DeepSpar Lab</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">Equipped with industry-standard hardware tools for SAS, SCSI, PCIe, and NVMe controller repairs.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">Central Dubai Lab & Branches</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">Convenient drop-offs in Bur Dubai (Computer St) and Al Barsha (Mall of Emirates).</p>
+                            </div>
+                        </div>
                     </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
+                </div>
 
-    <!-- ================= 9. INDUSTRIES SERVED ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Sector Specialization</span>
-            <h2 class="text-2xl sm:text-4xl font-black font-display text-slate-950 tracking-tight">
-                Critical Sectors Powered by Generator Dubai
-            </h2>
-            <p class="text-sm text-slate-600">
-                Delivering proven temporary power solutions across the UAE's critical commercial, industrial, and infrastructure industries:
-            </p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            @php
-                $industries = [
-                    ['title' => 'Civil Construction', 'icon' => 'hard-hat', 'desc' => 'Tower cranes, dewatering pumps & batching plants.'],
-                    ['title' => 'Emergency Grid Outages', 'icon' => 'zap-off', 'desc' => 'Blackout recovery and utility transformer bypass.'],
-                    ['title' => 'Manufacturing & Plants', 'icon' => 'factory', 'desc' => 'Continuous 3-phase power for factories & warehousing.'],
-                    ['title' => 'Luxury Hospitality', 'icon' => 'hotel', 'desc' => 'Super-silent generation for resorts, chillers & POS.'],
-                    ['title' => 'Hospitals & Healthcare', 'icon' => 'heart-pulse', 'desc' => 'Zero-interruption standby for operating theaters.'],
-                    ['title' => 'Marine Ports & Docks', 'icon' => 'anchor', 'desc' => 'Shore-to-ship power conversion & shipyard repairs.'],
-                    ['title' => 'Data Centers & IT', 'icon' => 'server', 'desc' => 'Tier-III/IV clean power during switchgear overhauls.'],
-                    ['title' => 'Retail & Shopping Malls', 'icon' => 'shopping-bag', 'desc' => 'Emergency chiller backup and seasonal peak shaving.'],
-                    ['title' => 'Desert Explorations', 'icon' => 'compass', 'desc' => 'Heavy-duty standalone generators with extended fuel.'],
-                    ['title' => 'Events & Festivals', 'icon' => 'mic', 'desc' => 'Whisper-quiet power for audio, stages & broadcast.'],
-                ];
-            @endphp
-
-            @foreach($industries as $ind)
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 hover:border-amber-400 hover:shadow-lg transition space-y-2 text-center flex flex-col items-center justify-center">
-                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-1">
-                        <i data-lucide="{{ $ind['icon'] }}" class="w-5 h-5"></i>
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl bg-slate-900">
+                        <img src="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg" 
+                             alt="LifeGuard Data Recovery Cleanroom Lab Dubai" 
+                             class="w-full h-64 object-cover">
+                        <div class="p-5 space-y-2">
+                            <div class="flex items-center justify-between text-xs font-semibold text-slate-300">
+                                <span>Dubai Lab Status:</span>
+                                <span class="text-emerald-400 flex items-center gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    Operational 24/7
+                                </span>
+                            </div>
+                            <div class="text-xs text-slate-400">
+                                Central Lab: Bayat Center S25, Computer Street, Bur Dubai
+                            </div>
+                        </div>
                     </div>
-                    <h4 class="text-xs font-bold text-slate-900">{{ $ind['title'] }}</h4>
-                    <p class="text-[11px] text-slate-500 leading-tight">{{ $ind['desc'] }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-    <!-- ================= 10. WHY CHOOSE GENERATOR DUBAI ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Engineering Excellence</span>
-            <h2 class="text-2xl sm:text-4xl font-black font-display text-slate-950 tracking-tight">
-                Why Industry Leaders Choose Generator Dubai for Critical Site Power
-            </h2>
-            <p class="text-sm text-slate-600">
-                In demanding commercial and civil projects, power disruptions lead to massive operational losses. Here is how our power engineering leadership safeguards your continuous operations:
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @php
-                $pillars = [
-                    ['num' => '01', 'title' => 'Tier-1 Certified Engines', 'desc' => 'Our entire fleet features premium Cummins, Perkins, and Caterpillar engines with high-ambient tropical radiators engineered for continuous operation at 55°C.'],
-                    ['num' => '02', 'title' => 'Acoustically Attenuated Super-Silent Canopies', 'desc' => 'Sound-absorbing rockwool insulation, residential-grade internal mufflers, and aerodynamic acoustic baffles keep sound below 65 dBA at 7 meters.'],
-                    ['num' => '03', 'title' => 'Certified 24/7 Resident Technicians', 'desc' => 'Every deployment is supervised by qualified electrical technicians managing load profiling, synchronisation, and live monitoring, available 24/7.'],
-                    ['num' => '04', 'title' => 'Complete Turnkey Power Infrastructure', 'desc' => 'We supply 4-pole automatic transfer switches (ATS), digital synchronizing panels, heavy-duty armored copper cables, and IP66 distribution boards.'],
-                    ['num' => '05', 'title' => 'Rapid Dispatch Across All 7 Emirates', 'desc' => 'Dedicated logistics depots in Dubai (Al Quoz & JAFZA), Abu Dhabi (Mussafah), and Sharjah guarantee on-site delivery within 1 to 2 hours.'],
-                    ['num' => '06', 'title' => 'Automated Fuel Logistics & Telemetry', 'desc' => 'Integrated electronic telemetry tracks fuel burn, oil pressure, and electrical loads in real-time, coordinating scheduled bulk diesel replenishment.'],
-                ];
-            @endphp
-
-            @foreach($pillars as $pil)
-                <div class="p-6 rounded-3xl bg-white border border-slate-200 hover:border-amber-400 hover:shadow-lg transition space-y-3">
-                    <span class="text-xs font-black text-amber-500 font-mono tracking-wider">PILLAR {{ $pil['num'] }}</span>
-                    <h3 class="text-base font-extrabold text-slate-900">{{ $pil['title'] }}</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">{{ $pil['desc'] }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-    <!-- ================= 11. REGIONAL COVERAGE DEPOTS ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="rounded-3xl bg-slate-100 border border-slate-200 p-8 sm:p-12 space-y-8">
-            <div class="max-w-2xl space-y-2">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-700">UAE Fleet Logistics</span>
-                <h2 class="text-2xl sm:text-3xl font-black font-display text-slate-950">
-                    Strategic Regional Depots Delivering Rapid 24/7 UAE Coverage
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-600">
-                    With heavy transport trailers stationed across strategically positioned logistics yards, we guarantee rapid emergency delivery across the Emirates:
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                    <div class="text-xs font-bold text-amber-600">DUBAI CENTRAL FLEET HUB</div>
-                    <h4 class="text-sm font-extrabold text-slate-900">Al Quoz & JAFZA</h4>
-                    <p class="text-xs text-slate-500">Rapid dispatch to Dubai South, DIC, Business Bay, Downtown & DIP within 30-60 mins.</p>
-                    <a href="{{ route('locations.show', 'dubai') }}" class="text-xs font-bold text-amber-600 hover:underline block pt-1">Dubai Depot Details &rarr;</a>
-                </div>
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                    <div class="text-xs font-bold text-amber-600">ABU DHABI & MUSSAFAH</div>
-                    <h4 class="text-sm font-extrabold text-slate-900">Mussafah & ICAD</h4>
-                    <p class="text-xs text-slate-500">Serving Mussafah, KIZAD, Khalifa Port, Al Dhafra & oilfield staging in 60-90 mins.</p>
-                    <a href="{{ route('locations.show', 'abu-dhabi') }}" class="text-xs font-bold text-amber-600 hover:underline block pt-1">Abu Dhabi Depot &rarr;</a>
-                </div>
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                    <div class="text-xs font-bold text-amber-600">SHARJAH & HAMRIYAH</div>
-                    <h4 class="text-sm font-extrabold text-slate-900">Hamriyah Free Zone</h4>
-                    <p class="text-xs text-slate-500">Direct logistics access to Industrial Areas 1 to 18 & SAIF Zone within 45 mins.</p>
-                    <a href="{{ route('locations.show', 'sharjah') }}" class="text-xs font-bold text-amber-600 hover:underline block pt-1">Sharjah Depot &rarr;</a>
-                </div>
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                    <div class="text-xs font-bold text-amber-600">NORTHERN EMIRATES</div>
-                    <h4 class="text-sm font-extrabold text-slate-900">Ajman, RAK & Fujairah</h4>
-                    <p class="text-xs text-slate-500">Serving Ajman, Ras Al Khaimah quarries, Fujairah Port & UAQ in 60-120 mins.</p>
-                    <a href="{{ route('locations.index') }}" class="text-xs font-bold text-amber-600 hover:underline block pt-1">View All Hubs &rarr;</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ================= 11.5 LATEST ARTICLES & GUIDES ================= -->
+    <!-- ================= 5. RECENT BLOG & TECHNICAL GUIDES (396+ POSTS) ================= -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-12">
             <div>
-                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Technical Knowledge Base</span>
-                <h2 class="text-2xl sm:text-4xl font-black font-display text-slate-950 mt-3">
-                    Latest Generator Engineering & Power Guides
+                <span class="text-xs font-extrabold tracking-widest uppercase text-cyan-600">Knowledge Base</span>
+                <h2 class="text-3xl font-black font-display text-slate-900 tracking-tight">
+                    Data Recovery Articles & Tech Insights
                 </h2>
-                <p class="text-sm text-slate-600 mt-2 max-w-2xl">
-                    In-depth engineering insights on generator sizing, ISO 8528 ratings, fuel optimization, and high-ambient power reliability in the UAE.
-                </p>
             </div>
-            <a href="{{ route('blog.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-amber-600 hover:text-amber-700 transition">
-                <span>View All Articles</span>
+            <a href="{{ route('blog.index') }}" class="inline-flex items-center gap-2 text-xs font-extrabold text-cyan-600 hover:text-cyan-800 transition">
+                <span>View All Articles ({{ \App\Models\Post::published()->count() }})</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @php
-                $postsToShow = isset($latestPosts) && $latestPosts->isNotEmpty() 
-                    ? (isset($featuredPost) ? collect([$featuredPost])->merge($latestPosts)->take(3) : $latestPosts->take(3))
-                    : \App\Models\Post::published()->latest('published_at')->take(3)->get();
-            @endphp
-            @foreach($postsToShow as $article)
-                <article class="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group">
-                    <a href="{{ route('post.show', $article->slug) }}" class="relative aspect-video overflow-hidden bg-slate-900 block">
-                        <img src="{{ $article->featured_image_url ?: asset('storage/media/2026/09/1-y7ja6x.webp') }}" 
-                             alt="{{ $article->title }}" 
-                             width="600"
-                             height="338"
-                             loading="lazy"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent"></div>
-                        @if($firstCat = $article->categories->first())
-                            <span class="absolute top-4 left-4 text-[10px] uppercase font-extrabold tracking-wider bg-amber-500 text-slate-950 px-2.5 py-1 rounded-full shadow-md">
-                                {{ $firstCat->name }}
-                            </span>
-                        @endif
-                    </a>
-                    <div class="p-6 flex flex-col flex-grow justify-between space-y-4">
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
-                                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                                <span>{{ $article->published_at ? $article->published_at->format('M d, Y') : $article->created_at->format('M d, Y') }}</span>
-                                <span>&bull;</span>
-                                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                                <span>5 min read</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($latestPosts as $post)
+                <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 hover:border-cyan-500/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Featured Image -->
+                        <a href="{{ url($post->slug) }}" class="block aspect-[16/9] bg-slate-100 overflow-hidden relative">
+                            @if($post->featured_image_url)
+                                <img src="{{ $post->featured_image_url }}" 
+                                     alt="{{ $post->title }}" 
+                                     loading="lazy" 
+                                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-slate-900 text-cyan-400">
+                                    <i data-lucide="hard-drive" class="w-8 h-8"></i>
+                                </div>
+                            @endif
+
+                            @if($post->categories->isNotEmpty())
+                                <span class="absolute top-3 left-3 px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-900/80 text-white backdrop-blur-sm">
+                                    {{ $post->categories->first()->name }}
+                                </span>
+                            @endif
+                        </a>
+
+                        <!-- Content -->
+                        <div class="p-6 space-y-3">
+                            <div class="text-[11px] text-slate-400 flex items-center gap-2">
+                                <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : 'Recent' }}</span>
+                                <span>•</span>
+                                <span>{{ $post->reading_time ?? 5 }} min read</span>
                             </div>
-                            <h3 class="text-base sm:text-lg font-bold text-slate-900 group-hover:text-amber-600 transition line-clamp-2 leading-snug">
-                                <a href="{{ route('post.show', $article->slug) }}">
-                                    {{ $article->title }}
+
+                            <h3 class="text-base font-bold text-slate-900 hover:text-cyan-700 transition leading-snug line-clamp-2">
+                                <a href="{{ url($post->slug) }}">
+                                    {{ $post->title }}
                                 </a>
                             </h3>
-                            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
-                                {{ $article->seo_description ?: $article->excerpt }}
+
+                            <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed">
+                                {{ $post->excerpt }}
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500">Generator Dubai Engineering</span>
-                            <a href="{{ route('post.show', $article->slug) }}" class="text-xs font-extrabold text-amber-600 hover:text-amber-700 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                                <span>Read Guide</span>
-                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                            </a>
-                        </div>
+                    </div>
+
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100">
+                        <a href="{{ url($post->slug) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 hover:text-cyan-700">
+                            <span>Read Full Guide</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
                     </div>
                 </article>
             @endforeach
         </div>
     </section>
 
-    <!-- ================= 12. FAQS ACCORDION ================= -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center space-y-3 mb-10">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">Frequently Asked Questions</span>
-            <h2 class="text-2xl sm:text-3xl font-black font-display text-slate-950">
-                Frequently Asked Questions About Generator Rental in Dubai & UAE
+    <!-- ================= 6. FREQUENTLY ASKED QUESTIONS (FAQ ACCORDION) ================= -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ activeFaq: null }">
+        <div class="text-center mb-12 space-y-3">
+            <span class="text-xs font-extrabold tracking-widest uppercase text-cyan-600">Client Support</span>
+            <h2 class="text-3xl font-black font-display text-slate-900 tracking-tight">
+                Frequently Asked Questions
             </h2>
+            <p class="text-slate-600 text-sm">
+                Common questions about data recovery pricing, cleanroom procedures, and turnaround times in Dubai.
+            </p>
         </div>
 
-        <div class="space-y-3" x-data="{ openFaq: null }">
+        <div class="space-y-4">
             @php
                 $faqs = [
-                    ['q' => 'How much does it cost to rent a generator in Dubai and the UAE?', 'a' => 'Generator rental costs depend on required capacity (kVA/kW), rental duration (daily, weekly, or monthly), delivery distance, and whether fuel logistics are included. A 50 kVA silent unit typically starts from competitive daily or monthly rates, while large industrial generators (500-1250 kVA) are quoted on customized commercial project terms. Contact Generator Dubai for an immediate, transparent, itemized quote with zero hidden charges.'],
-                    ['q' => 'How quickly can Generator Dubai deliver an emergency rental generator to my site?', 'a' => 'We maintain 24/7 emergency dispatch centers across Dubai, Abu Dhabi, and Sharjah. For critical power failures, transformer outages, or emergency site shutdowns, our mobile crane trailers mobilize and deliver generators to most UAE locations within 60 to 120 minutes of confirmation.'],
-                    ['q' => 'What generator sizes (kVA/kW) do you have available for immediate hire?', 'a' => 'Our active rental fleet ranges from 50 kVA (40 kW) up to 2500 kVA (2000 kW) single units, running on premium Cummins, Perkins, and Caterpillar engines. For massive power demands, we synchronize multiple containerized generators in parallel to create temporary power plants up to 20 Megawatts.'],
-                    ['q' => 'Do you supply silent generators suitable for residential areas and VIP events?', 'a' => 'Yes. Our silent generator fleet is housed in specialized acoustic, sound-attenuated steel canopies with residential-grade internal silencers that keep sound levels below 65 dBA at 7 meters, fully complying with UAE municipal environmental noise regulations.'],
-                    ['q' => 'Is electrical installation, cabling, and technical setup included with the rental?', 'a' => 'Yes. Generator Dubai provides complete turnkey power solutions. Our certified electrical technicians handle delivery, offloading, positioning, armored cable connection, automatic transfer switch (ATS) installation, and comprehensive load-testing before site handover.'],
-                    ['q' => 'What is the difference between "Prime Power" and "Standby Power"?', 'a' => 'Prime Power (PRP) is designed to operate as the primary continuous electrical source for unlimited hours on off-grid sites, featuring a 10% overload capacity. Standby Power (ESP) is engineered strictly for emergency backup during utility outages without overload capability.'],
-                    ['q' => 'How do I determine the right generator size for my project machinery?', 'a' => 'Generator sizing requires calculating continuous running wattage and the high inductive starting surge of electric motors (tower cranes, dewatering pumps, chillers, and compressors). Direct-On-Line (DOL) motors require up to 6x full-load current to start. Our certified engineers conduct free electrical load audits to ensure you receive the exact kVA rating needed without overpaying.'],
-                    ['q' => 'Who is responsible for diesel refueling during the rental period?', 'a' => 'We offer both "Dry Hire" (where you arrange fuel independently) and full "Wet Hire" service. Under our Wet Hire package, we supply double-walled external bunded fuel tanks and our dedicated mobile diesel tankers provide automatic scheduled on-site refueling so your generator never runs dry.'],
+                    [
+                        'q' => 'What is the cost of data recovery in Dubai?',
+                        'a' => 'Data recovery costs vary based on the specific media type (internal/external HDD, NVMe SSD, RAID, NAS, USB, CCTV) and failure type (logical corruption vs physical head damage). At LifeGuard Data Recovery, evaluations are 100% free, and we follow a strict No Data – No Charge policy with transparent fixed quotes.',
+                    ],
+                    [
+                        'q' => 'Why is it dangerous to power on a clicking hard drive?',
+                        'a' => 'A clicking noise occurs when the read/write slider has failed or mechanical heads cannot find servo sector tracks. Every time the disk spins up, damaged heads can grind directly into the magnetic coating of the platter, causing permanent data destruction. Always leave the drive powered off.',
+                    ],
+                    [
+                        'q' => 'Can files be recovered from water-damaged or burned devices?',
+                        'a' => 'Yes. We have high recovery success rates on liquid-damaged phones, submerged hard drives, and fire-damaged storage. Liquid damage requires immediate ultrasonic cleaning and motherboard micro-soldering before corrosion destroys the traces.',
+                    ],
+                    [
+                        'q' => 'How does your "No Data, No Charge" guarantee work?',
+                        'a' => 'If your device is assessed and our engineers are unable to recover your specified critical target files, you do not pay any recovery fees. You only pay when your verified data is retrieved and ready for return.',
+                    ],
+                    [
+                        'q' => 'Do you provide emergency 24/7 service for business servers and RAID arrays?',
+                        'a' => 'Yes! We offer 24/7 emergency priority dispatch for mission-critical corporate databases, Dell PowerEdge, HP ProLiant, and Synology NAS arrays. Cleanroom technicians work around the clock to minimize business downtime.',
+                    ],
                 ];
             @endphp
 
-            @foreach($faqs as $idx => $faq)
-                <div class="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-xs">
-                    <button @click="openFaq = (openFaq === {{ $idx }} ? null : {{ $idx }})" 
-                            class="w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold text-slate-900 hover:text-amber-600 transition">
-                        <span>{{ $faq['q'] }}</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" :class="openFaq === {{ $idx }} ? 'rotate-180 text-amber-600' : ''"></i>
+            @foreach($faqs as $index => $faq)
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+                    <button type="button" 
+                            @click="activeFaq = (activeFaq === {{ $index }} ? null : {{ $index }})" 
+                            class="w-full px-6 py-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 hover:text-cyan-700 transition">
+                        <span class="text-sm sm:text-base">{{ $faq['q'] }}</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0" :class="activeFaq === {{ $index }} ? 'rotate-180 text-cyan-600' : ''"></i>
                     </button>
-                    <div x-show="openFaq === {{ $idx }}" x-cloak class="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                    <div x-show="activeFaq === {{ $index }}" x-cloak class="px-6 pb-5 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100">
                         {{ $faq['a'] }}
                     </div>
                 </div>
             @endforeach
-        </div>
-    </section>
-
-    <!-- ================= 13. BOTTOM EMERGENCY CTA BANNER ================= -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div class="rounded-3xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 p-8 sm:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 text-slate-950">
-            <div class="space-y-2 text-center md:text-left">
-                <span class="text-xs uppercase font-black tracking-widest text-slate-900 bg-black/10 px-3 py-1 rounded-full">Emergency Blackout Response</span>
-                <h3 class="text-2xl sm:text-3xl font-black font-display tracking-tight text-slate-950">
-                    Need Immediate, High-Reliability Site Power in the UAE?
-                </h3>
-                <p class="text-xs sm:text-sm text-slate-900 font-semibold max-w-xl">
-                    24/7 emergency dispatch available across Dubai, Abu Dhabi, Sharjah, and all Emirates. Speak directly with a power engineering specialist right now.
-                </p>
-            </div>
-            <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
-                <a href="{{ route('contact') }}" class="w-full sm:w-auto px-7 py-3.5 rounded-full bg-slate-950 hover:bg-slate-900 text-white font-extrabold text-xs text-center shadow-lg transition">
-                    Request Instant Quote
-                </a>
-                <a href="tel:+971569213754" class="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs text-center shadow-lg transition flex items-center justify-center gap-2">
-                    <i data-lucide="phone-call" class="w-4 h-4 text-amber-500"></i>
-                    <span>Call (+971) 56 921 3754</span>
-                </a>
-            </div>
         </div>
     </section>
 

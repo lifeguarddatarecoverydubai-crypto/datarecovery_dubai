@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Services\YoastSeoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
+    use HandlesFeaturedImageUpload;
+
     /**
      * Display a listing of services.
      */
@@ -71,7 +74,8 @@ class ServiceController extends Controller
             'benchmark_guarantee' => ['nullable', 'string', 'max:255'],
             'benchmark_turnaround' => ['nullable', 'string', 'max:255'],
             'benchmark_courier' => ['nullable', 'string', 'max:255'],
-            'featured_image' => ['nullable', 'string'],
+            'featured_image' => ['nullable'],
+            'featured_image_file' => ['nullable', 'file', 'image', 'max:20480'],
             'status' => ['required', 'in:draft,published'],
             'order' => ['nullable', 'integer'],
             'is_featured' => ['nullable', 'boolean'],
@@ -90,6 +94,8 @@ class ServiceController extends Controller
             'schema_markup' => ['nullable', 'string'],
         ]);
 
+        $featuredImage = $this->handleFeaturedImage($request, null, 'media/services');
+
         $slug = ! empty($validated['slug'])
             ? Service::createUniqueSlug($validated['slug'])
             : Service::createUniqueSlug($validated['title']);
@@ -99,11 +105,11 @@ class ServiceController extends Controller
         $benefits = $this->parseLinesToArray($request->input('benefits_input'));
 
         $benchmarks = [
-            'standard' => $request->input('benchmark_standard') ?: 'ISO Class 100 / FED STD 209E',
-            'evaluation' => $request->input('benchmark_evaluation') ?: '100% Free Diagnostic & Quote',
-            'guarantee' => $request->input('benchmark_guarantee') ?: 'No Data – No Charge Guarantee',
-            'turnaround' => $request->input('benchmark_turnaround') ?: 'Same-Day Emergency or 24-48h Standard',
-            'courier' => $request->input('benchmark_courier') ?: 'Free Courier Across All 7 Emirates',
+            'standard' => $request->input('benchmark_standard') ?: 'ISO-5 Class 100 Cleanroom & PC-3000 Hardware Tools',
+            'evaluation' => $request->input('benchmark_evaluation') ?: 'Free In-Lab Diagnostics & Assessment',
+            'guarantee' => $request->input('benchmark_guarantee') ?: 'No Data, No Recovery Fee Guarantee',
+            'turnaround' => $request->input('benchmark_turnaround') ?: '24/7 Emergency Mobilization Across Dubai & UAE',
+            'courier' => $request->input('benchmark_courier') ?: 'Free Express Courier Across All 7 Emirates',
         ];
 
         $service = Service::create([
@@ -117,7 +123,7 @@ class ServiceController extends Controller
             'features' => $features,
             'benefits' => $benefits,
             'benchmarks' => $benchmarks,
-            'featured_image' => $validated['featured_image'] ?? null,
+            'featured_image' => $featuredImage,
             'status' => $validated['status'],
             'order' => (int) ($validated['order'] ?? 0),
             'is_featured' => $request->has('is_featured'),
@@ -129,7 +135,7 @@ class ServiceController extends Controller
             'canonical_url' => $validated['canonical_url'] ?? null,
             'og_title' => $validated['og_title'] ?? null,
             'og_description' => $validated['og_description'] ?? null,
-            'og_image' => $validated['og_image'] ?? null,
+            'og_image' => ! empty($validated['og_image']) ? $validated['og_image'] : $featuredImage,
             'is_indexable' => $request->has('is_indexable'),
             'seo_score' => (int) ($validated['seo_score'] ?? 0),
             'readability_score' => (int) ($validated['readability_score'] ?? 0),
@@ -172,7 +178,8 @@ class ServiceController extends Controller
             'benchmark_guarantee' => ['nullable', 'string', 'max:255'],
             'benchmark_turnaround' => ['nullable', 'string', 'max:255'],
             'benchmark_courier' => ['nullable', 'string', 'max:255'],
-            'featured_image' => ['nullable', 'string'],
+            'featured_image' => ['nullable'],
+            'featured_image_file' => ['nullable', 'file', 'image', 'max:20480'],
             'status' => ['required', 'in:draft,published'],
             'order' => ['nullable', 'integer'],
             'is_featured' => ['nullable', 'boolean'],
@@ -191,6 +198,8 @@ class ServiceController extends Controller
             'schema_markup' => ['nullable', 'string'],
         ]);
 
+        $featuredImage = $this->handleFeaturedImage($request, $service->featured_image, 'media/services');
+
         $slug = ! empty($validated['slug'])
             ? Service::createUniqueSlug($validated['slug'], $service->id)
             : Service::createUniqueSlug($validated['title'], $service->id);
@@ -199,11 +208,11 @@ class ServiceController extends Controller
         $benefits = $this->parseLinesToArray($request->input('benefits_input'));
 
         $benchmarks = [
-            'standard' => $request->input('benchmark_standard') ?: 'ISO Class 100 / FED STD 209E',
-            'evaluation' => $request->input('benchmark_evaluation') ?: '100% Free Diagnostic & Quote',
-            'guarantee' => $request->input('benchmark_guarantee') ?: 'No Data – No Charge Guarantee',
-            'turnaround' => $request->input('benchmark_turnaround') ?: 'Same-Day Emergency or 24-48h Standard',
-            'courier' => $request->input('benchmark_courier') ?: 'Free Courier Across All 7 Emirates',
+            'standard' => $request->input('benchmark_standard') ?: 'ISO-5 Class 100 Cleanroom & PC-3000 Hardware Tools',
+            'evaluation' => $request->input('benchmark_evaluation') ?: 'Free In-Lab Diagnostics & Assessment',
+            'guarantee' => $request->input('benchmark_guarantee') ?: 'No Data, No Recovery Fee Guarantee',
+            'turnaround' => $request->input('benchmark_turnaround') ?: '24/7 Emergency Mobilization Across Dubai & UAE',
+            'courier' => $request->input('benchmark_courier') ?: 'Free Express Courier Across All 7 Emirates',
         ];
 
         $service->update([
@@ -217,7 +226,7 @@ class ServiceController extends Controller
             'features' => $features,
             'benefits' => $benefits,
             'benchmarks' => $benchmarks,
-            'featured_image' => $validated['featured_image'] ?? null,
+            'featured_image' => $featuredImage,
             'status' => $validated['status'],
             'order' => (int) ($validated['order'] ?? 0),
             'is_featured' => $request->has('is_featured'),
@@ -229,7 +238,7 @@ class ServiceController extends Controller
             'canonical_url' => $validated['canonical_url'] ?? null,
             'og_title' => $validated['og_title'] ?? null,
             'og_description' => $validated['og_description'] ?? null,
-            'og_image' => $validated['og_image'] ?? null,
+            'og_image' => ! empty($validated['og_image']) ? $validated['og_image'] : ($service->og_image ?: $featuredImage),
             'is_indexable' => $request->has('is_indexable'),
             'seo_score' => (int) ($validated['seo_score'] ?? 0),
             'readability_score' => (int) ($validated['readability_score'] ?? 0),
@@ -256,16 +265,15 @@ class ServiceController extends Controller
         // Calculate realistic SEO score if not explicitly set
         $score = $validated['seo_score'] ?? null;
         if ($score === null || $score <= 0) {
-            $score = 40;
-            if (! empty($validated['focus_keyword'])) {
-                $score += 30;
-            }
-            if (! empty($validated['meta_title'])) {
-                $score += 15;
-            }
-            if (! empty($validated['meta_description'])) {
-                $score += 15;
-            }
+            $computed = YoastSeoService::calculateScores(
+                $validated['focus_keyword'] ?? null,
+                $service->title,
+                $validated['meta_title'] ?? null,
+                $validated['meta_description'] ?? null,
+                $service->slug,
+                $service->content
+            );
+            $score = $computed['seo_score'];
         }
 
         $service->update([

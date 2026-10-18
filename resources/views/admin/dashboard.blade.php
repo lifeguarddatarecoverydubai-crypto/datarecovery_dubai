@@ -7,12 +7,12 @@
     <!-- Welcome Banner (WordPress-style) -->
     <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-slate-900/10">
         <div class="relative z-10 max-w-2xl">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-400/30 mb-3">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Generator Dubai &bull; Commercial Power CMS
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-400/30 mb-3">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> LifeGuard Data Recovery &bull; Cleanroom Lab CMS
             </span>
             <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Welcome, {{ auth()->user()->name }}!</h1>
             <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-                Directly manage your diesel generator fleet, commercial power plant services, technical engineering articles, client rental inquiries, and regional depot landing pages.
+                Directly manage your cleanroom data recovery services, diagnostic lab articles, client device intake inquiries, regional lab landing pages, and search engine redirections.
             </p>
             <div class="mt-6 flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.services.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-lg shadow-brand-600/30 transition">
@@ -79,7 +79,7 @@
             </div>
             <div class="mt-3">
                 <span class="text-xl font-black text-slate-900">{{ $stats['total_services'] }}</span>
-                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">{{ $stats['published_services'] }} active power services</p>
+                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">{{ $stats['published_services'] }} active recovery services</p>
             </div>
         </a>
 
@@ -328,9 +328,9 @@
                                   x-text="studio.focus_keyword && studio.focus_keyword.trim().length > 0 ? '✓ Keyphrase active' : '⚠ Missing keyword'"></span>
                         </div>
                         <input type="text" id="studioFocusKeywordInput" x-model="studio.focus_keyword"
-                               placeholder="e.g. rental generator in uae, portacabin for rental, used generator buy in uae"
+                               placeholder="e.g. hard drive data recovery dubai, raid recovery uae, ssd data recovery"
                                class="w-full px-4 py-2.5 text-sm font-bold rounded-xl border border-purple-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition shadow-inner">
-                        <p class="text-[11px] text-purple-900/70">The exact query your prospective clients search on Google when searching for generator power and equipment hire.</p>
+                        <p class="text-[11px] text-purple-900/70">The exact query your prospective clients search on Google when looking for cleanroom data recovery services.</p>
                     </div>
 
                     <!-- 2. SEO Meta Title Input with Length Meter -->
@@ -345,7 +345,7 @@
                                   x-text="titleLength + ' / 60 characters'"></span>
                         </div>
                         <input type="text" x-model="studio.meta_title"
-                               placeholder="e.g. Commercial Diesel Generator Rental Dubai | 24/7 Power Fleet"
+                               placeholder="e.g. Certified Hard Drive Data Recovery Dubai | ISO-5 Cleanroom Lab"
                                class="w-full px-3.5 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition">
                         <!-- Title Meter Bar -->
                         <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -458,7 +458,7 @@
                             <div class="flex items-center gap-1.5 text-xs text-slate-600 truncate">
                                 <div class="w-4 h-4 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-bold">G</div>
                                 <div class="truncate text-[11px] text-slate-500 font-mono">
-                                    https://generatordubai.com &rsaquo; <span x-text="studio.type"></span> &rsaquo; <span class="font-bold text-slate-700" x-text="studio.slug"></span>
+                                    https://lifeguarddatarecovery.com &rsaquo; <span x-text="studio.type"></span> &rsaquo; <span class="font-bold text-slate-700" x-text="studio.slug"></span>
                                 </div>
                             </div>
 
@@ -783,7 +783,7 @@
                                 <div class="font-bold text-slate-900 group-hover:text-brand-600 transition text-xs sm:text-sm">
                                     <a href="{{ route('admin.posts.edit', $post) }}">{{ $post->title }}</a>
                                 </div>
-                                <div class="text-[11px] text-slate-400 mt-0.5 font-mono">/post/{{ $post->slug }}</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5 font-mono">/{{ $post->slug }}</div>
                             </td>
 
                             <!-- Focus Keyword Cell -->
@@ -1396,9 +1396,9 @@ function dashboardSeoStudio(config) {
         },
 
         insertTemplate(templateName) {
-            const title = this.studio.title || 'Commercial Diesel Generator Rental';
-            const url = this.studio.url || 'https://generatordubai.com';
-            const desc = this.studio.meta_description || this.studio.title || 'Generator rental in UAE.';
+            const title = this.studio.title || 'Cleanroom Hard Drive & SSD Data Recovery';
+            const url = this.studio.url || 'https://lifeguarddatarecovery.com';
+            const desc = this.studio.meta_description || this.studio.title || 'Professional data recovery services in Dubai & across UAE.';
             let obj = null;
 
             if (templateName === 'service') {
@@ -1406,14 +1406,15 @@ function dashboardSeoStudio(config) {
                 obj['@' + 'context'] = 'https://schema.org';
                 obj['@' + 'type'] = 'Service';
                 obj['name'] = title;
-                obj['serviceType'] = 'Diesel Generator Rental & Turnkey Temporary Power';
+                obj['serviceType'] = 'Cleanroom Hard Drive, SSD, RAID & Server Data Recovery';
                 obj['provider'] = {
                     '@type': 'LocalBusiness',
-                    'name': 'Generator Dubai Power Solutions',
-                    'telephone': '+971501234567',
-                    'url': 'https://generatordubai.com',
+                    'name': 'LifeGuard Data Recovery',
+                    'telephone': '+97143933082',
+                    'url': 'https://lifeguarddatarecovery.com',
                     'address': {
                         '@type': 'PostalAddress',
+                        'streetAddress': 'Bayat Center S25, Computer Street, Bur Dubai',
                         'addressLocality': 'Dubai',
                         'addressRegion': 'Dubai',
                         'addressCountry': 'AE'
@@ -1435,14 +1436,14 @@ function dashboardSeoStudio(config) {
                 obj['description'] = desc;
                 obj['author'] = {
                     '@type': 'Organization',
-                    'name': 'Generator Dubai Power Solutions Engineering Team'
+                    'name': 'LifeGuard Data Recovery Lab Engineering Team'
                 };
                 obj['publisher'] = {
                     '@type': 'Organization',
-                    'name': 'Generator Dubai Power Solutions',
+                    'name': 'LifeGuard Data Recovery',
                     'logo': {
                         '@type': 'ImageObject',
-                        'url': 'https://generatordubai.com/assets/images/logo.png'
+                        'url': 'https://lifeguarddatarecovery.com/assets/images/logo.png'
                     }
                 };
                 obj['mainEntityOfPage'] = {
@@ -1456,18 +1457,18 @@ function dashboardSeoStudio(config) {
                 obj['mainEntity'] = [
                     {
                         '@type': 'Question',
-                        'name': 'What generator capacities are available for rental in UAE?',
+                        'name': 'What is the No Data, No Charge guarantee?',
                         'acceptedAnswer': {
                             '@type': 'Answer',
-                            'text': 'We supply sound-attenuated diesel generators from 20 kVA to 2500 kVA, and synchronized multi-megawatt setups with 52°C desert tropicalized radiators.'
+                            'text': 'If our cleanroom engineers cannot recover your critical files, you pay nothing. Diagnostic evaluation is completely free.'
                         }
                     },
                     {
                         '@type': 'Question',
-                        'name': 'How fast can a generator be mobilized in an emergency?',
+                        'name': 'How fast can you evaluate my failed hard drive or SSD in Dubai?',
                         'acceptedAnswer': {
                             '@type': 'Answer',
-                            'text': 'Our rapid response fleet mobilizes within 2 hours across Dubai, Abu Dhabi, Sharjah, and all 7 Emirates.'
+                            'text': 'Emergency diagnostic triage is performed within 2 to 4 hours in our ISO-5 Class 100 cleanroom lab in Bur Dubai or Al Barsha.'
                         }
                     }
                 ];
@@ -1475,14 +1476,14 @@ function dashboardSeoStudio(config) {
                 obj = {};
                 obj['@' + 'context'] = 'https://schema.org';
                 obj['@' + 'type'] = 'LocalBusiness';
-                obj['name'] = 'Generator Dubai Power Solutions';
+                obj['name'] = 'LifeGuard Data Recovery';
                 obj['description'] = desc;
-                obj['url'] = 'https://generatordubai.com';
-                obj['telephone'] = '+971501234567';
+                obj['url'] = 'https://lifeguarddatarecovery.com';
+                obj['telephone'] = '+97143933082';
                 obj['priceRange'] = '$$';
                 obj['address'] = {
                     '@type': 'PostalAddress',
-                    'streetAddress': 'Industrial Area',
+                    'streetAddress': 'Bayat Center S25, Computer Street, Bur Dubai',
                     'addressLocality': 'Dubai',
                     'addressRegion': 'Dubai',
                     'postalCode': '00000',
@@ -1490,14 +1491,14 @@ function dashboardSeoStudio(config) {
                 };
                 obj['geo'] = {
                     '@type': 'GeoCoordinates',
-                    'latitude': 25.2048,
-                    'longitude': 55.2708
+                    'latitude': 25.2532,
+                    'longitude': 55.2974
                 };
                 obj['openingHoursSpecification'] = {
                     '@type': 'OpeningHoursSpecification',
-                    'dayOfWeek': ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-                    'opens': '00:00',
-                    'closes': '23:59'
+                    'dayOfWeek': ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+                    'opens': '09:00',
+                    'closes': '21:00'
                 };
             }
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasFeaturedImage;
+use App\Services\YoastSeoService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +12,7 @@ use Illuminate\Support\Str;
 
 class Page extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFeaturedImage;
 
     protected $fillable = [
         'user_id',
@@ -44,13 +46,29 @@ class Page extends Model
     }
 
     /**
+     * Model booted hooks.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Page $page) {
+            if ($page->seo_score === null || $page->seo_score <= 0) {
+                $scores = YoastSeoService::calculateForModel($page);
+                $page->seo_score = $scores['seo_score'];
+                if ($page->readability_score === null || $page->readability_score <= 0) {
+                    $page->readability_score = $scores['readability_score'];
+                }
+            }
+        });
+    }
+
+    /**
      * Author relationship.
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withDefault([
-            'name' => 'Generator Dubai Engineering Team',
-            'email' => 'hello@generatordubai.com',
+            'name' => 'LifeGuard Data Recovery Team',
+            'email' => 'info@lifeguarddatarecovery.com',
         ]);
     }
 
@@ -60,30 +78,6 @@ class Page extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'published');
-    }
-
-    /**
-     * Featured image URL accessor.
-     */
-    public function getFeaturedImageUrlAttribute(): ?string
-    {
-        if (! $this->featured_image) {
-            return null;
-        }
-
-        if (str_starts_with($this->featured_image, 'http')) {
-            return $this->featured_image;
-        }
-
-        if (str_starts_with($this->featured_image, '/storage/')) {
-            return asset(ltrim($this->featured_image, '/'));
-        }
-
-        if (str_starts_with($this->featured_image, 'storage/')) {
-            return asset($this->featured_image);
-        }
-
-        return asset('storage/'.ltrim($this->featured_image, '/'));
     }
 
     /**

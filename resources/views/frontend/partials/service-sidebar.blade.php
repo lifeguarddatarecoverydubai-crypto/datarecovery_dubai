@@ -1,6 +1,6 @@
 @php
-    $sidebarSubject = $subject ?? (isset($service) ? 'Generator Inquiry: ' . $service->title : (isset($product) ? 'Fleet Model Inquiry: ' . $product->title : 'Generator Power Rental Inquiry'));
-    $whatsappText = $whatsappMessage ?? (isset($service) ? 'Hello Generator Dubai, I need urgent pricing & availability for ' . $service->title : (isset($product) ? 'Hello Generator Dubai, I am inquiring about ' . $product->title : 'Hello Generator Dubai, I need a rental power quote.'));
+    $sidebarSubject = $subject ?? (isset($service) ? 'Data Recovery Inquiry: ' . $service->title : 'Emergency Lab Evaluation Request');
+    $whatsappText = $whatsappMessage ?? (isset($service) ? 'Hello LifeGuard Data Recovery, I need urgent evaluation for ' . $service->title : 'Hello LifeGuard Data Recovery, I have a failed storage device and need emergency data recovery assistance.');
 
     // Resolve services list for the navigator
     if (!isset($navServices)) {
@@ -22,24 +22,25 @@
         <div class="p-4 rounded-2xl bg-emerald-600 text-white shadow-lg space-y-1">
             <div class="flex items-center gap-2 font-bold text-xs uppercase tracking-wide">
                 <i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>
-                <span>Quote Request Dispatched!</span>
+                <span>Evaluation Request Received!</span>
             </div>
             <p class="text-xs text-emerald-50 leading-relaxed">{{ session('success') }}</p>
         </div>
     @endif
 
-    <!-- 1. Rapid Sizing & Quote Form Card -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-4">
-        <div class="flex items-center gap-2 text-xs font-bold uppercase text-amber-600">
-            <i data-lucide="zap" class="w-4 h-4"></i>
-            <span>Instant Technical Sizing</span>
+    <!-- 1. Free Emergency Lab Diagnostic Evaluation Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-4">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase text-sky-600">
+            <i data-lucide="shield-check" class="w-4 h-4 text-sky-500"></i>
+            <span>ISO-5 Cleanroom Lab Evaluation</span>
         </div>
-        <h4 class="text-xl font-black text-slate-900 font-display">Request Power Quote</h4>
-        <p class="text-xs text-slate-500">Submit your load requirements for an itemized engineering quote within <strong>15 minutes</strong>.</p>
+        <h4 class="text-xl font-black text-slate-900 font-display">Free Diagnostic Quote</h4>
+        <p class="text-xs text-slate-500">No Data, No Charge Guarantee. Submit details for an immediate lab case assessment.</p>
 
-        <form action="{{ route('contact.submit') }}" method="POST" class="space-y-4 pt-1">
+        <form action="{{ route('contact.submit') }}" method="POST" class="space-y-3.5 pt-1">
             @csrf
             <input type="hidden" name="subject" value="{{ $sidebarSubject }}">
+            <input type="hidden" name="type" value="evaluation">
 
             <!-- Anti-Bot Silent Honeypot -->
             <div style="display: none !important;" aria-hidden="true">
@@ -48,124 +49,144 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Your Full Name</label>
-                <input type="text" name="name" required placeholder="e.g. Ahmed Al Mansoori" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500">
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">Full Name</label>
+                <input type="text" name="name" required placeholder="e.g. Tariq Al Nuaimi" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">UAE Phone / WhatsApp</label>
-                <input type="tel" name="phone" required placeholder="+971 50 123 4567" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Email Address</label>
-                <input type="email" name="email" required placeholder="engineer@contractor.ae" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">Phone / WhatsApp</label>
+                    <input type="tel" name="phone" required placeholder="+971 50 123 4567" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">Email</label>
+                    <input type="email" name="email" required placeholder="name@company.ae" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Power kVA</label>
-                    <select name="kva_capacity" class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white">
-                        <option value="50-150 kVA">50 – 150 kVA</option>
-                        <option value="200-350 kVA">200 – 350 kVA</option>
-                        <option value="500-800 kVA" selected>500 – 800 kVA</option>
-                        <option value="1000-1250 kVA">1000 – 1250 kVA</option>
-                        <option value="Multi-MW Plant">Multi-MW Plant</option>
-                        <option value="Portacabin">Portacabin Office</option>
-                        <option value="AMC / Maintenance">AMC / Maintenance</option>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">Media Type</label>
+                    <select name="device_type" class="w-full px-2.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 bg-white">
+                        <option value="External Hard Drive" selected>External Hard Drive</option>
+                        <option value="Internal HDD / Laptop">Internal HDD / Laptop</option>
+                        <option value="NVMe / SSD">SSD / NVMe / M.2</option>
+                        <option value="RAID / NAS / Server">RAID / NAS / SAN</option>
+                        <option value="CCTV DVR / NVR">CCTV DVR / NVR</option>
+                        <option value="MacBook / Apple SSD">MacBook / Apple SSD</option>
+                        <option value="USB Flash / SD Card">USB Flash / SD Card</option>
+                        <option value="Ransomware Recovery">Ransomware / Encrypted</option>
+                        <option value="Smartphone / Mobile">iPhone / Android</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Location</label>
-                    <select name="emirate" class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white">
-                        <option value="Dubai" selected>Dubai</option>
-                        <option value="Abu Dhabi">Abu Dhabi</option>
-                        <option value="Sharjah">Sharjah</option>
-                        <option value="Ajman">Ajman</option>
-                        <option value="Ras Al Khaimah">Ras Al Khaimah</option>
-                        <option value="Fujairah">Fujairah</option>
-                        <option value="Umm Al Quwain">Umm Al Quwain</option>
-                        <option value="Oman">Oman</option>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">Nearest Lab / Emirate</label>
+                    <select name="emirate" class="w-full px-2.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 bg-white">
+                        <option value="Bur Dubai Main Lab" selected>Bur Dubai Lab</option>
+                        <option value="Al Barsha Branch Lab">Al Barsha Lab</option>
+                        <option value="Dubai Free Courier">Dubai (Courier Pickup)</option>
+                        <option value="Abu Dhabi Courier">Abu Dhabi (Courier)</option>
+                        <option value="Sharjah Courier">Sharjah (Courier)</option>
+                        <option value="Ajman Courier">Ajman (Courier)</option>
+                        <option value="RAK / Fujairah Courier">RAK / Fujairah</option>
                     </select>
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Project Details / Duration</label>
-                <textarea name="message" rows="3" placeholder="Specify load type (tower crane, chillers, site office), rental duration (daily, weekly, monthly), and site conditions..." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"></textarea>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">Failure Symptoms / Details</label>
+                <textarea name="message" rows="2" placeholder="e.g. Clicking noise, dropped on floor, unreadable partition, formatted, dead board..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"></textarea>
             </div>
 
-            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                <input type="checkbox" id="fuel_tank_needed" name="fuel_tank_needed" value="yes" class="rounded text-amber-600 focus:ring-amber-500">
-                <label for="fuel_tank_needed" class="text-[11px] text-slate-600 font-medium">Include <strong>Turnkey Fuel Tank & ADNOC Diesel</strong> delivery</label>
+            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-sky-50 border border-sky-100">
+                <input type="checkbox" id="pickup_sidebar" name="pickup_requested" value="yes" checked class="rounded text-sky-600 focus:ring-sky-500">
+                <label for="pickup_sidebar" class="text-[11px] text-slate-700 font-medium">Request <strong>Free Secure Courier Pickup</strong> across UAE</label>
             </div>
 
-            <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 shadow-lg shadow-amber-500/20 transition transform hover:-translate-y-0.5">
-                Request Engineering Quote
+            <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-sky-600 to-brand-600 hover:from-sky-500 hover:to-brand-500 text-white shadow-lg shadow-sky-600/20 transition transform hover:-translate-y-0.5">
+                Book Free Lab Evaluation
             </button>
         </form>
+
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span class="inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> No Data, No Fee</span>
+            <span class="inline-flex items-center gap-1"><i data-lucide="lock" class="w-3.5 h-3.5 text-sky-500"></i> Strict Confidentiality</span>
+        </div>
     </div>
 
-    <!-- 2. Emergency 24/7 Dispatch Card -->
+    <!-- 2. Emergency 24/7 Cleanroom Dispatch Card -->
     <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl p-6 border border-slate-800 shadow-md space-y-4">
-        <div class="flex items-center gap-2 text-xs font-bold uppercase text-amber-400">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase text-sky-400">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span>24/7 Emergency Dispatch</span>
+            <span>24/7 Critical Data Hotline</span>
         </div>
-        <div class="space-y-1">
-            <div class="text-xs text-slate-400">Facing a blackout or site emergency? Call:</div>
-            <a href="tel:+971569213754" class="text-xl font-black text-white hover:text-amber-400 transition block font-mono">
-                +971 56 921 3754
-            </a>
+        <div class="space-y-2">
+            <div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Bur Dubai Lab & Hotline:</span>
+                <a href="tel:+97143933082" class="text-xl font-black text-white hover:text-sky-300 transition block font-mono">
+                    +971 43 933 082
+                </a>
+            </div>
+            <div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Al Barsha Lab Direct:</span>
+                <a href="tel:+971564101040" class="text-base font-bold text-white hover:text-sky-300 transition block font-mono">
+                    +971 56 410 1040
+                </a>
+            </div>
         </div>
-        <a href="https://wa.me/971569213754?text={{ urlencode($whatsappText) }}" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-md">
+        <a href="https://wa.me/971554838545?text={{ urlencode($whatsappText) }}" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-md">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
-            <span>Chat on WhatsApp</span>
+            <span>Chat With Senior Lab Engineer</span>
         </a>
         <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Average Delivery: <strong>45–90 Min</strong></span>
+            <span>Cleanroom Lab: <strong>ISO-5 Certified</strong></span>
             <span>All 7 Emirates</span>
         </div>
     </div>
 
-    <!-- 3. Other Power Services Navigator -->
+    <!-- 3. Specialized Data Recovery Services Navigator -->
     @if(isset($navServices) && $navServices->isNotEmpty())
         <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4">
             <h5 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
-                <i data-lucide="layers" class="w-4 h-4 text-amber-500"></i>
-                <span>Our Power Fleet & Services</span>
+                <i data-lucide="layers" class="w-4 h-4 text-sky-600"></i>
+                <span>Recovery Services</span>
             </h5>
             <div class="space-y-1.5">
                 @foreach($navServices as $navSvc)
-                    <a href="{{ route('service.show', $navSvc->slug) }}" class="flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-900 transition group border border-transparent hover:border-amber-200">
+                    <a href="{{ route('service.show', $navSvc->slug) }}" class="flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-900 transition group border border-transparent hover:border-sky-200">
                         <span class="truncate">{{ $navSvc->title }}</span>
-                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition shrink-0"></i>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition shrink-0"></i>
                     </a>
                 @endforeach
             </div>
             <div class="pt-2">
-                <a href="{{ route('fleet.index') }}" class="block text-center py-2 text-xs font-bold text-amber-700 hover:text-amber-800 transition">
-                    View Complete 50–2500 kVA Fleet &rarr;
+                <a href="{{ route('services.index') }}" class="block text-center py-2 text-xs font-bold text-sky-700 hover:text-sky-800 transition">
+                    View All Cleanroom Services &rarr;
                 </a>
             </div>
         </div>
     @endif
 
-    <!-- 4. Quick Depot & Guide Links -->
-    <div class="p-5 rounded-3xl bg-slate-100 border border-slate-200/60 text-xs space-y-2">
-        <span class="font-extrabold uppercase text-[10px] text-slate-500 tracking-wider">Fast Regional Dispatch:</span>
-        <div class="flex flex-wrap gap-1.5 pt-1">
-            <a href="{{ route('locations.show', 'dubai') }}" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:text-amber-700 font-bold border border-slate-200 text-[11px]">Dubai</a>
-            <a href="{{ route('locations.show', 'abu-dhabi') }}" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:text-amber-700 font-bold border border-slate-200 text-[11px]">Abu Dhabi</a>
-            <a href="{{ route('locations.show', 'sharjah') }}" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:text-amber-700 font-bold border border-slate-200 text-[11px]">Sharjah</a>
-            <a href="{{ route('locations.show', 'ajman') }}" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:text-amber-700 font-bold border border-slate-200 text-[11px]">Ajman</a>
-            <a href="{{ route('locations.show', 'ras-al-khaimah') }}" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:text-amber-700 font-bold border border-slate-200 text-[11px]">RAK</a>
-            <a href="{{ route('locations.show', 'fujairah') }}" class="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:text-amber-700 font-bold border border-slate-200 text-[11px]">Fujairah</a>
+    <!-- 4. Lab Branches & Walk-in Depots -->
+    <div class="p-5 rounded-3xl bg-slate-50 border border-slate-200/80 text-xs space-y-3">
+        <span class="font-extrabold uppercase text-[10px] text-slate-500 tracking-wider flex items-center gap-1.5">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-sky-600"></i>
+            <span>Walk-in Lab Branches:</span>
+        </span>
+        <div class="space-y-2 text-[11px]">
+            <div class="p-2.5 rounded-xl bg-white border border-slate-200/70">
+                <strong class="text-slate-900 block font-bold">Bur Dubai Main Cleanroom Lab</strong>
+                <span class="text-slate-500 block text-[10px]">Bayat Center S25, Computer Street, Bur Dubai</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white border border-slate-200/70">
+                <strong class="text-slate-900 block font-bold">Al Barsha Branch Lab</strong>
+                <span class="text-slate-500 block text-[10px]">Dusseldorf Business Point, Behind Mall of Emirates</span>
+            </div>
         </div>
         <div class="pt-2 border-t border-slate-200">
-            <a href="{{ route('post.show', 'generator-sizing-guide-dubai-construction-kva') }}" class="text-amber-700 hover:underline font-bold flex items-center gap-1 text-[11px]">
-                <i data-lucide="book-open" class="w-3 h-3"></i>
-                <span>Construction Sizing Guide &rarr;</span>
+            <a href="{{ route('contact') }}" class="text-sky-700 hover:underline font-bold flex items-center gap-1 text-[11px]">
+                <i data-lucide="navigation" class="w-3 h-3"></i>
+                <span>Get Lab Directions & Working Hours &rarr;</span>
             </a>
         </div>
     </div>

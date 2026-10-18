@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Services\WebpConverterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -104,35 +106,35 @@ class MediaController extends Controller
 
             $safeName = Str::slug($originalName).'-'.time().'-'.Str::random(6).'.'.$extension;
 
-            $path = $file->storeAs('uploads/'.date('Y/m'), $safeName, 'public');
-
-            // Mirror between public/storage and storage/app/public for universal server compatibility
-            $publicFile = public_path('storage/'.$path);
-            $appStorageFile = storage_path('app/public/'.$path);
-
-            if (file_exists($publicFile) && ! file_exists($appStorageFile)) {
-                $dir = dirname($appStorageFile);
-                if (! is_dir($dir)) {
-                    mkdir($dir, 0755, true);
+            $webpConverter = app(WebpConverterService::class);
+            if ($webpConverter->isConvertible($file->getMimeType(), $extension)) {
+                try {
+                    $converted = $webpConverter->convertUploadedFile($file, 'uploads/'.date('Y/m'));
+                    $path = $converted['file_path'];
+                    $safeName = $converted['file_name'];
+                    $mime = $converted['mime_type'];
+                    $size = $converted['size'];
+                    $dimensions = $converted['dimensions'];
+                } catch (\Throwable $e) {
+                    Log::warning('WebP conversion fallback on upload: '.$e->getMessage());
+                    $path = $file->storeAs('uploads/'.date('Y/m'), $safeName, 'public');
+                    $this->mirrorStorageFile($path);
+                    $mime = $file->getMimeType();
+                    $size = $file->getSize();
+                    $dimensions = null;
+                    if (str_starts_with($mime, 'image/')) {
+                        $imageInfo = @getimagesize($file->getRealPath());
+                        if ($imageInfo) {
+                            $dimensions = "{$imageInfo[0]}x{$imageInfo[1]}";
+                        }
+                    }
                 }
-                @copy($publicFile, $appStorageFile);
-            } elseif (file_exists($appStorageFile) && ! file_exists($publicFile)) {
-                $dir = dirname($publicFile);
-                if (! is_dir($dir)) {
-                    mkdir($dir, 0755, true);
-                }
-                @copy($appStorageFile, $publicFile);
-            }
-
-            $mime = $file->getMimeType();
-            $size = $file->getSize();
-            $dimensions = null;
-
-            if (str_starts_with($mime, 'image/')) {
-                $imageInfo = @getimagesize($file->getRealPath());
-                if ($imageInfo) {
-                    $dimensions = "{$imageInfo[0]}x{$imageInfo[1]}";
-                }
+            } else {
+                $path = $file->storeAs('uploads/'.date('Y/m'), $safeName, 'public');
+                $this->mirrorStorageFile($path);
+                $mime = $file->getMimeType();
+                $size = $file->getSize();
+                $dimensions = null;
             }
 
             $mediaItem = Media::create([
@@ -230,5 +232,28 @@ class MediaController extends Controller
             ->get();
 
         return response()->json($media);
+    }
+
+    /**
+     * Mirror a stored file between public/storage and storage/app/public.
+     */
+    protected function mirrorStorageFile(string $path): void
+    {
+        $publicFile = public_path('storage/'.$path);
+        $appStorageFile = storage_path('app/public/'.$path);
+
+        if (file_exists($publicFile) && ! file_exists($appStorageFile)) {
+            $dir = dirname($appStorageFile);
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            @copy($publicFile, $appStorageFile);
+        } elseif (file_exists($appStorageFile) && ! file_exists($publicFile)) {
+            $dir = dirname($publicFile);
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            @copy($appStorageFile, $publicFile);
+        }
     }
 }

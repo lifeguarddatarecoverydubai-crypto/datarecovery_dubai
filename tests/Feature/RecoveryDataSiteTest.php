@@ -67,9 +67,9 @@ class RecoveryDataSiteTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('Generator Dubai');
-        $response->assertSee('GENERATOR');
-        $response->assertSee('DUBAI');
+        $response->assertSee('LifeGuard Data Recovery');
+        $response->assertSee('Data Recovery');
+        $response->assertDontSee('Diesel Generator');
     }
 
     public function test_about_page_renders_with_cleanroom_details(): void
@@ -80,7 +80,7 @@ class RecoveryDataSiteTest extends TestCase
 
         $response = $this->get('/about-us');
         $response->assertStatus(200);
-        $response->assertSee('Generator Dubai');
+        $response->assertSee('LifeGuard Data Recovery');
     }
 
     public function test_blog_index_and_post_detail_render_successfully(): void
@@ -89,18 +89,23 @@ class RecoveryDataSiteTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('SSD Showing Wrong Capacity Recovery Dubai');
 
-        $postResponse = $this->get('/post/ssd-showing-wrong-capacity-recovery-dubai');
+        $postResponse = $this->get('/ssd-showing-wrong-capacity-recovery-dubai');
         $postResponse->assertStatus(200);
         $postResponse->assertSee('SSD Showing Wrong Capacity Recovery Dubai');
         $postResponse->assertSee('Detailed SSD recovery guide in Dubai.');
+
+        // Legacy /post/ URL 301 redirects to root permalink
+        $legacyRedirect = $this->get('/post/ssd-showing-wrong-capacity-recovery-dubai');
+        $legacyRedirect->assertStatus(301);
+        $legacyRedirect->assertRedirect('/ssd-showing-wrong-capacity-recovery-dubai');
     }
 
     public function test_wordpress_direct_slug_resolution(): void
     {
-        // 1. Post via direct slug 301-redirects to canonical /post/{slug} (Item 8)
+        // 1. Post via direct slug renders canonical 200 (preserving Google Page 1 rankings)
         $postSlugResponse = $this->get('/ssd-showing-wrong-capacity-recovery-dubai');
-        $postSlugResponse->assertStatus(301);
-        $postSlugResponse->assertRedirect(route('post.show', 'ssd-showing-wrong-capacity-recovery-dubai'));
+        $postSlugResponse->assertStatus(200);
+        $postSlugResponse->assertSee('SSD Showing Wrong Capacity Recovery Dubai');
 
         // 2. Page via direct slug renders canonical 200
         $pageSlugResponse = $this->get('/data-recovery-dubai');
@@ -174,15 +179,15 @@ class RecoveryDataSiteTest extends TestCase
             if ($slug === 'hard-drive-recovery') {
                 $response->assertSee('ISO Class 100');
             }
-            $response->assertSee('+971 56 921 3754');
+            $response->assertSee('+971 43 933 082');
             $response->assertSee('Frequently Asked Questions');
         }
 
         // Test services index page
         $indexResponse = $this->get('/services');
         $indexResponse->assertStatus(200);
-        $indexResponse->assertSee('Turnkey Power & Site', false);
-        $indexResponse->assertSee('Services in UAE');
+        $indexResponse->assertSee('Professional Data Recovery', false);
+        $indexResponse->assertSee('Services Dubai');
 
         foreach ($services as $slug => $title) {
             $indexResponse->assertSee($title);
@@ -219,7 +224,7 @@ class RecoveryDataSiteTest extends TestCase
         // Check edit view loads with all fields
         $editResponse = $this->actingAs($admin)->get(route('admin.services.edit', $service));
         $editResponse->assertStatus(200);
-        $editResponse->assertSee('Commercial Power Standards & SLA Benchmarks', false);
+        $editResponse->assertSee('Cleanroom Lab Standards & SLA Benchmarks', false);
         $editResponse->assertSee('Detailed Service Content');
 
         $editResponse->assertSee('HTML Source Code');
@@ -271,10 +276,10 @@ class RecoveryDataSiteTest extends TestCase
 
     public function test_root_slug_route_prioritizes_published_service_over_legacy_page(): void
     {
-        // When user visits /hard-drive-recovery root URL, it 301-redirects to official /service/hard-drive-recovery
+        // When user visits /hard-drive-recovery root URL, it renders the published service
         $response = $this->get('/hard-drive-recovery');
-        $response->assertStatus(301);
-        $response->assertRedirect(route('service.show', 'hard-drive-recovery'));
+        $response->assertStatus(200);
+        $response->assertSee('Hard Drive Data Recovery');
     }
 
     public function test_intake_form_creates_evaluation_inquiry_with_device_model_and_pickup(): void
@@ -300,7 +305,7 @@ class RecoveryDataSiteTest extends TestCase
 
         $inquiry = Inquiry::where('email', 'rashid@enterprise.ae')->first();
         $this->assertStringContainsString('Western Digital 4TB My Passport', $inquiry->message);
-        $this->assertStringContainsString('Priority On-Site Site Inspection Requested', $inquiry->message);
+        $this->assertStringContainsString('Free Courier Pickup Requested', $inquiry->message);
         $this->assertStringContainsString('Clicking sound', $inquiry->message);
     }
 
@@ -314,8 +319,8 @@ class RecoveryDataSiteTest extends TestCase
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $content);
         $this->assertStringContainsString('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"', $content);
-        $this->assertStringContainsString('/service/hard-drive-recovery', $content);
-        $this->assertStringContainsString('/post/', $content);
+        $this->assertStringContainsString('/hard-drive-recovery', $content);
+        $this->assertStringContainsString('/ssd-showing-wrong-capacity-recovery-dubai', $content);
     }
 
     public function test_cannibalizing_and_legacy_urls_return_301_redirects_to_canonical_targets(): void
@@ -351,7 +356,7 @@ class RecoveryDataSiteTest extends TestCase
         // 6. Generic CMS pages to clean routes
         $this->get('/page/about')->assertStatus(301)->assertRedirect(route('about'));
         $this->get('/page/contact')->assertStatus(301)->assertRedirect(route('contact'));
-        $this->get('/page/services')->assertStatus(301)->assertRedirect(route('service.index'));
+        $this->get('/page/services')->assertStatus(301)->assertRedirect(route('services.index'));
         $this->get('/page/home')->assertStatus(301)->assertRedirect(route('home'));
     }
 
@@ -368,7 +373,7 @@ class RecoveryDataSiteTest extends TestCase
         $response->assertSee('"@type": "FAQPage"', false);
         $response->assertSee('"@type": "BreadcrumbList"', false);
         $response->assertSee('"@type": "Service"', false);
-        $response->assertSee('Related Technical Articles');
+        $response->assertSee('Related Case Studies & Technical Guides', false);
 
     }
 
@@ -377,12 +382,12 @@ class RecoveryDataSiteTest extends TestCase
         $post = Post::published()->first();
         $this->assertNotNull($post);
 
-        $response = $this->get('/post/'.$post->slug);
+        $response = $this->get('/'.$post->slug);
 
         $response->assertStatus(200);
         $response->assertSee('"@type": "BlogPosting"', false);
         $response->assertSee('"@type": "BreadcrumbList"', false);
-        $response->assertSee('RAPID POWER DISPATCH');
-        $response->assertSee('Planning a Power Installation or Facing an Outage? Deploy');
+        $response->assertSee('EMERGENCY LAB TRIAGE');
+        $response->assertSee('ISO-5 Class 100 Cleanroom');
     }
 }

@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Post;
-use App\Models\Product;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
@@ -18,17 +19,11 @@ class SitemapController extends Controller
      */
     protected const EXCLUDED_PAGE_SLUGS = [
         'home',
-        'services',
-        'about',
-        'about-us',
-        'contact',
-        'contact-us',
-        'fleet',
-        'products',
-        'used-generators',
-        'used-refurbished-generators',
-        'industries',
-        'locations',
+        'home-2',
+        'recovery-shop',
+        'recovery-shop-new',
+        'thankyou',
+        'thankyou-2',
     ];
 
     /**
@@ -39,10 +34,10 @@ class SitemapController extends Controller
         $xml = Cache::remember($this->getCacheKey('sitemap_master_xml'), 3600, function (): string {
             $entries = array_merge(
                 $this->getPagesEntries(),
-                $this->getProductsEntries(),
                 $this->getServicesEntries(),
                 $this->getCategoriesEntries(),
-                $this->getPostsEntries()
+                $this->getPostsEntries(),
+                $this->getAuthorsEntries()
             );
 
             return $this->buildUrlsetXml($entries);
@@ -54,19 +49,19 @@ class SitemapController extends Controller
     }
 
     /**
-     * Master XML sitemap index referencing specialized sub-sitemaps.
+     * Master XML sitemap index referencing specialized sub-sitemaps (Yoast SEO compatible).
      */
     public function sitemapIndex(): Response
     {
         $xml = Cache::remember($this->getCacheKey('sitemap_index_xml'), 3600, function (): string {
             $sitemaps = [
                 [
-                    'loc' => $this->formatSitemapUrl(route('sitemap.pages')),
-                    'lastmod' => now()->toAtomString(),
+                    'loc' => $this->formatSitemapUrl(route('sitemap.posts')),
+                    'lastmod' => Post::published()->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
                 ],
                 [
-                    'loc' => $this->formatSitemapUrl(route('sitemap.products')),
-                    'lastmod' => Product::where('status', 'published')->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
+                    'loc' => $this->formatSitemapUrl(route('sitemap.pages')),
+                    'lastmod' => Page::where('status', 'published')->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
                 ],
                 [
                     'loc' => $this->formatSitemapUrl(route('sitemap.services')),
@@ -77,8 +72,8 @@ class SitemapController extends Controller
                     'lastmod' => Category::latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
                 ],
                 [
-                    'loc' => $this->formatSitemapUrl(route('sitemap.posts')),
-                    'lastmod' => Post::published()->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
+                    'loc' => $this->formatSitemapUrl('/author-sitemap.xml'),
+                    'lastmod' => now()->toAtomString(),
                 ],
             ];
 
@@ -91,21 +86,7 @@ class SitemapController extends Controller
     }
 
     /**
-     * Dedicated XML sitemap for diesel generator fleet products.
-     */
-    public function products(): Response
-    {
-        $xml = Cache::remember($this->getCacheKey('sitemap_products_xml'), 3600, function (): string {
-            return $this->buildUrlsetXml($this->getProductsEntries());
-        });
-
-        return response($xml, 200, [
-            'Content-Type' => 'application/xml; charset=utf-8',
-        ]);
-    }
-
-    /**
-     * Dedicated XML sitemap for blog posts and technical articles.
+     * Dedicated XML sitemap for blog posts and technical articles (396+ posts).
      */
     public function posts(): Response
     {
@@ -119,7 +100,7 @@ class SitemapController extends Controller
     }
 
     /**
-     * Dedicated XML sitemap for static and CMS pages.
+     * Dedicated XML sitemap for static and CMS pages (103+ pages).
      */
     public function pages(): Response
     {
@@ -133,7 +114,21 @@ class SitemapController extends Controller
     }
 
     /**
-     * Dedicated XML sitemap for blog categories with active content.
+     * Dedicated XML sitemap for data recovery services.
+     */
+    public function services(): Response
+    {
+        $xml = Cache::remember($this->getCacheKey('sitemap_services_xml'), 3600, function (): string {
+            return $this->buildUrlsetXml($this->getServicesEntries());
+        });
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml; charset=utf-8',
+        ]);
+    }
+
+    /**
+     * Dedicated XML sitemap for categories.
      */
     public function categories(): Response
     {
@@ -147,12 +142,12 @@ class SitemapController extends Controller
     }
 
     /**
-     * Dedicated XML sitemap for commercial generator power services.
+     * Dedicated XML sitemap for authors.
      */
-    public function services(): Response
+    public function authors(): Response
     {
-        $xml = Cache::remember($this->getCacheKey('sitemap_services_xml'), 3600, function (): string {
-            return $this->buildUrlsetXml($this->getServicesEntries());
+        $xml = Cache::remember($this->getCacheKey('sitemap_authors_xml'), 3600, function (): string {
+            return $this->buildUrlsetXml($this->getAuthorsEntries());
         });
 
         return response($xml, 200, [
@@ -168,14 +163,13 @@ class SitemapController extends Controller
         $sitemapUrl = $this->formatSitemapUrl(route('sitemap'));
         $sitemapIndexUrl = $this->formatSitemapUrl(route('sitemap.index'));
         $sitemapPagesUrl = $this->formatSitemapUrl(route('sitemap.pages'));
-        $sitemapProductsUrl = $this->formatSitemapUrl(route('sitemap.products'));
         $sitemapServicesUrl = $this->formatSitemapUrl(route('sitemap.services'));
         $sitemapPostsUrl = $this->formatSitemapUrl(route('sitemap.posts'));
         $sitemapCategoriesUrl = $this->formatSitemapUrl(route('sitemap.categories'));
 
         $content = <<<ROBOTS
-# robots.txt for Generator Dubai
-# Website: https://generatordubai.com
+# robots.txt for LifeGuard Data Recovery Dubai
+# Website: https://lifeguarddatarecovery.com
 
 User-agent: *
 Allow: /
@@ -195,12 +189,11 @@ Disallow: /api/
 Disallow: /storage/framework/
 
 # Sitemaps
-Sitemap: {$sitemapUrl}
 Sitemap: {$sitemapIndexUrl}
-Sitemap: {$sitemapPagesUrl}
-Sitemap: {$sitemapProductsUrl}
-Sitemap: {$sitemapServicesUrl}
+Sitemap: {$sitemapUrl}
 Sitemap: {$sitemapPostsUrl}
+Sitemap: {$sitemapPagesUrl}
+Sitemap: {$sitemapServicesUrl}
 Sitemap: {$sitemapCategoriesUrl}
 ROBOTS;
 
@@ -222,144 +215,45 @@ ROBOTS;
 
         $entries = [];
 
-        // Core High-Priority Landing Pages
+        // Core Landing Pages
         $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('home')),
+            'loc' => $this->formatSitemapUrl('/'),
             'lastmod' => now()->toAtomString(),
             'changefreq' => 'daily',
             'priority' => '1.0',
             'image' => [
-                'loc' => $this->formatSitemapUrl('/images/logo.png'),
-                'title' => 'Generator Dubai - Generator Rental & Commercial Power Dubai',
+                'loc' => 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg',
+                'title' => 'LifeGuard Data Recovery Dubai - #1 Trusted Data Recovery Lab',
             ],
         ];
 
         $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('fleet.index')),
-            'lastmod' => Product::where('status', 'published')->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
+            'loc' => $this->formatSitemapUrl('/services'),
+            'lastmod' => Service::published()->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
             'changefreq' => 'weekly',
             'priority' => '0.95',
         ];
 
         $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('service.index')),
-            'lastmod' => Service::published()->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
-            'changefreq' => 'weekly',
+            'loc' => $this->formatSitemapUrl('/blog'),
+            'lastmod' => Post::published()->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
+            'changefreq' => 'daily',
             'priority' => '0.9',
         ];
 
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('page.used-generators')),
-            'lastmod' => now()->subDays(2)->toAtomString(),
-            'changefreq' => 'weekly',
-            'priority' => '0.85',
-        ];
-
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('page.industries')),
-            'lastmod' => now()->subDays(2)->toAtomString(),
-            'changefreq' => 'monthly',
-            'priority' => '0.85',
-        ];
-
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('locations.index')),
-            'lastmod' => now()->subDays(2)->toAtomString(),
-            'changefreq' => 'monthly',
-            'priority' => '0.85',
-        ];
-
-        // UAE Regional Depot Landing Pages (dynamically resolved from locations.json to guarantee 200 OK)
-        $locationsPath = storage_path('locations.json');
-        $cities = file_exists($locationsPath)
-            ? array_column(json_decode(file_get_contents($locationsPath), true) ?: [], 'slug')
-            : ['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'fujairah', 'umm-al-quwain', 'oman'];
-
-        foreach ($cities as $city) {
-            $entries[] = [
-                'loc' => $this->formatSitemapUrl(route('locations.show', $city)),
-                'lastmod' => now()->subDays(2)->toAtomString(),
-                'changefreq' => 'weekly',
-                'priority' => '0.8',
-            ];
-        }
-
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('about')),
-            'lastmod' => now()->subDays(3)->toAtomString(),
-            'changefreq' => 'monthly',
-            'priority' => '0.8',
-        ];
-
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('contact')),
-            'lastmod' => now()->toAtomString(),
-            'changefreq' => 'monthly',
-            'priority' => '0.8',
-        ];
-
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('blog.index')),
-            'lastmod' => Post::published()->latest('updated_at')->first()?->updated_at?->toAtomString() ?? now()->toAtomString(),
-            'changefreq' => 'daily',
-            'priority' => '0.8',
-        ];
-
-        $entries[] = [
-            'loc' => $this->formatSitemapUrl(route('odoo.index')),
-            'lastmod' => now()->subDays(5)->toAtomString(),
-            'changefreq' => 'monthly',
-            'priority' => '0.3',
-        ];
-
-        // Standalone CMS Pages
+        // Standalone CMS Pages (preserving exact WP URL /slug)
         foreach ($pages as $page) {
             $entry = [
                 'loc' => $this->formatSitemapUrl('/'.$page->slug),
                 'lastmod' => $page->updated_at?->toAtomString() ?? now()->toAtomString(),
-                'changefreq' => 'monthly',
-                'priority' => '0.7',
-            ];
-
-            if ($page->featured_image) {
-                $imgUrl = str_starts_with($page->featured_image, 'http')
-                    ? $page->featured_image
-                    : asset('storage/'.$page->featured_image);
-
-                $entry['image'] = [
-                    'loc' => $this->formatSitemapUrl($imgUrl),
-                    'title' => $page->title,
-                ];
-            }
-
-            $entries[] = $entry;
-        }
-
-        return $entries;
-    }
-
-    /**
-     * Compile generator fleet / product entries for sitemaps.
-     */
-    protected function getProductsEntries(): array
-    {
-        $products = Product::where('status', 'published')
-            ->latest('updated_at')
-            ->get();
-
-        $entries = [];
-        foreach ($products as $product) {
-            $entry = [
-                'loc' => $this->formatSitemapUrl(route('fleet.show', $product->slug)),
-                'lastmod' => $product->updated_at?->toAtomString() ?? now()->toAtomString(),
                 'changefreq' => 'weekly',
-                'priority' => '0.9',
+                'priority' => in_array($page->slug, ['about-us', 'contact', 'data-recovery-dubai', 'hard-drive-data-recovery-dubai', 'ssd-drive-data-recovery-in-dubai', 'nas-data-recovery-dubai', 'raid-data-recovery-dubai']) ? '0.95' : '0.8',
             ];
 
-            if ($product->featured_image_url) {
+            if ($page->featured_image_url) {
                 $entry['image'] = [
-                    'loc' => $this->formatSitemapUrl($product->featured_image_url),
-                    'title' => $product->title.' - Generator Dubai Fleet',
+                    'loc' => $page->featured_image_url,
+                    'title' => $page->title,
                 ];
             }
 
@@ -379,16 +273,16 @@ ROBOTS;
         $entries = [];
         foreach ($services as $service) {
             $entry = [
-                'loc' => $this->formatSitemapUrl(route('service.show', $service->slug)),
+                'loc' => $this->formatSitemapUrl('/'.$service->slug),
                 'lastmod' => $service->updated_at?->toAtomString() ?? now()->toAtomString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.9',
             ];
 
-            if ($service->image_url) {
+            if ($service->featured_image_url) {
                 $entry['image'] = [
-                    'loc' => $this->formatSitemapUrl($service->image_url),
-                    'title' => $service->title.' - Generator Dubai',
+                    'loc' => $service->featured_image_url,
+                    'title' => $service->title.' - LifeGuard Data Recovery',
                 ];
             }
 
@@ -410,16 +304,17 @@ ROBOTS;
 
         $entries = [];
         foreach ($posts as $post) {
+            // Live WordPress format is /{slug}/ - directly at the root
             $entry = [
-                'loc' => $this->formatSitemapUrl(route('post.show', $post->slug)),
+                'loc' => $this->formatSitemapUrl('/'.$post->slug),
                 'lastmod' => ($post->updated_at ?? $post->published_at ?? now())->toAtomString(),
-                'changefreq' => 'weekly',
-                'priority' => '0.7',
+                'changefreq' => 'monthly',
+                'priority' => '0.75',
             ];
 
             if ($post->featured_image_url) {
                 $entry['image'] = [
-                    'loc' => $this->formatSitemapUrl($post->featured_image_url),
+                    'loc' => $post->featured_image_url,
                     'title' => $post->title,
                 ];
             }
@@ -445,7 +340,31 @@ ROBOTS;
             $lastmod = $latestPost?->updated_at?->toAtomString() ?? $category->updated_at?->toAtomString() ?? now()->toAtomString();
 
             $entries[] = [
-                'loc' => $this->formatSitemapUrl(route('category.show', $category->slug)),
+                'loc' => $this->formatSitemapUrl('/category/'.$category->slug),
+                'lastmod' => $lastmod,
+                'changefreq' => 'weekly',
+                'priority' => '0.6',
+            ];
+        }
+
+        return $entries;
+    }
+
+    /**
+     * Compile author entries for sitemaps.
+     */
+    protected function getAuthorsEntries(): array
+    {
+        $authors = User::whereHas('posts', fn ($q) => $q->where('status', 'published'))->get();
+
+        $entries = [];
+        foreach ($authors as $author) {
+            $authorSlug = $author->slug ?: Str::slug($author->name);
+            $latestPost = $author->posts()->where('status', 'published')->latest('updated_at')->first();
+            $lastmod = $latestPost?->updated_at?->toAtomString() ?? $author->updated_at?->toAtomString() ?? now()->toAtomString();
+
+            $entries[] = [
+                'loc' => $this->formatSitemapUrl('/author/'.$authorSlug),
                 'lastmod' => $lastmod,
                 'changefreq' => 'weekly',
                 'priority' => '0.6',
@@ -524,7 +443,7 @@ ROBOTS;
             return rtrim($appUrl, '/');
         }
 
-        return 'https://generatordubai.com';
+        return 'https://lifeguarddatarecovery.com';
     }
 
     /**
@@ -539,7 +458,7 @@ ROBOTS;
             $host = strtolower($parsed['host'] ?? '');
 
             $appHost = strtolower(parse_url(config('app.url') ?? '', PHP_URL_HOST) ?? '');
-            $isLocalOrAppHost = in_array($host, ['localhost', '127.0.0.1', 'generatordubai.com', 'www.generatordubai.com', $appHost], true)
+            $isLocalOrAppHost = in_array($host, ['localhost', '127.0.0.1', 'lifeguarddatarecovery.com', 'www.lifeguarddatarecovery.com', $appHost], true)
                 || str_ends_with($host, '.test')
                 || str_ends_with($host, '.local')
                 || empty($host);

@@ -49,11 +49,14 @@ class FrontendBlogTest extends TestCase
             'is_indexable' => true,
         ]);
 
-        $response = $this->get('/post/article-with-seo');
+        $response = $this->get('/article-with-seo');
         $response->assertStatus(200);
         $response->assertSee('<title>Targeted SEO Title for Crawlers', false);
         $response->assertSee('content="Targeted meta description for Google index."', false);
         $response->assertSee('content="keyword1, keyword2"', false);
+
+        // Legacy /post/ URL 301-redirects to root permalink
+        $this->get('/post/article-with-seo')->assertStatus(301)->assertRedirect('/article-with-seo');
     }
 
     public function test_static_page_renders_with_seo_meta(): void
@@ -88,7 +91,7 @@ class FrontendBlogTest extends TestCase
             'status' => 'draft',
         ]);
 
-        $response = $this->get('/post/draft-post-title');
+        $response = $this->get('/draft-post-title');
         $response->assertStatus(404);
     }
 
@@ -120,11 +123,14 @@ class FrontendBlogTest extends TestCase
         $blogResponse->assertDontSee('Shafia Begum');
 
         // Single post
-        $showResponse = $this->get('/post/comprehensive-data-recovery-strategy');
+        $showResponse = $this->get('/comprehensive-data-recovery-strategy');
         $showResponse->assertStatus(200);
         $showResponse->assertSee('Comprehensive Data Recovery Strategy');
         $showResponse->assertDontSee('Shafia Begum');
         $showResponse->assertDontSee('Written by');
+
+        // Legacy /post/ URL 301-redirects to root permalink
+        $this->get('/post/comprehensive-data-recovery-strategy')->assertStatus(301)->assertRedirect('/comprehensive-data-recovery-strategy');
 
         // Numeric author ID 301-redirects to slug-based URL (Item 12)
         $authorResponse = $this->get('/author/'.$user->id);
@@ -144,42 +150,41 @@ class FrontendBlogTest extends TestCase
 
         $post = Post::create([
             'user_id' => $user->id,
-            'title' => 'Turnkey Diesel Generator Sizing in UAE',
-            'slug' => 'turnkey-diesel-generator-sizing-in-uae',
-            'content' => '<p>Deep technical article detailing generator power engineering.</p>',
+            'title' => 'Recovering Formatted NVMe SSD and Flash Storage',
+            'slug' => 'recovering-formatted-nvme-ssd-and-flash-storage',
+            'content' => '<p>Deep technical article detailing cleanroom flash memory engineering.</p>',
             'status' => 'published',
             'published_at' => now()->subHour(),
         ]);
 
         $service = Service::create([
-            'title' => 'Diesel Generator Rental',
-            'slug' => 'diesel-generator-rental-dubai',
-            'summary' => 'ISO 8528 compliant prime power fleet.',
+            'title' => 'Hard Drive Data Recovery Dubai',
+            'slug' => 'hard-drive-data-recovery-dubai',
+            'summary' => 'ISO Class 100 cleanroom mechanical drive recovery.',
             'status' => 'published',
             'order' => 1,
         ]);
 
-        $response = $this->get('/post/turnkey-diesel-generator-sizing-in-uae');
+        $response = $this->get('/recovering-formatted-nvme-ssd-and-flash-storage');
         $response->assertStatus(200);
 
-        // Right sidebar power quote form
-        $response->assertSee('Request Power Quote');
-        $response->assertSee('Instant Technical Sizing');
+        // Right sidebar lab diagnostic form
+        $response->assertSee('Free Diagnostic Quote');
+        $response->assertSee('ISO-5 Cleanroom Lab Evaluation');
         $response->assertSee('name="phone"', false);
-        $response->assertSee('name="kva_capacity"', false);
         $response->assertSee('name="emirate"', false);
-        $response->assertSee('Request Engineering Quote');
+        $response->assertSee('Book Free Lab Evaluation');
 
         // Right sidebar 24/7 hotline and WhatsApp card
-        $response->assertSee('24/7 Emergency Dispatch');
-        $response->assertSee('+971 56 921 3754');
-        $response->assertSee('Chat on WhatsApp');
+        $response->assertSee('24/7 Critical Data Hotline');
+        $response->assertSee('+971 43 933 082');
+        $response->assertSee('Chat With Senior Lab Engineer');
         $response->assertSee('All 7 Emirates');
 
         // Right sidebar service navigation
-        $response->assertSee('Our Power Fleet');
-        $response->assertSee('Diesel Generator Rental');
-        $response->assertSee(route('service.show', 'diesel-generator-rental-dubai'));
+        $response->assertSee('Recovery Services');
+        $response->assertSee('Hard Drive Data Recovery Dubai');
+        $response->assertSee(route('service.show', 'hard-drive-data-recovery-dubai'));
     }
 
     public function test_blog_sidebar_evaluation_form_submits_successfully(): void

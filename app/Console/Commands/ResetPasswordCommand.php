@@ -16,6 +16,13 @@ class ResetPasswordCommand extends Command
     protected $signature = 'cms:reset-password {email=admin@example.com} {password=admin123}';
 
     /**
+     * The command aliases.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['user:reset-password', 'reset:password'];
+
+    /**
      * The console command description.
      *
      * @var string

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasFeaturedImage;
+use App\Services\YoastSeoService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +13,7 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFeaturedImage;
 
     protected $fillable = [
         'user_id',
@@ -47,13 +49,37 @@ class Post extends Model
     }
 
     /**
+     * Model booted hooks.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Post $post) {
+            if ($post->seo_score === null || $post->seo_score <= 0) {
+                $scores = YoastSeoService::calculateForModel($post);
+                $post->seo_score = $scores['seo_score'];
+                if ($post->readability_score === null || $post->readability_score <= 0) {
+                    $post->readability_score = $scores['readability_score'];
+                }
+            }
+        });
+    }
+
+    /**
+     * Canonical public permalink URL matching live WordPress site.
+     */
+    public function getUrlAttribute(): string
+    {
+        return url('/'.$this->slug);
+    }
+
+    /**
      * Author relationship.
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withDefault([
-            'name' => 'Generator Dubai Engineering Team',
-            'email' => 'hello@generatordubai.com',
+            'name' => 'LifeGuard Data Recovery Team',
+            'email' => 'info@lifeguarddatarecovery.com',
         ]);
     }
 
@@ -97,30 +123,6 @@ class Post extends Model
                 ->orWhere('excerpt', 'like', "%{$term}%")
                 ->orWhere('content', 'like', "%{$term}%");
         });
-    }
-
-    /**
-     * Featured image URL accessor.
-     */
-    public function getFeaturedImageUrlAttribute(): ?string
-    {
-        if (! $this->featured_image) {
-            return null;
-        }
-
-        if (str_starts_with($this->featured_image, 'http')) {
-            return $this->featured_image;
-        }
-
-        if (str_starts_with($this->featured_image, '/storage/')) {
-            return asset(ltrim($this->featured_image, '/'));
-        }
-
-        if (str_starts_with($this->featured_image, 'storage/')) {
-            return asset($this->featured_image);
-        }
-
-        return asset('storage/'.ltrim($this->featured_image, '/'));
     }
 
     /**

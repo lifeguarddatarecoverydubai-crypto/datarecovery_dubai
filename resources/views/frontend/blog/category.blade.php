@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('seo_meta')
-    <title>{{ $category->name }} - {{ config('app.name', 'Generator Dubai') }}</title>
+    <title>{{ $category->name }} - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
     <meta name="description" content="{{ $category->description ?: 'Browse articles in category ' . $category->name }}">
     <link rel="canonical" href="{{ $posts->currentPage() > 1 ? $posts->url($posts->currentPage()) : route('category.show', $category->slug) }}">
     @if($posts->previousPageUrl())

@@ -1,110 +1,41 @@
 @extends('layouts.app')
 
 @section('seo_meta')
-    <title>{{ $service->seo_title }}</title>
-    <meta name="description" content="{{ $service->seo_description }}">
+    <title>{{ \App\Support\SeoHelper::formatTitle($service->seo_title ?: $service->title, true) }}</title>
+    <meta name="description" content="{{ $service->seo_description ?: $service->summary }}">
     @if($service->meta_keywords)
         <meta name="keywords" content="{{ $service->meta_keywords }}">
     @endif
-    <link rel="canonical" href="{{ $service->canonical_url ?: route('service.show', $service->slug) }}">
+    <link rel="canonical" href="{{ \App\Support\SeoHelper::canonicalFor($service) }}">
     <meta name="robots" content="{{ $service->is_indexable ? 'index, follow' : 'noindex, nofollow' }}">
-    <meta property="og:title" content="{{ $service->og_title ?: $service->seo_title }}">
-
-    <meta property="og:description" content="{{ $service->og_description ?: $service->seo_description }}">
+    <meta property="og:title" content="{{ $service->og_title ?: $service->title }}">
+    <meta property="og:description" content="{{ $service->og_description ?: $service->summary }}">
     <meta property="og:type" content="service">
-    <meta property="og:url" content="{{ route('service.show', $service->slug) }}">
-    @if($service->seo_image)
-        <meta property="og:image" content="{{ $service->seo_image }}">
-    @endif
+    <meta property="og:url" content="{{ url($service->slug) }}">
+    <meta property="og:image" content="{{ $service->featured_image_url ?: 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg' }}">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Schema.org Service JSON-LD -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'Service',
-      'name' => $service->title,
-      'serviceType' => $service->focus_keyword ?: $service->title,
-      'description' => $service->seo_description,
-      'image' => $service->seo_image ?: ($service->featured_image_url ?: 'https://generatordubai.com/storage/media/2026/10/05-6dnzah.jpg'),
-      'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Generator Dubai',
-        'url' => 'https://generatordubai.com',
-        'telephone' => '+971569213754',
-        'priceRange' => '$$',
-        'address' => [
-          '@type' => 'PostalAddress',
-          'streetAddress' => 'Suit 44, King Faisal Street',
-          'addressLocality' => 'Sharjah',
-          'addressRegion' => 'Sharjah',
-          'addressCountry' => 'AE',
-        ],
-      ],
-      'areaServed' => [
-        ['@type' => 'City', 'name' => 'Dubai'],
-        ['@type' => 'City', 'name' => 'Abu Dhabi'],
-        ['@type' => 'City', 'name' => 'Sharjah'],
-        ['@type' => 'City', 'name' => 'Ajman'],
-        ['@type' => 'City', 'name' => 'Ras Al Khaimah'],
-        ['@type' => 'City', 'name' => 'Fujairah'],
-        ['@type' => 'City', 'name' => 'Umm Al Quwain'],
-      ],
-      'offers' => [
-        '@type' => 'Offer',
-        'availability' => 'https://schema.org/InStock',
-        'price' => 'Contact for itemized quote',
-        'priceCurrency' => 'AED',
-        'url' => route('service.show', $service->slug),
-      ],
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode(\App\Services\SchemaService::getServiceSchema($service), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
     </script>
 
     <!-- BreadcrumbList Schema -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'BreadcrumbList',
-      'itemListElement' => [
-        [
-          '@type' => 'ListItem',
-          'position' => 1,
-          'name' => 'Home',
-          'item' => route('home'),
-        ],
-        [
-          '@type' => 'ListItem',
-          'position' => 2,
-          'name' => 'Services',
-          'item' => route('service.index'),
-        ],
-        [
-          '@type' => 'ListItem',
-          'position' => 3,
-          'name' => $service->title,
-          'item' => route('service.show', $service->slug),
-        ],
-      ],
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode(\App\Services\SchemaService::getBreadcrumbSchema([
+        'Home' => '/',
+        'Services' => '/services',
+        $service->title => '/' . $service->slug
+    ]), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
     </script>
 
-    @if(!empty($service->faqs) && count($service->faqs) > 0)
+    @php
+        $extractedFaqs = \App\Services\SchemaService::extractFaqsFromHtml($service->content);
+    @endphp
+    @if(count($extractedFaqs) > 0)
     <!-- FAQPage Schema -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'FAQPage',
-      'mainEntity' => array_map(function($faq) {
-          return [
-              '@type' => 'Question',
-              'name' => $faq['question'],
-              'acceptedAnswer' => [
-                  '@type' => 'Answer',
-                  'text' => $faq['answer'],
-              ],
-          ];
-      }, $service->faqs),
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode(\App\Services\SchemaService::getFaqPageSchema($extractedFaqs), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
     </script>
     @endif
 
@@ -117,84 +48,81 @@
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 text-white pt-24 pb-20 overflow-hidden">
-        <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(#f59e0b 1px, transparent 1px); background-size: 28px 28px;"></div>
-        <div class="absolute -top-32 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-32 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Breadcrumbs -->
             <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8" aria-label="Breadcrumb">
-                <a href="{{ route('home') }}" class="hover:text-amber-400 transition">Home</a>
+                <a href="{{ route('home') }}" class="hover:text-cyan-400 transition">Home</a>
                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-600"></i>
-                <a href="{{ route('service.index') }}" class="hover:text-amber-400 transition">Services</a>
+                <a href="{{ route('services.index') }}" class="hover:text-cyan-400 transition">Services</a>
                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-600"></i>
-                <span class="text-amber-400 font-semibold">{{ $service->title }}</span>
+                <span class="text-cyan-400 font-semibold">{{ $service->title }}</span>
             </nav>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <div class="lg:col-span-8">
-                    @if($service->hero_badge)
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-6 backdrop-blur-sm">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>{{ $service->hero_badge }}</span>
-                        </div>
-                    @endif
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 backdrop-blur-sm">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <span>ISO-5 CLASS 100 CLEANROOM • NO DATA NO CHARGE</span>
+                    </div>
 
                     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight leading-tight">
                         {{ $service->title }}
                     </h1>
 
                     @if($service->tagline)
-                        <p class="mt-4 text-base sm:text-lg text-amber-300/90 font-medium font-sans">
+                        <p class="text-base sm:text-lg text-cyan-300/90 font-medium font-sans">
                             {{ $service->tagline }}
                         </p>
                     @endif
 
-                    <p class="mt-6 text-sm sm:text-base text-slate-300 leading-relaxed font-light">
+                    <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-light max-w-3xl">
                         {{ $service->summary }}
                     </p>
 
-                    <!-- 4 Value Proposition Cards (Inspired by Reference) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
+                    <!-- 4 Value Proposition Badges -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                         <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80 backdrop-blur-sm">
-                            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
-                                <i data-lucide="zap" class="w-4 h-4"></i>
+                            <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
                             </div>
-                            <div class="text-xs font-bold text-white">One Supplier</div>
-                            <div class="text-[11px] text-slate-400 mt-0.5">Power, Cables & Fuel</div>
+                            <div class="text-xs font-bold text-white">No Data, No Charge</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Zero financial risk</div>
                         </div>
                         <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80 backdrop-blur-sm">
-                            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
-                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                            <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
                             </div>
-                            <div class="text-xs font-bold text-white">Itemized Quotes</div>
-                            <div class="text-[11px] text-slate-400 mt-0.5">Zero Hidden Surcharges</div>
+                            <div class="text-xs font-bold text-white">Class 100 Lab</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Laminar flow bench</div>
                         </div>
                         <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80 backdrop-blur-sm">
-                            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
-                                <i data-lucide="wrench" class="w-4 h-4"></i>
+                            <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2">
+                                <i data-lucide="cpu" class="w-4 h-4"></i>
                             </div>
-                            <div class="text-xs font-bold text-white">24/7 Mechanics</div>
-                            <div class="text-[11px] text-slate-400 mt-0.5">On-Site Rapid Support</div>
+                            <div class="text-xs font-bold text-white">PC-3000 Hardware</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Firmware repair tools</div>
                         </div>
                         <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80 backdrop-blur-sm">
-                            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
-                                <i data-lucide="truck" class="w-4 h-4"></i>
+                            <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
                             </div>
-                            <div class="text-xs font-bold text-white">Rapid Dispatch</div>
-                            <div class="text-[11px] text-slate-400 mt-0.5">60–120 Min UAE SLA</div>
+                            <div class="text-xs font-bold text-white">24/7 Hotline</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Emergency response</div>
                         </div>
                     </div>
 
-                    <div class="mt-8 flex flex-wrap items-center gap-4">
-                        <a href="#quote-box" class="px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 shadow-lg shadow-amber-500/20 transition transform hover:-translate-y-0.5 flex items-center gap-2">
-                            <span>Request Power Sizing Quote</span>
+                    <div class="pt-4 flex flex-wrap items-center gap-4">
+                        <a href="#quote-box" class="px-7 py-3.5 rounded-full font-bold text-xs sm:text-sm bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 transition flex items-center gap-2">
+                            <span>Book Free Lab Diagnostic</span>
                             <i data-lucide="arrow-down" class="w-4 h-4"></i>
                         </a>
-                        <a href="tel:+971569213754" class="px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition flex items-center gap-2">
-                            <i data-lucide="phone-call" class="w-4 h-4 text-amber-400"></i>
-                            <span>24/7 Hotline: +971 56 921 3754</span>
+                        <a href="tel:+97143933082" class="px-6 py-3.5 rounded-full font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition flex items-center gap-2">
+                            <i data-lucide="phone-call" class="w-4 h-4 text-cyan-400"></i>
+                            <span>+971 43 933 082</span>
                         </a>
-                        <a href="https://wa.me/971569213754?text={{ urlencode('Hello Generator Dubai, I need urgent pricing & availability for ' . $service->title) }}" target="_blank" class="px-5 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20 transition flex items-center gap-2">
+                        <a href="https://wa.me/971554838545?text={{ urlencode('Hello LifeGuard Data Recovery, I need urgent assistance with ' . $service->title) }}" target="_blank" class="px-5 py-3.5 rounded-full font-bold text-xs sm:text-sm bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 transition flex items-center gap-2">
                             <i data-lucide="message-circle" class="w-4 h-4"></i>
                             <span>WhatsApp</span>
                         </a>
@@ -202,432 +130,88 @@
                 </div>
 
                 <div class="lg:col-span-4">
-                    @if($service->featured_image_url)
-                        <div class="rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-800 aspect-[4/3] relative group">
-                            <img src="{{ $service->featured_image_url }}" 
-                                 alt="{{ $service->title }} in UAE" 
-                                 width="800"
-                                 height="600"
-                                 loading="eager"
-                                 fetchpriority="high"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute bottom-3 left-3 right-3 p-3 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-xs text-white flex items-center justify-between">
-
-                                <span class="font-bold">Verified UAE Fleet</span>
-                                <span class="text-amber-400 font-semibold">ISO 8528 Certified</span>
-                            </div>
+                    <div class="rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 aspect-[4/3] relative">
+                        <img src="{{ $service->featured_image_url ?: 'https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg' }}" 
+                             alt="{{ $service->title }} Dubai" 
+                             class="w-full h-full object-cover">
+                        <div class="absolute bottom-3 left-3 right-3 p-3 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/10 text-xs text-white flex items-center justify-between">
+                            <span class="font-bold">LifeGuard Cleanroom Lab</span>
+                            <span class="text-cyan-400 font-semibold">98.6% Proven Rate</span>
                         </div>
-                    @else
-                        <div class="p-8 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-4">
-                            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                                <i data-lucide="{{ $service->icon ?: 'zap' }}" class="w-6 h-6"></i>
-                            </div>
-                            <h4 class="text-base font-bold text-white font-display">Technical Highlights</h4>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Backed by ISO 8528 compliant diesel generator fleets, Deep Sea synchronizing controllers, double-walled fuel tanks, and 24/7 on-call engineers across all 7 Emirates.
-                            </p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trusted Engine Manufacturers Bar -->
-    <section class="py-6 bg-slate-900 border-y border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-wrap items-center justify-between gap-6 text-slate-400 text-xs font-semibold">
-                <span class="text-slate-500 uppercase tracking-widest text-[11px]">Factory Engine Partners:</span>
-                <span class="hover:text-amber-400 transition">Cummins (USA/UK)</span>
-                <span class="hover:text-amber-400 transition">Perkins (UK)</span>
-                <span class="hover:text-amber-400 transition">Caterpillar (CAT)</span>
-                <span class="hover:text-amber-400 transition">Kohler Power Systems</span>
-                <span class="hover:text-amber-400 transition">Stamford & Leroy Somer Alternators</span>
-                <span class="hover:text-amber-400 transition">Deep Sea Electronics (DSE)</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Equipment Sizing & Generator Categories (Inspired by Reference) -->
-    <section class="py-16 bg-white border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mb-12">
-                <span class="text-xs font-bold uppercase tracking-widest text-amber-600">Equipment Categories</span>
-                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1 font-display">
-                    Commercial & Industrial Power Solutions
-                </h2>
-                <p class="text-sm text-slate-600 mt-2">
-                    Select your equipment class for immediate mobilization across Dubai, Abu Dhabi, Sharjah, and all Northern Emirates.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 20 - 60 kVA -->
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">20 – 60 kVA</span>
-                            <span class="text-[11px] text-slate-400 font-mono">16 – 48 kW</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">Portable & Compact Power</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Acoustic canopy units tailored for site offices, small retail pop-ups, security gates, and dewatering pumps.
-                        </p>
-                        <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
-                            <strong>Noise:</strong> 65–68 dBA @ 7m &bull; <strong>Fuel:</strong> 5–14 L/hr
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
-                        <a href="{{ route('fleet.show', '50-kva') }}" class="text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1">
-                            <span>Explore 50 kVA Model</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                        </a>
-                        <span class="text-[10px] text-slate-400">In Stock</span>
-                    </div>
-                </div>
-
-                <!-- 60 - 150 kVA -->
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">60 – 150 kVA</span>
-                            <span class="text-[11px] text-slate-400 font-mono">48 – 120 kW</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">Mid-Range Silent Generators</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Ideal for tower cranes, concrete vibrators, medium civil construction, hospital standby, and hospitality events.
-                        </p>
-                        <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
-                            <strong>Noise:</strong> 68–70 dBA @ 7m &bull; <strong>Fuel:</strong> 14–33 L/hr
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
-                        <a href="{{ route('fleet.show', '100-kva') }}" class="text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1">
-                            <span>Explore 100 kVA Model</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                        </a>
-                        <span class="text-[10px] text-slate-400">In Stock</span>
-                    </div>
-                </div>
-
-                <!-- 150 - 500 kVA -->
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">150 – 500 kVA</span>
-                            <span class="text-[11px] text-slate-400 font-mono">120 – 400 kW</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">Heavy-Duty Acoustic Gensets</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Built for heavy infrastructure, batching plants, commercial towers, marine drydocks, and industrial manufacturing.
-                        </p>
-                        <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
-                            <strong>Noise:</strong> 70–73 dBA @ 7m &bull; <strong>Fuel:</strong> 33–105 L/hr
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
-                        <a href="{{ route('fleet.show', '500-kva') }}" class="text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1">
-                            <span>Explore 500 kVA Model</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                        </a>
-                        <span class="text-[10px] text-slate-400">In Stock</span>
-                    </div>
-                </div>
-
-                <!-- 500 - 1250 kVA -->
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">500 – 1250 kVA</span>
-                            <span class="text-[11px] text-slate-400 font-mono">400 – 1000 kW</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">High-Capacity Containerized</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Engineered for district cooling plants, chillers, deep well dewatering, and high-voltage grid support installations.
-                        </p>
-                        <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
-                            <strong>Noise:</strong> 72–75 dBA @ 7m &bull; <strong>Fuel:</strong> 105–260 L/hr
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
-                        <a href="{{ route('fleet.show', '1000-kva') }}" class="text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1">
-                            <span>Explore 1000 kVA Model</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                        </a>
-                        <span class="text-[10px] text-slate-400">In Stock</span>
-                    </div>
-                </div>
-
-                <!-- Multi-MW Synchronized Power Plants -->
-                <div class="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 shadow-sm hover:shadow-md hover:border-amber-400 transition flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-500 text-slate-950">1 MW to 50 MW</span>
-                            <span class="text-[11px] text-amber-800 font-mono">Grid-Scale</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">Synchronized Power Plants</h3>
-                        <p class="text-xs text-slate-700 leading-relaxed">
-                            Modular multi-megawatt synchronized power plants with Deep Sea load-sharing, step-up transformers (11kV/33kV), and bulk fuel farms.
-                        </p>
-                        <div class="text-[11px] text-amber-900 pt-2 border-t border-amber-200/60">
-                            <strong>Redundancy:</strong> N+1 Continuous &bull; <strong>Uptime:</strong> 99.99% SLA
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-amber-200/60 flex items-center justify-between">
-                        <a href="{{ route('service.show', 'power-plant') }}" class="text-xs font-bold text-amber-800 hover:text-amber-950 flex items-center gap-1">
-                            <span>View Power Plant Engineering</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                        </a>
-                        <span class="text-[10px] text-emerald-700 font-bold">Turnkey</span>
-                    </div>
-                </div>
-
-                <!-- Used & Refurbished Portacabins (Buy/Sell, Zero Rental) -->
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">Buy & Sell</span>
-                            <span class="text-[11px] text-slate-400 font-mono">Site Offices</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-600 transition">Used & Scrap Portacabins</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Instant cash purchase of scrap & used portacabins across UAE. Turnkey sale of high-grade refurbished modular site offices.
-                        </p>
-                        <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
-                            <strong>Cash Offers:</strong> Same-Day &bull; <strong>Logistics:</strong> Free Crane Removal
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
-                        <a href="{{ route('service.show', 'portacabin') }}" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
-                            <span>View Portacabin Trading</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                        </a>
-                        <span class="text-[10px] text-emerald-600 font-semibold">Instant Cash</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Main Content Grid -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <!-- Main Content & Diagnostics Form Grid -->
+    <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            <!-- Left 8 cols: Service Details & Technical Capabilities -->
+            <div class="lg:col-span-8 space-y-12">
+                <!-- Features & Capabilities -->
+                @if(!empty($service->features) && is_array($service->features))
+                    <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm space-y-4">
+                        <h2 class="text-xl font-black text-slate-900">What We Recover & Repair</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            @foreach($service->features as $feat)
+                                <div class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-cyan-600 shrink-0 mt-0.5"></i>
+                                    <span class="text-xs font-semibold text-slate-800 leading-snug">{{ $feat }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
-            <!-- Left 8 Columns: Service Body & Detailed Sections -->
-            <main class="lg:col-span-8 space-y-12">
+                <!-- Benefits & Service Guarantees -->
+                @if(!empty($service->benefits) && is_array($service->benefits))
+                    <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm space-y-4">
+                        <h2 class="text-xl font-black text-slate-900">The LifeGuard Guarantee</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            @foreach($service->benefits as $ben)
+                                <div class="flex items-start gap-2.5 p-3 rounded-xl bg-cyan-50/60 border border-cyan-100">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-cyan-700 shrink-0 mt-0.5"></i>
+                                    <span class="text-xs font-bold text-cyan-950 leading-snug">{{ $ben }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
-                <!-- Service WYSIWYG Content (Rich Tables & Specs) -->
-                <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm">
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight font-display mb-6">
-                        Service Scope & Technical Engineering Specifications
-                    </h2>
-                    <div class="prose prose-slate prose-amber max-w-none text-slate-600 leading-relaxed">
+                <!-- Service WYSIWYG Content if available -->
+                @if($service->content)
+                    <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm prose prose-slate max-w-none">
                         {!! $service->content !!}
                     </div>
-                </div>
-
-                <!-- Features & Technical Specifications -->
-                @if(!empty($service->features) && is_array($service->features))
-                    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm space-y-6">
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600">
-                            <i data-lucide="shield-check" class="w-4 h-4"></i>
-                            <span>Engineered Standards</span>
-                        </div>
-                        <h3 class="text-2xl font-black text-slate-900 font-display">
-                            Technical Features & Equipment Specifications
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            @foreach($service->features as $feature)
-                                <div class="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                    <div class="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-                                        <i data-lucide="check" class="w-3.5 h-3.5"></i>
-                                    </div>
-                                    <span class="text-xs font-medium text-slate-800 leading-relaxed">{{ $feature }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
                 @endif
 
-                <!-- Turnkey Benefits -->
-                @if(!empty($service->benefits) && is_array($service->benefits))
-                    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm space-y-6">
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i>
-                            <span>Commercial Advantages</span>
-                        </div>
-                        <h3 class="text-2xl font-black text-slate-900 font-display">
-                            Why UAE Contractors Trust Our Fleet
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            @foreach($service->benefits as $benefit)
-                                <div class="flex items-start gap-3 p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100">
-                                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                                        <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                                    </div>
-                                    <span class="text-xs font-medium text-slate-800 leading-relaxed">{{ $benefit }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
-                <!-- 4-Step Rental Process Guide -->
-                <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm space-y-8">
-                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600">
-                        <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
-                        <span>How It Works</span>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-900 font-display">
-                        Our 4-Step Turnkey Rental Process
-                    </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-sm">1</div>
-                            <h4 class="font-bold text-slate-900 text-sm">Load Sizing & Feasibility Audit</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                Our electrical engineers calculate your starting and running inrush currents to recommend the exact kVA rating without over-sizing.
-                            </p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-sm">2</div>
-                            <h4 class="font-bold text-slate-900 text-sm">Rapid Dispatch & Logistics</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                Our fleet of crane hiab trucks transports the generator, external fuel tanks, and cabling to any site in Dubai, Abu Dhabi, or Sharjah within 60–120 minutes.
-                            </p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-sm">3</div>
-                            <h4 class="font-bold text-slate-900 text-sm">Cabling & Commissioning</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                Certified technicians terminate flexible copper power cables, test earth rod grounding (<5 ohms), connect ATS panels, and verify voltage balance.
-                            </p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-sm">4</div>
-                            <h4 class="font-bold text-slate-900 text-sm">24/7 Monitoring & Fuel Delivery</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                We handle continuous 250-hour oil/filter servicing, fuel telemetry refills, and provide 24/7 on-site mechanical emergency support.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Locations We Cover (Deep Internal Links Across UAE) -->
-                <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl space-y-6">
-                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i>
-                        <span>UAE-Wide Fleet Coverage</span>
-                    </div>
-                    <h3 class="text-2xl font-black font-display tracking-tight">
-                        Depot Hubs & 2-Hour Dispatch Across All 7 Emirates
-                    </h3>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                        With operational yards located in Al Quoz, JAFZA, Musaffah, and Sharjah Industrial, we guarantee rapid equipment dispatch and emergency technician response to all UAE zones:
-                    </p>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                        <a href="{{ route('locations.show', 'dubai') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Dubai</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Al Quoz, JAFZA, DXP</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'abu-dhabi') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Abu Dhabi</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Musaffah, ICAD, Ruwais</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'sharjah') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Sharjah</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Ind Areas 1-18, Sajaa</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'ajman') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Ajman</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Al Jurf, Port Zone</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'ras-al-khaimah') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Ras Al Khaimah</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Al Hamra, Saqr Port</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'fujairah') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Fujairah</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Oil Terminals, Port</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'umm-al-quwain') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Umm Al Quwain</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Old Town, Ind Area</div>
-                        </a>
-                        <a href="{{ route('locations.show', 'oman') }}" class="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 transition border border-slate-700/80 group">
-                            <div class="font-bold text-xs">Oman</div>
-                            <div class="text-[10px] text-slate-400 group-hover:text-slate-900">Muscat & Sohar Border</div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Related Fleet Models (Deep Internal Links) -->
-                @if(isset($fleetProducts) && $fleetProducts->isNotEmpty())
-                    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm space-y-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-xs font-bold uppercase tracking-wider text-amber-600">Equipment Fleet</span>
-                                <h3 class="text-2xl font-black text-slate-900 font-display mt-1">Available Fleet Models for Immediate Mobilization</h3>
-                            </div>
-                            <a href="{{ route('fleet.index') }}" class="text-xs font-bold text-amber-600 hover:text-amber-700 hidden sm:block">View Full Fleet &rarr;</a>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
-                            @foreach($fleetProducts as $prod)
-                                <a href="{{ route('fleet.show', $prod->slug) }}" class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-amber-400 hover:shadow-md transition group flex flex-col justify-between">
-                                    <div>
-                                        @if($prod->featured_image_url)
-                                            <div class="aspect-video rounded-xl overflow-hidden bg-slate-200 mb-3">
-                                                <img src="{{ $prod->featured_image_url }}" 
-                                                     alt="{{ $prod->title }}" 
-                                                     width="400" 
-                                                     height="225" 
-                                                     loading="lazy" 
-                                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                            </div>
-                                        @endif
-                                        <div class="text-xs font-bold text-slate-900 group-hover:text-amber-600 transition">{{ $prod->title }}</div>
-                                        <p class="text-[11px] text-slate-500 line-clamp-2 mt-1">{{ $prod->summary }}</p>
-                                    </div>
-                                    <div class="mt-4 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-amber-700 font-semibold">
-                                        <span>View Specifications</span>
-                                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
-                <!-- Related Technical Articles (Deep Internal Links) -->
+                <!-- Related Technical Guides (from 396+ posts) -->
                 @if(isset($relatedPosts) && $relatedPosts->isNotEmpty())
-                    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm space-y-6">
+                    <div class="space-y-6 pt-4">
                         <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-xs font-bold uppercase tracking-wider text-amber-600">Engineering Guides</span>
-                                <h3 class="text-2xl font-black text-slate-900 font-display mt-1">Related Technical Articles & Sizing Insights</h3>
-                            </div>
-                            <a href="{{ route('blog.index') }}" class="text-xs font-bold text-amber-600 hover:text-amber-700 hidden sm:block">All Articles &rarr;</a>
+                            <h3 class="text-xl font-black text-slate-900">Related Case Studies & Technical Guides</h3>
+                            <a href="{{ route('blog.index') }}" class="text-xs font-bold text-cyan-600 hover:underline">View All &rarr;</a>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                            @foreach($relatedPosts as $post)
-                                <a href="{{ route('post.show', $post->slug) }}" class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-amber-400 hover:shadow-md transition group flex gap-3">
-                                    @if($post->featured_image_url)
-                                        <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-200 shrink-0">
-                                            <img src="{{ $post->featured_image_url }}" 
-                                                 alt="{{ $post->title }}" 
-                                                 width="80" 
-                                                 height="80" 
-                                                 loading="lazy" 
-                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                        </div>
-                                    @endif
 
-                                    <div class="flex flex-col justify-between">
-                                        <div>
-                                            <div class="text-xs font-bold text-slate-900 group-hover:text-amber-600 transition line-clamp-2">{{ $post->title }}</div>
-                                            <div class="text-[10px] text-slate-400 mt-1">{{ $post->published_at ? $post->published_at->format('M d, Y') : 'Technical Guide' }}</div>
-                                        </div>
-                                        <span class="text-[11px] text-amber-700 font-semibold flex items-center gap-1 mt-1">Read Guide &rarr;</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            @foreach($relatedPosts as $rPost)
+                                <a href="{{ url($rPost->slug) }}" class="p-5 rounded-2xl bg-white border border-slate-200 hover:border-cyan-500 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+                                    <div>
+                                        <span class="text-[10px] font-bold uppercase text-cyan-600 block mb-1">
+                                            {{ $rPost->categories->first()?->name ?? 'Data Recovery Guide' }}
+                                        </span>
+                                        <h4 class="text-sm font-bold text-slate-900 group-hover:text-cyan-700 transition leading-snug line-clamp-2">
+                                            {{ $rPost->title }}
+                                        </h4>
+                                        <p class="text-xs text-slate-500 mt-2 line-clamp-2">
+                                            {{ $rPost->excerpt }}
+                                        </p>
+                                    </div>
+                                    <div class="text-[11px] font-semibold text-cyan-600 mt-4 flex items-center gap-1">
+                                        <span>Read Guide</span>
+                                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                                     </div>
                                 </a>
                             @endforeach
@@ -635,20 +219,118 @@
                     </div>
                 @endif
 
-            </main>
-
-            <!-- Right 4 Columns: Quote Request & Navigator Sidebar -->
-            <aside class="lg:col-span-4">
-                <div class="sticky top-28 space-y-6">
-                    @include('frontend.partials.service-sidebar', [
-                        'service' => $service,
-                        'otherServices' => $otherServices
-                    ])
+                <!-- UAE Service Hubs & Local Cleanroom Labs (Contextual Geo Linking) -->
+                <div class="space-y-4 pt-6 border-t border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-600 block">Fast In-Lab Triage & Free Express Courier</span>
+                            <h3 class="text-lg font-black text-slate-900">Available Across All UAE Emirates & Regional Hubs</h3>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                        <a href="/data-recovery-dubai" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Bur Dubai Lab</span>
+                            <span class="text-[10px] text-slate-400 mt-1">Main Cleanroom HQ</span>
+                        </a>
+                        <a href="/data-recovery-al-barsha" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Al Barsha Branch</span>
+                            <span class="text-[10px] text-slate-400 mt-1">MOE / Media City</span>
+                        </a>
+                        <a href="/data-recovery-in-business-bay" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Business Bay</span>
+                            <span class="text-[10px] text-slate-400 mt-1">Downtown & DIFC</span>
+                        </a>
+                        <a href="/data-recovery-dubai-marina" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Dubai Marina</span>
+                            <span class="text-[10px] text-slate-400 mt-1">JLT & Palm Jumeirah</span>
+                        </a>
+                        <a href="/data-recovery-abu-dhabi" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Abu Dhabi</span>
+                            <span class="text-[10px] text-slate-400 mt-1">Capital City Hub</span>
+                        </a>
+                        <a href="/data-recovery-sharjah" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Sharjah</span>
+                            <span class="text-[10px] text-slate-400 mt-1">Industrial & City</span>
+                        </a>
+                        <a href="/data-recovery-ajman" class="p-3 rounded-xl bg-slate-50 hover:bg-cyan-50/70 border border-slate-200/80 hover:border-cyan-400 transition group flex flex-col justify-between">
+                            <span class="font-bold text-slate-800 group-hover:text-cyan-700">Ajman</span>
+                            <span class="text-[10px] text-slate-400 mt-1">Northern Hub</span>
+                        </a>
+                        <a href="/contact" class="p-3 rounded-xl bg-cyan-600 text-white hover:bg-cyan-500 transition group flex flex-col justify-between shadow-xs">
+                            <span class="font-bold">Free Express Courier</span>
+                            <span class="text-[10px] text-cyan-100 mt-1">Across 7 Emirates</span>
+                        </a>
+                    </div>
                 </div>
-            </aside>
+            </div>
+
+            <!-- Right 4 cols: Sticky Free Diagnostic Quote Box -->
+            <div class="lg:col-span-4" id="quote-box">
+                <div class="bg-slate-950 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl sticky top-28 space-y-6">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-cyan-500/20 text-cyan-300 text-[10px] font-bold mb-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <span>FREE DIAGNOSTIC</span>
+                        </div>
+                        <h3 class="text-xl font-black text-white">Book Lab Evaluation</h3>
+                        <p class="text-xs text-slate-400 mt-1">
+                            Same-day inspection in our Bur Dubai or Al Barsha cleanrooms.
+                        </p>
+                    </div>
+
+                    @if(session('success'))
+                        <div class="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-500 text-emerald-200 text-xs">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('contact.submit') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <input type="hidden" name="source" value="Service Page: {{ $service->title }}">
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Your Full Name *</label>
+                            <input type="text" name="name" required placeholder="Name" 
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Phone / WhatsApp *</label>
+                            <input type="text" name="phone" required placeholder="+971 50 123 4567" 
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Device Details / Issue</label>
+                            <textarea name="message" rows="3" placeholder="Hard drive model, capacity, problem description..." 
+                                      class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500"></textarea>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-extrabold text-xs shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Submit for Priority Evaluation</span>
+                        </button>
+                    </form>
+
+                    <div class="pt-4 border-t border-slate-800 text-xs text-slate-400 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="phone-call" class="w-4 h-4 text-cyan-400"></i>
+                            <a href="tel:+97143933082" class="hover:text-white font-bold text-white">+971 43 933 082</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+                            <a href="https://wa.me/971554838545" target="_blank" class="hover:text-white">WhatsApp: +971 55 483 8545</a>
+                        </div>
+                        <div class="text-[11px] text-slate-500 pt-1">
+                            Free courier collection across Dubai, Abu Dhabi & Sharjah.
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
-    </div>
+    </section>
 
 </div>
 @endsection

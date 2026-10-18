@@ -60,8 +60,8 @@ class OdooPage extends Model
             'hero_country' => 'United Arab Emirates',
             'hero_title' => 'Transform Your Business with Official Odoo ERP in Dubai',
             'hero_subtitle' => 'Unify your Accounting, HR & WPS Payroll, CRM, Inventory, and Manufacturing into one intuitive platform. Fully pre-configured for UAE FTA 5% VAT, Central Bank WPS SIF files, and bilingual operations.',
-            'contact_phone' => '+971 56 921 3754',
-            'contact_email' => 'hello@generatordubai.com',
+            'contact_phone' => '+971 43 933 082',
+            'contact_email' => 'info@lifeguarddatarecovery.com',
             'trust_items' => [
                 'FTA 5% VAT Ready',
                 'UAE WPS SIF Export',

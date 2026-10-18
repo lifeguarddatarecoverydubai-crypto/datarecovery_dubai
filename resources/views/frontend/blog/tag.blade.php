@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('seo_meta')
-    <title>#{{ $tag->name }} - {{ config('app.name', 'Generator Dubai') }}</title>
+    <title>#{{ $tag->name }} - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
     <meta name="description" content="Browse articles tagged with #{{ $tag->name }}">
     <link rel="canonical" href="{{ $posts->currentPage() > 1 ? $posts->url($posts->currentPage()) : route('tag.show', $tag->slug) }}">
     @if($posts->previousPageUrl())

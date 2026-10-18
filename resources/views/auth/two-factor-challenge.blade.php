@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Two-Factor Authentication - {{ config('app.name', 'Generator Dubai') }}</title>
+    <title>Two-Factor Authentication - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
         <!-- Header -->
         <div class="text-center">
             <a href="{{ route('home') }}" class="inline-block mb-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Generator Dubai" class="h-12 w-auto mx-auto object-contain">
+                <img src="{{ asset('images/logo.png') }}" alt="LifeGuard Data Recovery" class="h-12 w-auto mx-auto object-contain">
             </a>
 
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 mb-3 border border-brand-100 shadow-sm">

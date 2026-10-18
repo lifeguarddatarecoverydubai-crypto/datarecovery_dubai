@@ -23,7 +23,7 @@ class EnsureTwoFactorEnabled
             }
 
             return redirect()->route('login.two-factor.setup')
-                ->with('error', 'Google Two-Factor Authentication is required for all accounts on Generator Dubai. Please complete setup to continue.');
+                ->with('error', 'Google Two-Factor Authentication is required for all accounts on LifeGuard Data Recovery CMS. Please complete setup to continue.');
         }
 
         return $next($request);

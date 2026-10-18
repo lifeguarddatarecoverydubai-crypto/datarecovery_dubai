@@ -95,7 +95,7 @@
                                     <a href="{{ route('admin.posts.edit', $post) }}">{{ $post->title }}</a>
                                 </div>
                                 <div class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5 font-mono">
-                                    <span>/post/{{ $post->slug }}</span>
+                                    <span>/{{ $post->slug }}</span>
                                 </div>
                             </td>
 

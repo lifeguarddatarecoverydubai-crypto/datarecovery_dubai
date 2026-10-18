@@ -158,15 +158,15 @@ class AdminCmsTest extends TestCase
         ]);
 
         $category = Category::create([
-            'name' => 'Generator Engineering',
-            'slug' => 'generator-engineering',
+            'name' => 'Cleanroom Data Recovery',
+            'slug' => 'cleanroom-data-recovery',
         ]);
 
         $post = Post::create([
             'user_id' => $editor->id,
-            'title' => 'Modernizing Outdated Generator Control Panels',
-            'slug' => 'modernizing-outdated-generator-control-panels',
-            'excerpt' => 'Deploying and operating modernizing outdated panels.',
+            'title' => 'Recovering Clicking Mechanical Hard Drives in Cleanroom',
+            'slug' => 'recovering-clicking-mechanical-hard-drives-cleanroom',
+            'excerpt' => 'Deploying cleanroom micro-soldering and head transplants.',
             'content' => '<div class="space-y-8"><div class="p-6 bg-amber-500/10"><h3>Engineering Standards</h3><p>Critical benchmarks for UAE sites.</p></div></div>',
             'status' => 'published',
             'published_at' => now(),
@@ -183,7 +183,7 @@ class AdminCmsTest extends TestCase
         $response->assertSee('id="postContentInput"', false);
         $response->assertSee('id="visualEditorContainer"', false);
         $response->assertSee('id="postCodeTextarea"', false);
-        $response->assertSee('Generator Engineering');
+        $response->assertSee('Cleanroom Data Recovery');
     }
 
     public function test_editor_can_update_post_content_and_rich_html_is_preserved(): void

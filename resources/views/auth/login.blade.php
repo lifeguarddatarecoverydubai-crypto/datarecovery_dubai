@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign In - {{ config('app.name', 'Generator Dubai') }}</title>
+    <title>Sign In - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,10 +28,10 @@
         <!-- Logo & Title -->
         <div class="text-center">
             <a href="{{ route('home') }}" class="inline-block mb-4">
-                <img src="{{ asset('images/logo.png') }}" alt="Generator Dubai" class="h-12 w-auto mx-auto object-contain">
+                <img src="{{ asset('images/logo.png') }}" alt="LifeGuard Data Recovery" class="h-12 w-auto mx-auto object-contain">
             </a>
             <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Welcome back</h2>
-            <p class="mt-2 text-sm text-slate-500">Sign in to Generator Dubai CMS to manage operations</p>
+            <p class="mt-2 text-sm text-slate-500">Sign in to LifeGuard Data Recovery CMS to manage operations</p>
         </div>
 
         @if(session('success'))

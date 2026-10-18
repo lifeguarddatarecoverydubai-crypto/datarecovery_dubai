@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('seo_meta')
-    <title>{{ $search ? "Search results for '{$search}'" : "Technical Power Guides & Generator Engineering Knowledge Base" }} - {{ config('app.name', 'Generator Dubai') }}</title>
-    <meta name="description" content="Explore expert diesel generator sizing guides, ISO 8528 standards, fuel consumption calculations, and high-ambient desert engineering insights across UAE.">
+    <title>{{ $search ? "Search results for '{$search}'" : "Data Recovery Knowledge Base & Technical Forensic Guides" }} - {{ config('app.name', 'LifeGuard Data Recovery') }}</title>
+    <meta name="description" content="Explore expert hard drive recovery guides, SSD NAND forensics, RAID array reconstruction, and cleanroom lab methodologies by LifeGuard Data Recovery Dubai.">
     <link rel="canonical" href="{{ $posts->currentPage() > 1 ? $posts->url($posts->currentPage()) : route('blog.index') }}">
     @if($posts->previousPageUrl())
         <link rel="prev" href="{{ $posts->previousPageUrl() }}">
@@ -17,15 +17,15 @@
     <!-- Header -->
     <div class="border-b border-slate-200 pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-            <span class="text-xs font-bold uppercase tracking-widest text-amber-600 block mb-1">Engineering Publications</span>
+            <span class="text-xs font-bold uppercase tracking-widest text-sky-600 block mb-1">Technical Research & Case Studies</span>
             <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-display">
                 @if($search)
                     Search results for "{{ $search }}"
                 @else
-                    Power Engineering & Fleet Guides
+                    Data Recovery Guides & Knowledge Base
                 @endif
             </h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-2">Technical articles, kVA load sizing methodologies, and high-ambient power case studies by our engineers.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-2">Expert guides on clicking hard drives, SSD firmware failures, RAID array crashes, and forensic data recovery.</p>
         </div>
 
         <!-- Search Bar -->
@@ -35,6 +35,43 @@
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
         </form>
     </div>
+
+    <!-- Category & Tag Filter Navigation (Internal Linking Hub) -->
+    @if(isset($categories) && $categories->isNotEmpty())
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Filter by Topic:</span>
+                <span class="text-xs text-slate-400 font-medium">{{ $categories->count() }} Categories</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="{{ route('blog.index') }}" 
+                   class="px-3.5 py-1.5 rounded-full text-xs font-bold transition shadow-xs {{ empty($search) ? 'bg-sky-600 text-white shadow-sky-600/20' : 'bg-white text-slate-700 border border-slate-200 hover:border-sky-500 hover:text-sky-600' }}">
+                    All Articles ({{ \App\Models\Post::where('status', 'published')->count() }})
+                </a>
+                @foreach($categories as $cat)
+                    <a href="{{ route('category.show', $cat->slug) }}" 
+                       class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-700 border border-slate-200/90 hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50/50 transition shadow-xs flex items-center gap-1.5">
+                        <span>{{ $cat->name }}</span>
+                        @if($cat->posts_count > 0)
+                            <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600 font-bold">{{ $cat->posts_count }}</span>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+
+            @if(isset($tags) && $tags->where('posts_count', '>', 1)->isNotEmpty())
+                <div class="pt-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+                    <span class="font-bold text-slate-400 text-[11px] uppercase mr-1">Popular Topics:</span>
+                    @foreach($tags->where('posts_count', '>', 1)->take(12) as $popularTag)
+                        <a href="{{ route('tag.show', $popularTag->slug) }}" class="text-[11px] text-slate-600 hover:text-sky-600 hover:underline">
+                            #{{ $popularTag->name }}
+                        </a>
+                        @if(! $loop->last) <span class="text-slate-300">&bull;</span> @endif
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    @endif
 
     <!-- Posts Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

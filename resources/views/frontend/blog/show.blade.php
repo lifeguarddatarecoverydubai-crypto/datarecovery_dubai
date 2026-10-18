@@ -2,22 +2,16 @@
 
 @section('seo_meta')
     <!-- Primary Meta Tags -->
-    <title>{{ $post->seo_title }} - {{ config('app.name', 'Generator Dubai') }}</title>
-    <meta name="title" content="{{ $post->seo_title }} - {{ config('app.name', 'Generator Dubai') }}">
+    @php
+        $fullTitle = \App\Support\SeoHelper::formatTitle($post->seo_title, true);
+        $canonicalUrl = \App\Support\SeoHelper::canonicalFor($post);
+    @endphp
+    <title>{{ $fullTitle }}</title>
+    <meta name="title" content="{{ $fullTitle }}">
     <meta name="description" content="{{ $post->seo_description }}">
     @if($post->meta_keywords)
         <meta name="keywords" content="{{ $post->meta_keywords }}">
     @endif
-    @php
-        $canonicalUrl = route('post.show', $post->slug);
-        if (! empty($post->canonical_url) && ! str_contains($post->canonical_url, 'localhost') && ! str_contains($post->canonical_url, '127.0.0.1')) {
-            $parsedCanonical = parse_url($post->canonical_url);
-            // Allow external canonicals (e.g. syndicated on Medium/external domain)
-            if (! empty($parsedCanonical['host']) && ! in_array(strtolower($parsedCanonical['host']), ['generatordubai.com', 'www.generatordubai.com'], true)) {
-                $canonicalUrl = $post->canonical_url;
-            }
-        }
-    @endphp
     <link rel="canonical" href="{{ $canonicalUrl }}">
     <meta name="robots" content="{{ $post->is_indexable ? 'index, follow' : 'noindex, nofollow' }}">
 
@@ -29,7 +23,7 @@
     @if($post->seo_image)
         <meta property="og:image" content="{{ $post->seo_image }}">
     @endif
-    <meta property="og:site_name" content="{{ config('app.name', 'Generator Dubai') }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'LifeGuard Data Recovery') }}">
     @if($post->published_at)
         <meta property="article:published_time" content="{{ $post->published_at->toIso8601String() }}">
     @endif
@@ -43,66 +37,18 @@
         <meta name="twitter:image" content="{{ $post->seo_image }}">
     @endif
 
-    <!-- Schema.org BlogPosting JSON-LD -->
+    <!-- Schema.org BlogPosting / Article JSON-LD -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'BlogPosting',
-      'mainEntityOfPage' => [
-        '@type' => 'WebPage',
-        '@id' => route('post.show', $post->slug),
-      ],
-      'headline' => $post->title,
-      'description' => $post->seo_description,
-      'image' => $post->featured_image_url ? [$post->featured_image_url] : [url('/storage/media/2026/09/1-y7ja6x.webp')],
-      'datePublished' => $post->published_at ? $post->published_at->toIso8601String() : $post->created_at->toIso8601String(),
-      'dateModified' => $post->updated_at->toIso8601String(),
-      'author' => [
-        '@type' => 'Organization',
-        'name' => 'Generator Dubai Engineering Team',
-        'url' => 'https://generatordubai.com',
-      ],
-      'publisher' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Generator Dubai',
-        'url' => 'https://generatordubai.com',
-        'telephone' => '+971569213754',
-        'address' => [
-          '@type' => 'PostalAddress',
-          'streetAddress' => 'Suit 44, King Faisal Street',
-          'addressLocality' => 'Sharjah',
-          'addressCountry' => 'AE',
-        ],
-      ],
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode(\App\Services\SchemaService::getArticleSchema($post), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
 
     <!-- Schema.org BreadcrumbList JSON-LD -->
     <script type="application/ld+json">
-    {!! json_encode([
-      '@@context' => 'https://schema.org',
-      '@type' => 'BreadcrumbList',
-      'itemListElement' => [
-        [
-          '@type' => 'ListItem',
-          'position' => 1,
-          'name' => 'Home',
-          'item' => route('home'),
-        ],
-        [
-          '@type' => 'ListItem',
-          'position' => 2,
-          'name' => 'Articles',
-          'item' => route('blog.index'),
-        ],
-        [
-          '@type' => 'ListItem',
-          'position' => 3,
-          'name' => $post->title,
-          'item' => route('post.show', $post->slug),
-        ],
-      ],
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode(\App\Services\SchemaService::getBreadcrumbSchema([
+        'Home' => route('home'),
+        'Articles' => route('blog.index'),
+        $post->title => route('post.show', $post->slug),
+    ]), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
 
     <!-- Custom Schema.org JSON-LD (from Dashboard) -->
@@ -208,37 +154,37 @@
                     @endif
                 </article>
 
-                <!-- High-Impact Commercial Power Callout (Contextual Internal Link) -->
+                <!-- High-Impact Cleanroom Data Recovery Callout (Contextual Internal Link) -->
                 @if(isset($targetedService) && $targetedService)
-                    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white shadow-xl border border-amber-500/30 space-y-5">
+                    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-xl border border-sky-500/30 space-y-5">
                         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
                             <div class="flex items-center gap-2">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse mr-1.5"></span> RAPID POWER DISPATCH
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse mr-1.5"></span> EMERGENCY LAB TRIAGE
                                 </span>
-                                <span class="text-xs text-slate-300 font-medium">20 kVA &ndash; 2500 kVA Fleet &bull; All 7 Emirates</span>
+                                <span class="text-xs text-slate-300 font-medium">ISO-5 Class 100 Cleanroom &bull; PC-3000 Hardware Diagnostics</span>
                             </div>
-                            <span class="text-xs font-bold text-amber-400">24/7 Emergency Mobilization</span>
+                            <span class="text-xs font-bold text-sky-400">24/7 Critical Recovery Hotline</span>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                             <div class="md:col-span-8 space-y-2">
                                 <h3 class="text-lg sm:text-xl font-bold font-display text-white">
-                                    Planning a Power Installation or Facing an Outage? Deploy <span class="text-amber-400">{{ $targetedService->title }}</span>
+                                    Facing Storage Media Failure? Lab Diagnostics for <span class="text-sky-400">{{ $targetedService->title }}</span>
                                 </h3>
                                 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                                    Our turnkey power solutions include synchronized multi-megawatt configurations, acoustic soundproofing, automatic transfer switches, and certified electrical engineer dispatch across Dubai & the UAE.
+                                    Don't risk permanent data loss with unverified DIY utilities. Our certified engineers safely recover data from clicking mechanical drives, damaged flash NAND, dropped disks, formatted volumes, and crashed RAID arrays.
                                 </p>
                             </div>
 
                             <div class="md:col-span-4 flex flex-col sm:flex-row md:flex-col gap-2.5">
-                                <a href="{{ route('service.show', $targetedService->slug) }}" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 text-center shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2">
+                                <a href="{{ route('service.show', $targetedService->slug) }}" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-sky-500 hover:bg-sky-400 text-slate-950 text-center shadow-lg shadow-sky-500/20 transition flex items-center justify-center gap-2">
                                     <span>Explore {{ $targetedService->title }}</span>
                                     <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                                 </a>
-                                <a href="tel:+971569213754" class="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white text-center transition flex items-center justify-center gap-2">
+                                <a href="tel:+97143933082" class="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white text-center transition flex items-center justify-center gap-2">
                                     <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
-                                    <span>Call 24/7: +971 56 921 3754</span>
+                                    <span>Call Lab: +971 43 933 082</span>
                                 </a>
                             </div>
                         </div>
@@ -269,8 +215,8 @@
                     <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                             <div>
-                                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Related Articles</h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Explore more technical power guides, sizing manuals, and UAE field engineering studies</p>
+                                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Related Articles & Guides</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Explore more technical data recovery case studies, SSD firmware repair manuals, and cleanroom lab procedures</p>
                             </div>
                             <a href="{{ route('blog.index') }}" class="text-xs font-bold text-brand-600 hover:text-brand-700 hidden sm:inline-flex items-center gap-1">
                                 <span>All Articles</span>
@@ -313,8 +259,8 @@
                 @include('frontend.partials.service-sidebar', [
                     'post' => $post,
                     'services' => $services ?? null,
-                    'subject' => 'Power Solution Inquiry from Article: ' . $post->title,
-                    'whatsappMessage' => 'Hello Generator Dubai, I am reading "' . $post->title . '" and would like to request generator rental & engineering support.'
+                    'subject' => 'Data Recovery Inquiry from Article: ' . $post->title,
+                    'whatsappMessage' => 'Hello LifeGuard Data Recovery, I am reading "' . $post->title . '" and would like to request emergency data recovery assistance.'
                 ])
             </aside>
 

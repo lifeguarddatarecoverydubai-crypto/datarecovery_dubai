@@ -65,8 +65,8 @@ class SitemapAndRobotsTest extends TestCase
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $content);
         $this->assertStringContainsString('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"', $content);
-        $this->assertStringContainsString('/service/hard-drive-recovery', $content);
-        $this->assertStringContainsString('/post/recovering-formatted-nvme-ssd', $content);
+        $this->assertStringContainsString('/hard-drive-recovery', $content);
+        $this->assertStringContainsString('/recovering-formatted-nvme-ssd', $content);
         $this->assertStringContainsString('/category/storage-technology', $content);
         $this->assertStringContainsString('/laboratory-certifications', $content);
     }
@@ -81,10 +81,10 @@ class SitemapAndRobotsTest extends TestCase
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $content);
         $this->assertStringContainsString('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', $content);
-        $this->assertStringContainsString('/sitemap-posts.xml', $content);
-        $this->assertStringContainsString('/sitemap-pages.xml', $content);
-        $this->assertStringContainsString('/sitemap-categories.xml', $content);
-        $this->assertStringContainsString('/sitemap-services.xml', $content);
+        $this->assertStringContainsString('/post-sitemap.xml', $content);
+        $this->assertStringContainsString('/page-sitemap.xml', $content);
+        $this->assertStringContainsString('/category-sitemap.xml', $content);
+        $this->assertStringContainsString('/service-sitemap.xml', $content);
     }
 
     public function test_posts_sitemap_returns_only_published_and_indexable_posts(): void
@@ -114,7 +114,7 @@ class SitemapAndRobotsTest extends TestCase
             $response->assertHeader('Content-Type', 'application/xml; charset=utf-8');
             $content = $response->getContent();
 
-            $this->assertStringContainsString('/post/recovering-formatted-nvme-ssd', $content);
+            $this->assertStringContainsString('/recovering-formatted-nvme-ssd', $content);
             $this->assertStringNotContainsString('draft-post-not-listed', $content);
             $this->assertStringNotContainsString('noindex-post-not-listed', $content);
         }
@@ -131,9 +131,8 @@ class SitemapAndRobotsTest extends TestCase
 
             $this->assertStringContainsString('/laboratory-certifications', $content);
             $this->assertStringContainsString(route('home'), $content);
-            $this->assertStringContainsString(route('about'), $content);
-            $this->assertStringContainsString(route('contact'), $content);
-            $this->assertStringContainsString(route('odoo.index'), $content);
+            $this->assertStringContainsString(route('services.index'), $content);
+            $this->assertStringContainsString(route('blog.index'), $content);
         }
     }
 
@@ -166,7 +165,7 @@ class SitemapAndRobotsTest extends TestCase
             $response->assertHeader('Content-Type', 'application/xml; charset=utf-8');
             $content = $response->getContent();
 
-            $this->assertStringContainsString('/service/hard-drive-recovery', $content);
+            $this->assertStringContainsString('/hard-drive-recovery', $content);
         }
     }
 
@@ -184,8 +183,8 @@ class SitemapAndRobotsTest extends TestCase
         $this->assertStringContainsString('Allow: /images/', $content);
         $this->assertStringContainsString('Sitemap:', $content);
         $this->assertStringContainsString('/sitemap.xml', $content);
-        $this->assertStringContainsString('/sitemap-posts.xml', $content);
-        $this->assertStringContainsString('/sitemap-pages.xml', $content);
-        $this->assertStringContainsString('/sitemap-categories.xml', $content);
+        $this->assertStringContainsString('/post-sitemap.xml', $content);
+        $this->assertStringContainsString('/page-sitemap.xml', $content);
+        $this->assertStringContainsString('/category-sitemap.xml', $content);
     }
 }

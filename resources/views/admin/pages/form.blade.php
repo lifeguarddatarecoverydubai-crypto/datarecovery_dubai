@@ -3,7 +3,7 @@
     $actionUrl = $isEdit ? route('admin.pages.update', $page) : route('admin.pages.store');
 @endphp
 
-<form action="{{ $actionUrl }}" method="POST" id="pageForm" class="space-y-8">
+<form action="{{ $actionUrl }}" method="POST" id="pageForm" class="space-y-8" enctype="multipart/form-data">
     @csrf
     @if($isEdit)
         @method('PUT')
@@ -203,13 +203,20 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="chooseFeaturedImage()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition text-center">
-                            Select from Media
+                        <button type="button" onclick="chooseFeaturedImage()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition text-center flex items-center justify-center gap-1.5">
+                            <i data-lucide="image" class="w-3.5 h-3.5 text-slate-500"></i>
+                            <span>Select Media</span>
                         </button>
+                        <button type="button" onclick="document.getElementById('pageFeaturedImageFileInput').click()" class="flex-1 py-2 px-3 bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-semibold rounded-xl transition text-center flex items-center justify-center gap-1.5">
+                            <i data-lucide="upload" class="w-3.5 h-3.5 text-brand-600"></i>
+                            <span>Upload Image</span>
+                        </button>
+                        <input type="file" id="pageFeaturedImageFileInput" name="featured_image_file" accept="image/*" class="hidden" onchange="uploadPageFeaturedImageDirectly(this.files[0])">
                         <button type="button" id="removeFeaturedBtn" onclick="removeFeaturedImage()" class="py-2 px-3 text-rose-600 hover:bg-rose-50 text-xs font-semibold rounded-xl transition {{ $featUrl ? '' : 'hidden' }}">
                             Remove
                         </button>
                     </div>
+                    <div id="pageFeaturedImageUploadStatus" class="hidden text-center pt-1"></div>
                 </div>
             </div>
         </div>
@@ -265,7 +272,7 @@ function pageContentEditor(config) {
 
 function chooseMediaForPage() {
     openMediaModal(function(item) {
-        const imgHtml = `\n<img src="${item.url}" alt="${item.name || 'Generator Dubai'}" class="rounded-2xl max-w-full h-auto my-4 shadow-sm" />\n`;
+        const imgHtml = `\n<img src="${item.url}" alt="${item.name || 'LifeGuard Data Recovery'}" class="rounded-2xl max-w-full h-auto my-4 shadow-sm" />\n`;
         const codeArea = document.getElementById('pageCodeTextarea');
         const vis = document.getElementById('visualEditorContainer');
         const hiddenInput = document.getElementById('pageContentInput');
@@ -322,6 +329,84 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     @endif
+});
+
+// Direct Featured Image Upload with Automated WebP Conversion
+function uploadPageFeaturedImageDirectly(file) {
+    if (!file) return;
+    const statusEl = document.getElementById('pageFeaturedImageUploadStatus');
+    if (statusEl) {
+        statusEl.classList.remove('hidden');
+        statusEl.innerHTML = '<span class="inline-flex items-center gap-1.5 text-[11px] text-brand-600 font-semibold"><span class="animate-spin w-3 h-3 border-2 border-brand-600 border-t-transparent rounded-full"></span> Converting to WebP & compressing...</span>';
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    fetch('{{ route("admin.media.store") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.media && data.media.length > 0) {
+            const item = data.media[0];
+            document.getElementById('featuredImageInput').value = item.url;
+            document.getElementById('featuredImgTag').src = item.url;
+            document.getElementById('featuredImagePreview').classList.remove('hidden');
+            document.getElementById('noFeaturedImageText').classList.add('hidden');
+            document.getElementById('removeFeaturedBtn').classList.remove('hidden');
+            if (statusEl) {
+                statusEl.innerHTML = '<span class="text-[11px] text-emerald-600 font-bold">✓ Converted to WebP (' + (item.dimensions || item.human_size) + ')</span>';
+            }
+        }
+    })
+    .catch(err => {
+        if (statusEl) {
+            statusEl.innerHTML = '<span class="text-[11px] text-amber-600 font-semibold">Saved for automatic WebP conversion on submit.</span>';
+        }
+    });
+}
+
+// Visual Editor Paste Image to WebP Handler
+document.addEventListener('DOMContentLoaded', function () {
+    const visualEditor = document.getElementById('pageVisualEditorContainer');
+    if (visualEditor) {
+        visualEditor.addEventListener('paste', function (e) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let i in items) {
+                const item = items[i];
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    e.preventDefault();
+                    const blob = item.getAsFile();
+                    const formData = new FormData();
+                    formData.append('file', blob);
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    fetch('{{ route("admin.media.store") }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.media && data.media.length > 0) {
+                            document.execCommand('insertImage', false, data.media[0].url);
+                        }
+                    });
+                    break;
+                }
+            }
+        });
+    }
 });
 </script>
 @endpush

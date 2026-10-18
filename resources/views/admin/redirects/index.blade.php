@@ -459,7 +459,7 @@
                                     </div>
                                     <h4 class="text-sm font-bold text-slate-800">No Redirection Rules Found</h4>
                                     <p class="text-xs text-slate-400">
-                                        Create your first 301 permanent redirect or seed the default SEO canonical redirects for Generator Dubai.
+                                        Create your first 301 permanent redirect or seed the default SEO canonical redirects for LifeGuard Data Recovery.
                                     </p>
                                     <div class="flex items-center justify-center gap-2 pt-2">
                                         <button type="button" @click="openCreateModal()" 

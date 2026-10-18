@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dashboard') - {{ config('app.name', 'Generator Dubai') }} Admin Panel</title>
+    <title>@yield('title', 'Dashboard') - {{ config('app.name', 'LifeGuard Data Recovery') }} Admin Panel</title>
+
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,11 +75,11 @@
             <!-- Brand -->
             <div class="h-16 flex items-center justify-between px-6 bg-slate-950 border-b border-slate-800/80">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-black">
-                        <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                    <div class="w-7 h-7 rounded-lg bg-sky-500 text-white flex items-center justify-center font-black">
+                        <i data-lucide="shield-check" class="w-4 h-4 fill-current"></i>
                     </div>
-                    <span class="text-sm font-black tracking-tight text-white">GENERATOR <span class="text-amber-400">DUBAI</span></span>
-                    <span class="text-[9px] uppercase tracking-widest font-extrabold text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30">CMS</span>
+                    <span class="text-sm font-black tracking-tight text-white">LIFEGUARD <span class="text-sky-400">DUBAI</span></span>
+                    <span class="text-[9px] uppercase tracking-widest font-extrabold text-sky-300 bg-sky-950/60 px-1.5 py-0.5 rounded border border-sky-500/30">CMS</span>
                 </a>
                 <button @click="sidebarOpen = false" class="lg:hidden text-slate-400 hover:text-white">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -90,23 +95,7 @@
                     <span>Dashboard</span>
                 </a>
 
-                <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Fleet & Services</div>
-
-                <!-- Fleet (Products) Menu -->
-                <div x-data="{ open: {{ request()->routeIs('admin.products.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open" 
-                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.products.*') ? 'bg-slate-800/80 text-white font-semibold' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="zap" class="w-4 h-4 shrink-0 text-amber-400"></i>
-                            <span>Generator Fleet</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
-                    </button>
-                    <div x-show="open" x-cloak class="pl-9 pr-2 py-1.5 space-y-1 text-xs">
-                        <a href="{{ route('admin.products.index') }}" class="block py-1.5 px-2 rounded hover:text-white transition {{ request()->routeIs('admin.products.index') ? 'text-brand-400 font-semibold' : 'text-slate-400' }}">All Fleet Models</a>
-                        <a href="{{ route('admin.products.create') }}" class="block py-1.5 px-2 rounded hover:text-white transition {{ request()->routeIs('admin.products.create') ? 'text-brand-400 font-semibold' : 'text-slate-400' }}">Add Fleet Model</a>
-                    </div>
-                </div>
+                <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Services & Lab</div>
 
                 <!-- Services Menu -->
                 <div x-data="{ open: {{ request()->routeIs('admin.services.*') ? 'true' : 'false' }} }">
@@ -114,13 +103,29 @@
                             class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.services.*') ? 'bg-slate-800/80 text-white font-semibold' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
                         <div class="flex items-center gap-3">
                             <i data-lucide="layers" class="w-4 h-4 shrink-0 text-brand-400"></i>
-                            <span>Services</span>
+                            <span>Recovery Services</span>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
                     </button>
                     <div x-show="open" x-cloak class="pl-9 pr-2 py-1.5 space-y-1 text-xs">
                         <a href="{{ route('admin.services.index') }}" class="block py-1.5 px-2 rounded hover:text-white transition {{ request()->routeIs('admin.services.index') ? 'text-brand-400 font-semibold' : 'text-slate-400' }}">All Services</a>
                         <a href="{{ route('admin.services.create') }}" class="block py-1.5 px-2 rounded hover:text-white transition {{ request()->routeIs('admin.services.create') ? 'text-brand-400 font-semibold' : 'text-slate-400' }}">Add New Service</a>
+                    </div>
+                </div>
+
+                <!-- Diagnostics & Hardware Menu -->
+                <div x-data="{ open: {{ request()->routeIs('admin.products.*') ? 'true' : 'false' }} }">
+                    <button @click="open = !open" 
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.products.*') ? 'bg-slate-800/80 text-white font-semibold' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="cpu" class="w-4 h-4 shrink-0 text-sky-400"></i>
+                            <span>Lab Equipment / Models</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-cloak class="pl-9 pr-2 py-1.5 space-y-1 text-xs">
+                        <a href="{{ route('admin.products.index') }}" class="block py-1.5 px-2 rounded hover:text-white transition {{ request()->routeIs('admin.products.index') ? 'text-brand-400 font-semibold' : 'text-slate-400' }}">All Equipment / Models</a>
+                        <a href="{{ route('admin.products.create') }}" class="block py-1.5 px-2 rounded hover:text-white transition {{ request()->routeIs('admin.products.create') ? 'text-brand-400 font-semibold' : 'text-slate-400' }}">Add New Model</a>
                     </div>
                 </div>
 

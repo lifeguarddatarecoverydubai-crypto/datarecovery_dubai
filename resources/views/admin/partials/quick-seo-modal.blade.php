@@ -149,7 +149,7 @@
                                 <div class="flex items-center gap-2 text-xs text-slate-600">
                                     <span class="w-4 h-4 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-bold">G</span>
                                     <div class="flex items-center gap-1 truncate text-[11px]">
-                                        <span class="font-medium text-slate-900">{{ config('app.name', 'Generator Dubai') }}</span>
+                                        <span class="font-medium text-slate-900">{{ config('app.name', 'LifeGuard Data Recovery') }}</span>
                                         <span class="text-slate-400">&rsaquo;</span>
                                         <span class="text-slate-500 truncate" x-text="getFullUrl()"></span>
                                     </div>
@@ -447,7 +447,7 @@ function yoastQuickSeoModal() {
 
         getFullUrl() {
             const prefix = this.itemType === 'service' ? 'service' : (this.itemType === 'post' ? 'post' : 'page');
-            return 'https://generatordubai.com/' + prefix + '/' + (this.form.slug || '');
+            return 'https://lifeguarddatarecovery.com/' + prefix + '/' + (this.form.slug || '');
         },
 
         recalc() {
@@ -455,13 +455,13 @@ function yoastQuickSeoModal() {
         },
 
         insertDefaultSchema() {
-            const name = this.form.title || 'Generator Dubai Power Solutions';
+            const name = this.form.title || 'LifeGuard Data Recovery Dubai';
             const schema = {
                 name: name,
-                description: this.form.meta_description || 'Professional diesel generator power solutions in Dubai & UAE.',
+                description: this.form.meta_description || 'Professional ISO-5 cleanroom data recovery services in Dubai & across UAE.',
                 provider: {
-                    name: 'Generator Dubai',
-                    url: 'https://generatordubai.com'
+                    name: 'LifeGuard Data Recovery',
+                    url: 'https://lifeguarddatarecovery.com'
                 }
             };
             schema['@' + 'context'] = 'https://schema.org';

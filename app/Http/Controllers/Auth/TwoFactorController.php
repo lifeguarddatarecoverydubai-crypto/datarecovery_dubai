@@ -133,7 +133,7 @@ class TwoFactorController extends Controller
             $request->session()->put('auth.2fa.setup_recovery_codes', $recoveryCodes);
         }
 
-        $appName = config('app.name', 'Generator Dubai');
+        $appName = config('app.name', 'LifeGuard Data Recovery');
         $qrCodeUri = $this->twoFactorService->getQrCodeUri($appName, $user->email, $secret);
         $formattedSecret = $this->twoFactorService->formatSecretForDisplay($secret);
 
