@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\RedirectRule;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
 class RedirectManagerMiddleware
@@ -19,6 +20,20 @@ class RedirectManagerMiddleware
         // Only inspect safe read requests (GET and HEAD)
         if (! in_array($request->method(), ['GET', 'HEAD'])) {
             return $next($request);
+        }
+
+        $requestUri = $request->getRequestUri();
+        $requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
+
+        if (preg_match('#^/public(?:/|$)#i', $requestPath) === 1) {
+            $canonicalPath = substr($requestPath, strlen('/public')) ?: '/';
+            $canonicalUrl = URL::to($canonicalPath);
+
+            if ($request->getQueryString() !== null) {
+                $canonicalUrl .= '?'.$request->getQueryString();
+            }
+
+            return redirect()->to($canonicalUrl, 301);
         }
 
         // Enforce canonical non-www host and HTTPS in production

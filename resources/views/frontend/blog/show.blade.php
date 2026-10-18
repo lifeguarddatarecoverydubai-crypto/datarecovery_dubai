@@ -136,7 +136,7 @@
 
                     <!-- Article WYSIWYG Content Body -->
                     <div class="prose prose-slate prose-lg max-w-none py-4 leading-relaxed">
-                        {!! $post->content !!}
+                        {!! str_replace('/public/', '/', $post->content ?? '') !!}
                     </div>
 
                     <!-- Tags List -->
