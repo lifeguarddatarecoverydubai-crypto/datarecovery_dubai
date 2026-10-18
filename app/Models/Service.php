@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\HasFeaturedImage;
 use App\Models\Concerns\HasSanitizedContent;
 use App\Services\YoastSeoService;
+use App\Support\ContentHtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,6 +56,122 @@ class Service extends Model
             'seo_score' => 'integer',
             'readability_score' => 'integer',
         ];
+    }
+
+    /**
+     * Return safe service content with legacy editor artifacts removed.
+     */
+    public function getContentAttribute(?string $value): ?string
+    {
+        if ($value === null || trim($value) === '') {
+            return $value;
+        }
+
+        $content = $this->removeTrailingSeedArray($value);
+        $content = app(ContentHtmlSanitizer::class)->sanitize($content);
+
+        if ($content === null || trim($content) === '') {
+            return $content;
+        }
+
+        return $this->removeRepeatedServiceContentArtifacts($content);
+    }
+
+    private function removeTrailingSeedArray(string $content): string
+    {
+        if (! preg_match('/[\'"]slug[\'"]\s*=>\s*[\'"][a-z0-9-]+[\'"]\s*,\s*[\'"]title[\'"]\s*=>/i', $content, $matches, PREG_OFFSET_CAPTURE)) {
+            return $content;
+        }
+
+        $artifactOffset = $matches[0][1];
+        $contentBeforeArtifact = substr($content, 0, $artifactOffset);
+
+        if (! preg_match('/\/\/[\s-]{5,}/', $contentBeforeArtifact)) {
+            return $content;
+        }
+
+        if (! preg_match_all('/<\/(?:div|section|article|p|ul|ol)>/i', $contentBeforeArtifact, $closingTags, PREG_OFFSET_CAPTURE)) {
+            preg_match('/\/\/[\s-]{5,}/', $contentBeforeArtifact, $commentMarker, PREG_OFFSET_CAPTURE);
+
+            return isset($commentMarker[0][1]) ? substr($content, 0, $commentMarker[0][1]) : $content;
+        }
+
+        $lastClosingTag = $closingTags[0][count($closingTags[0]) - 1];
+        $validContentEnd = $lastClosingTag[1] + strlen($lastClosingTag[0]);
+
+        return substr($content, 0, $validContentEnd);
+    }
+
+    private function removeRepeatedServiceContentArtifacts(string $content): string
+    {
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousErrors = libxml_use_internal_errors(true);
+
+        try {
+            $document->loadHTML(
+                '<?xml encoding="UTF-8"><!DOCTYPE html><html><body><div id="service-content-root">'.$content.'</div></body></html>',
+                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING
+            );
+
+            $root = $document->getElementById('service-content-root');
+            if (! $root) {
+                return $content;
+            }
+
+            $xpath = new \DOMXPath($document);
+            $logoImages = $xpath->query('//*[@id="service-content-root"]//img');
+            if ($logoImages !== false) {
+                foreach (iterator_to_array($logoImages) as $image) {
+                    $sourcePath = parse_url($image->getAttribute('src'), PHP_URL_PATH) ?: $image->getAttribute('src');
+                    $fileName = basename($sourcePath);
+                    $altText = $image->getAttribute('alt');
+
+                    if (stripos($fileName, 'logo') !== false || stripos($altText, 'logo') !== false) {
+                        $parent = $image->parentNode;
+                        $parent?->removeChild($image);
+                        $this->removeEmptyServiceContentContainer($parent);
+                    }
+                }
+            }
+
+            $bookNowLinks = $xpath->query(
+                '//*[@id="service-content-root"]//a[translate(normalize-space(string(.)), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz") = "book now"]'
+            );
+            if ($bookNowLinks !== false) {
+                foreach (iterator_to_array($bookNowLinks) as $link) {
+                    $parent = $link->parentNode;
+                    $parent?->removeChild($link);
+                    $this->removeEmptyServiceContentContainer($parent);
+                }
+            }
+
+            $result = '';
+            foreach ($root->childNodes as $child) {
+                $result .= $document->saveHTML($child);
+            }
+
+            return $result;
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previousErrors);
+        }
+    }
+
+    private function removeEmptyServiceContentContainer(?\DOMNode $node): void
+    {
+        while ($node instanceof \DOMElement && in_array(strtolower($node->tagName), ['a', 'b', 'em', 'figure', 'p', 'span', 'strong'], true)) {
+            if (
+                trim($node->textContent) !== ''
+                || $node->getElementsByTagName('img')->length > 0
+                || $node->getElementsByTagName('a')->length > 0
+            ) {
+                return;
+            }
+
+            $parent = $node->parentNode;
+            $parent?->removeChild($node);
+            $node = $parent;
+        }
     }
 
     /**
