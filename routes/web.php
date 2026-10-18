@@ -46,7 +46,7 @@ Route::redirect('/about', '/about-us', 301);
 // Services Routes
 Route::get('/services', [FrontendServiceController::class, 'index'])->name('services.index');
 Route::get('/all-services', fn () => redirect('/services', 301))->name('service.index');
-Route::get('/service/{slug}', [FrontendServiceController::class, 'show'])->name('service.show');
+Route::get('/service/{slug}', fn (string $slug) => redirect('/'.$slug, 301))->name('service.show');
 // Locations Routes
 Route::get('/locations', [FrontendPageController::class, 'locationsHub'])->name('locations.index');
 Route::redirect('/location', '/locations', 301);

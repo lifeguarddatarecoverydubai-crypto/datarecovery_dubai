@@ -56,7 +56,7 @@ class BlogController extends Controller
         if (! $post) {
             // Gracefully 301 redirect legacy/retired portacabin and site compound articles to the official Portacabin service page
             if (str_contains($slug, 'portacabin') || str_contains($slug, 'cabin') || str_contains($slug, 'compound') || str_contains($slug, 'ablution')) {
-                return redirect()->route('service.show', 'portacabin', 301);
+                return redirect('/portacabin', 301);
             }
 
             abort(404);

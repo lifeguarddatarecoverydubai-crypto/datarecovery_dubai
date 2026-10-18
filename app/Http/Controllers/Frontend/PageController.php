@@ -63,7 +63,7 @@ class PageController extends Controller
 
         // If a published service exists with this slug, redirect to official service route to prevent cannibalization
         if ($service = Service::published()->where('slug', $slug)->first()) {
-            return redirect()->route('service.show', $service->slug, 301);
+            return redirect('/'.$service->slug, 301);
         }
 
         // Handle location sub-paths if called via slug like locations/dubai

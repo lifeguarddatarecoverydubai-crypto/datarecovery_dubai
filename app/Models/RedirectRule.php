@@ -368,7 +368,7 @@ class RedirectRule extends Model
         $defaults = [
             [
                 'source_url' => '/hard-drive-data-recovery-in-dubai',
-                'target_url' => '/service/hard-drive-recovery',
+                'target_url' => '/hard-drive-recovery',
                 'status_code' => 301,
                 'match_type' => 'exact',
                 'query_param_option' => 'pass',
@@ -379,7 +379,7 @@ class RedirectRule extends Model
             ],
             [
                 'source_url' => '/server-recovery-dubai',
-                'target_url' => '/service/raid-recovery-dubai',
+                'target_url' => '/raid-recovery-dubai',
                 'status_code' => 301,
                 'match_type' => 'exact',
                 'query_param_option' => 'pass',
@@ -390,7 +390,7 @@ class RedirectRule extends Model
             ],
             [
                 'source_url' => '/sd-card-recovery-dubai',
-                'target_url' => '/service/usb-data-recovery-dubai',
+                'target_url' => '/usb-data-recovery-dubai',
                 'status_code' => 301,
                 'match_type' => 'exact',
                 'query_param_option' => 'pass',
@@ -412,7 +412,7 @@ class RedirectRule extends Model
             ],
             [
                 'source_url' => '/post/ssd-recovery-dubai',
-                'target_url' => '/service/ssd-recovery-dubai',
+                'target_url' => '/ssd-recovery-dubai',
                 'status_code' => 301,
                 'match_type' => 'exact',
                 'query_param_option' => 'pass',

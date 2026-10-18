@@ -108,7 +108,7 @@
 
                     <div id="pageVisualEditorContainer" contenteditable="true" @input="syncFromVisual()" 
                          class="p-6 min-h-[440px] focus:outline-none prose prose-slate max-w-none text-slate-800 text-sm leading-relaxed"
-                         x-html="content"></div>
+                         >{!! old('content', $page->content ?? '') !!}</div>
                 </div>
 
                 <!-- TAB 3: Full Frontend Live Preview -->

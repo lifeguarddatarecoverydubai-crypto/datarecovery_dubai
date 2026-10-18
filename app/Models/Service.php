@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasFeaturedImage;
+use App\Models\Concerns\HasSanitizedContent;
 use App\Services\YoastSeoService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 
 class Service extends Model
 {
-    use HasFactory, HasFeaturedImage;
+    use HasFactory, HasFeaturedImage, HasSanitizedContent;
 
     protected $fillable = [
         'title',

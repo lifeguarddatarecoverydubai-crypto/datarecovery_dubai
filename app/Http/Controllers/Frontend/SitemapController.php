@@ -268,7 +268,10 @@ ROBOTS;
      */
     protected function getServicesEntries(): array
     {
-        $services = Service::published()->latest('updated_at')->get();
+        $services = Service::published()
+            ->where('is_indexable', true)
+            ->latest('updated_at')
+            ->get();
 
         $entries = [];
         foreach ($services as $service) {

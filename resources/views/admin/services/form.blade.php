@@ -216,7 +216,7 @@
 
                     <div id="visualEditorContainer" contenteditable="true" @input="syncFromVisual()" 
                          class="p-6 min-h-[460px] focus:outline-none prose prose-slate max-w-none text-slate-800 text-sm leading-relaxed"
-                         x-html="content"></div>
+                         >{!! old('content', $service->content ?? '') !!}</div>
                 </div>
 
                 <!-- TAB 3: Full Frontend Live Preview -->
@@ -280,7 +280,7 @@
                 <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-3 flex items-center justify-between">
                     <span>Publish Settings</span>
                     @if($isEdit)
-                        <a href="{{ route('service.show', $service->slug) }}" target="_blank" class="text-xs font-semibold text-brand-600 hover:underline">Preview ↗</a>
+                        <a href="{{ url('/'.$service->slug) }}" target="_blank" class="text-xs font-semibold text-brand-600 hover:underline">Preview ↗</a>
                     @endif
                 </h3>
 

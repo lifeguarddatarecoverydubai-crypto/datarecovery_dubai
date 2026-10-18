@@ -159,28 +159,28 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Full Name *</label>
-                            <input type="text" name="name" required placeholder="Your Name" 
+                            <label for="contact-name" class="block text-xs font-bold text-slate-700 mb-1.5">Full Name *</label>
+                            <input id="contact-name" type="text" name="name" required placeholder="Your Name"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-hidden focus:border-cyan-500 focus:bg-white transition">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Phone / WhatsApp *</label>
-                            <input type="text" name="phone" required placeholder="+971 50 123 4567" 
+                            <label for="contact-phone" class="block text-xs font-bold text-slate-700 mb-1.5">Phone / WhatsApp *</label>
+                            <input id="contact-phone" type="text" name="phone" required placeholder="+971 50 123 4567"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-hidden focus:border-cyan-500 focus:bg-white transition">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Address</label>
-                            <input type="email" name="email" placeholder="name@company.com" 
+                            <label for="contact-email" class="block text-xs font-bold text-slate-700 mb-1.5">Email Address</label>
+                            <input id="contact-email" type="email" name="email" placeholder="name@company.com"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-hidden focus:border-cyan-500 focus:bg-white transition">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Device Type *</label>
-                            <select name="device_type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-hidden focus:border-cyan-500 focus:bg-white transition">
+                            <label for="contact-device-type" class="block text-xs font-bold text-slate-700 mb-1.5">Device Type *</label>
+                            <select id="contact-device-type" name="device_type" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-hidden focus:border-cyan-500 focus:bg-white transition">
                                 <option value="External Hard Drive">External Hard Drive (WD, Seagate, Toshiba)</option>
                                 <option value="Internal Laptop/Desktop Drive">Internal HDD (SATA / IDE)</option>
                                 <option value="Solid State Drive">SSD / NVMe / M.2 Flash Drive</option>
@@ -196,8 +196,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Symptom & Data Description</label>
-                        <textarea name="message" rows="4" placeholder="Describe what happened: is the drive clicking? not detected? formatted? critical files needed..." 
+                        <label for="contact-message" class="block text-xs font-bold text-slate-700 mb-1.5">Symptom & Data Description</label>
+                        <textarea id="contact-message" name="message" rows="4" placeholder="Describe what happened: is the drive clicking? not detected? formatted? critical files needed..."
                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-hidden focus:border-cyan-500 focus:bg-white transition"></textarea>
                     </div>
 

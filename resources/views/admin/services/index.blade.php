@@ -211,7 +211,7 @@
                                         <i data-lucide="sparkles" class="w-3 h-3 text-purple-600"></i>
                                         <span>Quick SEO</span>
                                     </button>
-                                    <a href="{{ route('service.show', $service->slug) }}" target="_blank" 
+                                    <a href="{{ url('/'.$service->slug) }}" target="_blank"
                                        class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Preview Public Page">
                                         <i data-lucide="external-link" class="w-4 h-4"></i>
                                     </a>

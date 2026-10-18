@@ -128,7 +128,7 @@
 
                     <div id="visualEditorContainer" contenteditable="true" @input="syncFromVisual()" 
                          class="p-6 min-h-[460px] focus:outline-none prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed"
-                         x-html="content">{!! old('content', $post->content ?? '') !!}</div>
+                         >{!! old('content', $post->content ?? '') !!}</div>
                 </div>
 
                 <!-- TAB 2: HTML Source Code View (Monospace, Indented, 100% Preservation) -->

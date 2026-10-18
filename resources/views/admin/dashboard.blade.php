@@ -149,7 +149,7 @@
                 'id' => $svc->id,
                 'title' => $svc->title,
                 'slug' => $svc->slug,
-                'url' => route('service.show', $svc->slug),
+                'url' => url('/'.$svc->slug),
                 'editUrl' => route('admin.services.edit', $svc),
                 'endpoint' => route('admin.services.quick-seo', $svc),
                 'focus_keyword' => $svc->focus_keyword ?? '',
@@ -734,7 +734,7 @@
                                         <i data-lucide="maximize-2" class="w-3 h-3 text-purple-600"></i>
                                         <span>Modal</span>
                                     </button>
-                                    <a href="{{ route('service.show', $svc->slug) }}" target="_blank" 
+                                    <a href="{{ url('/'.$svc->slug) }}" target="_blank"
                                        class="px-2 py-1 rounded-lg text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 text-[11px] font-semibold transition flex items-center gap-1">
                                         <i data-lucide="external-link" class="w-3 h-3 text-slate-400"></i>
                                         <span>View</span>

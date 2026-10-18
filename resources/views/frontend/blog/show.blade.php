@@ -178,7 +178,7 @@
                             </div>
 
                             <div class="md:col-span-4 flex flex-col sm:flex-row md:flex-col gap-2.5">
-                                <a href="{{ route('service.show', $targetedService->slug) }}" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-sky-500 hover:bg-sky-400 text-slate-950 text-center shadow-lg shadow-sky-500/20 transition flex items-center justify-center gap-2">
+                                <a href="{{ url('/'.$targetedService->slug) }}" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-sky-500 hover:bg-sky-400 text-slate-950 text-center shadow-lg shadow-sky-500/20 transition flex items-center justify-center gap-2">
                                     <span>Explore {{ $targetedService->title }}</span>
                                     <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                                 </a>

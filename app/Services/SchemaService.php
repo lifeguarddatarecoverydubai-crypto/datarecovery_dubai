@@ -27,7 +27,7 @@ class SchemaService
             'priceRange' => 'AED',
             'currenciesAccepted' => 'AED, USD',
             'paymentAccepted' => 'Cash, Credit Card, Bank Transfer',
-            'description' => 'Dubai #1 certified Data Recovery service provider with 30 years experience. Class 100 cleanroom lab for HDD, SSD, RAID, NAS, CCTV, and mobile devices.',
+            'description' => 'Data recovery services in Dubai for HDD, SSD, RAID, NAS, CCTV, and mobile devices.',
             'address' => [
                 '@type' => 'PostalAddress',
                 'streetAddress' => 'Bayat Center S25, Computer Street, Bur Dubai',
@@ -48,23 +48,9 @@ class SchemaService
                     'opens' => '09:00',
                     'closes' => '21:00',
                 ],
-                [
-                    '@type' => 'OpeningHoursSpecification',
-                    'dayOfWeek' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                    'opens' => '00:00',
-                    'closes' => '23:59',
-                    'description' => '24/7 Emergency Data Recovery Hotline',
-                ],
             ],
             'areaServed' => [
                 'Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain', 'Al Ain', 'UAE',
-            ],
-            'aggregateRating' => [
-                '@type' => 'AggregateRating',
-                'ratingValue' => '4.9',
-                'reviewCount' => '540',
-                'bestRating' => '5',
-                'worstRating' => '1',
             ],
             'sameAs' => [
                 'https://www.facebook.com/LifeGUardDataRecovery',

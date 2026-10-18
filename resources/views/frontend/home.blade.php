@@ -13,11 +13,6 @@
     <meta property="og:image" content="https://lifeguarddatarecovery.com/wp-content/uploads/2022/03/aboutus.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
-    <!-- Schema.org WebSite JSON-LD with Sitelinks Searchbox -->
-    <script type="application/ld+json">
-    {!! json_encode(\App\Services\SchemaService::getWebSiteSchema(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
-    </script>
-
     <!-- Schema.org FAQPage JSON-LD -->
     <script type="application/ld+json">
     {!! json_encode(\App\Services\SchemaService::getFaqPageSchema([
@@ -148,8 +143,8 @@
 
                             <!-- Device Selector -->
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Storage Device</label>
-                                <select name="device_type" x-model="deviceType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                <label for="home-device-type" class="block text-xs font-semibold text-slate-300 mb-1.5">Storage Device</label>
+                                <select id="home-device-type" name="device_type" x-model="deviceType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
                                     <option value="hdd">External / Desktop Hard Drive (HDD)</option>
                                     <option value="ssd">Solid State Drive (SSD / NVMe / M.2)</option>
                                     <option value="raid">RAID Server Array (0, 1, 5, 6, 10, 50, 60)</option>
@@ -163,8 +158,8 @@
 
                             <!-- Failure Symptom Selector -->
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Primary Problem / Symptom</label>
-                                <select name="failure_type" x-model="failureType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                <label for="home-failure-type" class="block text-xs font-semibold text-slate-300 mb-1.5">Primary Problem / Symptom</label>
+                                <select id="home-failure-type" name="failure_type" x-model="failureType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-hidden focus:border-cyan-500">
                                     <option value="clicking">Clicking, Beeping, or Grinding Sounds</option>
                                     <option value="not_detected">Not Detected / Drive Won't Spin Up</option>
                                     <option value="deleted">Formatted Partition or Accidentally Deleted Files</option>
@@ -177,12 +172,12 @@
                             <!-- Contact Inputs -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                                 <div>
-                                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Your Name</label>
-                                    <input type="text" name="name" required placeholder="Ahmed Al-Mansoor" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                    <label for="home-name" class="block text-[11px] font-semibold text-slate-400 mb-1">Your Name</label>
+                                    <input id="home-name" type="text" name="name" required placeholder="Ahmed Al-Mansoor" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-cyan-500">
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Phone / WhatsApp</label>
-                                    <input type="text" name="phone" required placeholder="+971 50 123 4567" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-cyan-500">
+                                    <label for="home-phone" class="block text-[11px] font-semibold text-slate-400 mb-1">Phone / WhatsApp</label>
+                                    <input id="home-phone" type="text" name="phone" required placeholder="+971 50 123 4567" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-cyan-500">
                                 </div>
                             </div>
 

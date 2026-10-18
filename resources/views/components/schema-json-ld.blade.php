@@ -13,11 +13,12 @@
         @php
             $trimmed = trim((string) $payload);
         @endphp
-        @if(str_starts_with($trimmed, '<script'))
-            {!! $trimmed !!}
-        @else
+        @php
+            $customSchema = json_decode($trimmed, true);
+        @endphp
+        @if(is_array($customSchema))
             <script type="application/ld+json">
-            {!! $trimmed !!}
+            {!! json_encode($customSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
             </script>
         @endif
     @endif

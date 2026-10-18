@@ -125,7 +125,7 @@
 
                     <div id="productVisualEditorContainer" contenteditable="true" @input="syncFromVisual()" 
                          class="p-6 min-h-[400px] focus:outline-none prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed"
-                         x-html="content">{!! old('content', $product->content ?? '') !!}</div>
+                         >{!! old('content', $product->content ?? '') !!}</div>
                 </div>
 
                 <!-- TAB 2: HTML Source Code View -->

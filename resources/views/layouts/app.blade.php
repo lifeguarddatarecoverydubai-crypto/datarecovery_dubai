@@ -225,7 +225,7 @@
                     <a href="tel:+971554838545" class="p-2 text-cyan-600 rounded-lg hover:bg-cyan-50">
                         <i data-lucide="phone-call" class="w-5 h-5"></i>
                     </a>
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 text-slate-700 hover:text-slate-900 rounded-lg hover:bg-slate-100">
+                    <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen.toString()" aria-controls="mobile-navigation" aria-label="Toggle navigation menu" class="p-2 text-slate-700 hover:text-slate-900 rounded-lg hover:bg-slate-100">
                         <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
                         <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
                     </button>
@@ -235,7 +235,7 @@
         </div>
 
         <!-- Mobile Navigation Menu Dropdown -->
-        <div x-show="mobileMenuOpen" x-cloak class="lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-xl">
+        <div id="mobile-navigation" x-show="mobileMenuOpen" x-cloak class="lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-xl">
             <div class="flex flex-col space-y-2 text-sm font-semibold text-slate-700">
                 @if(isset($navMenus) && $navMenus->isNotEmpty())
                     @foreach($navMenus as $item)

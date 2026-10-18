@@ -153,7 +153,7 @@
             </h5>
             <div class="space-y-1.5">
                 @foreach($navServices as $navSvc)
-                    <a href="{{ route('service.show', $navSvc->slug) }}" class="flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-900 transition group border border-transparent hover:border-sky-200">
+                    <a href="{{ url('/'.$navSvc->slug) }}" class="flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-900 transition group border border-transparent hover:border-sky-200">
                         <span class="truncate">{{ $navSvc->title }}</span>
                         <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition shrink-0"></i>
                     </a>
