@@ -204,15 +204,26 @@ Route::middleware(['auth', 'two_factor', 'content.manager'])->prefix('admin')->n
 | ensuring uploaded images never 404 or 403 across shared hosting environments.
 */
 Route::get('/storage/{path}', function (string $path) {
+    $pathSegments = explode('/', str_replace('\\', '/', $path));
+    if (in_array('..', $pathSegments, true) || in_array('.', $pathSegments, true) || str_contains($path, '\\')) {
+        abort(404);
+    }
+
     // 1. Direct check in public/storage
     $publicFile = public_path('storage/'.$path);
-    if (file_exists($publicFile) && ! is_dir($publicFile)) {
+    if (is_file($publicFile)) {
         return response()->file($publicFile);
     }
 
-    // 2. Check in storage/app/public
+    // 2. Check the versioned public media bundle used by fresh deployments
+    $bundledFile = public_path('media-bundle/'.$path);
+    if (is_file($bundledFile)) {
+        return response()->file($bundledFile);
+    }
+
+    // 3. Check in storage/app/public
     $appPublicFile = storage_path('app/public/'.$path);
-    if (file_exists($appPublicFile) && ! is_dir($appPublicFile)) {
+    if (is_file($appPublicFile)) {
         $targetDir = dirname($publicFile);
         if (! is_dir($targetDir)) {
             mkdir($targetDir, 0755, true);
@@ -236,15 +247,15 @@ Route::get('/wp-content/uploads/{path}', function (string $path) {
     $cleanPath = ltrim($path, '/');
     $webpPath = preg_replace('/\.(jpe?g|png|gif)$/i', '.webp', $cleanPath);
 
-    if (file_exists(public_path('storage/media/'.$webpPath))) {
+    if (is_file(public_path('storage/media/'.$webpPath)) || is_file(public_path('media-bundle/media/'.$webpPath))) {
         return redirect('/storage/media/'.$webpPath, 301);
     }
 
-    if (file_exists(public_path('storage/media/'.$cleanPath))) {
+    if (is_file(public_path('storage/media/'.$cleanPath)) || is_file(public_path('media-bundle/media/'.$cleanPath))) {
         return redirect('/storage/media/'.$cleanPath, 301);
     }
 
-    if (file_exists(public_path('storage/'.$cleanPath))) {
+    if (is_file(public_path('storage/'.$cleanPath)) || is_file(public_path('media-bundle/'.$cleanPath))) {
         return redirect('/storage/'.$cleanPath, 301);
     }
 
