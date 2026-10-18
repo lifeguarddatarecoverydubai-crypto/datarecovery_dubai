@@ -1,24 +1,39 @@
-# ==============================================================================
-# Recovery Data CMS - Root Directory Security Rules
-# Prevents unauthorized access if document root is misconfigured to root folder
-# ==============================================================================
+# Root rules for Laravel when the hosting document root points at the project.
+# Keep the application source private and serve requests through /public.
+
+Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # 1. Block direct access to sensitive configuration, database, and repository files
-    RewriteRule ^(\.env|\.git|\.github|composer\.|package\.|artisan|database/|storage/logs/|storage/framework/|app/|bootstrap/|config/|resources/|routes/|vendor/) - [F,L,NC]
+    # Deny hidden files and directories, except the standard ACME/.well-known path.
+    RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F,L,NC]
 
-    # 2. Prevent access to files with sensitive extensions
-    RewriteRule \.(env|yml|yaml|json|lock|sql|sqlite|log|sh|bak|swp|dist|md)$ - [F,L,NC]
+    # Deny Laravel source directories and sensitive project files if the project
+    # root is exposed as the web document root.
+    RewriteRule (^|/)(app|bootstrap|config|database|resources|routes|tests|vendor|\.git|\.github)(/|$) - [F,L,NC]
+    RewriteRule ^storage/(app|framework|logs)(/|$) - [F,L,NC]
+    RewriteRule (^|/)(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml(\.dist)?|vite\.config\.[^/]+)(/|$) - [F,L,NC]
 
-    # Remove the implementation directory from legacy or manually copied URLs.
+    # Reject methods that have no valid use for this website.
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|DEBUG)$ [NC]
+    RewriteRule ^ - [F,L]
+
+    # Reject common vulnerability scanners. This is a filter for known tools,
+    # not a replacement for authentication or rate limiting.
+    RewriteCond %{HTTP_USER_AGENT} (sqlmap|nikto|havij|acunetix|wpscan|masscan|zgrab|nmap|nessus|openvas|dirbuster|gobuster|jbrofuzz|pangolin|cgiscan) [NC]
+    RewriteRule ^ - [F,L]
+
+    # Deny common private, backup, and executable-support file types. JSON is
+    # intentionally allowed because public endpoints or assets may use it.
+    RewriteRule \.(env|ya?ml|lock|sql|sqlite|log|sh|bak|backup|old|orig|swp|dist|ini|conf|inc|pem|key|crt|tar|gz|zip|md)$ - [F,L,NC]
+
+    # Remove the implementation directory from old or manually copied URLs.
     RewriteRule ^public/(.*)$ /$1 [R=301,L,NE]
 
-    # 3. Route all legitimate web traffic into the /public folder
-    RewriteCond %{REQUEST_URI} !^/public/
+    # Stop internal rewrites from being applied more than once.
+    RewriteRule ^public/ - [L]
+
+    # Route requests through Laravel's public directory.
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
-
-# Disable directory browsing
-Options -Indexes
