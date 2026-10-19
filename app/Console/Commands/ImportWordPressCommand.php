@@ -441,7 +441,7 @@ class ImportWordPressCommand extends Command
                 $title = Str::limit($this->normalizeTitleCase(trim($rawTitle)), 250, '');
                 $slug = Str::limit($p['slug'] ?? Str::slug($title), 250, '');
                 $content = $p['content']['rendered'] ?? '';
-                $excerpt = strip_tags(html_entity_decode($p['excerpt']['rendered'] ?? ''));
+                $excerpt = Post::normalizeExcerpt(strip_tags(html_entity_decode($p['excerpt']['rendered'] ?? '')));
                 $status = ($p['status'] ?? 'publish') === 'publish' ? 'published' : 'draft';
                 $publishedAt = ! empty($p['date']) ? Carbon::parse($p['date']) : now();
 

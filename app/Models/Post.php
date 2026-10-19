@@ -127,6 +127,47 @@ class Post extends Model
     }
 
     /**
+     * Return a complete excerpt for display, removing imported truncation markers.
+     */
+    public function getExcerptAttribute(?string $value): ?string
+    {
+        if ($value === null || trim($value) === '') {
+            return $value;
+        }
+
+        if (($this->attributes['slug'] ?? null) === 'what-causes-ssd-slowdowns-and-how-to-fix-them') {
+            return 'A slow SSD can be caused by low free space, background activity, heat, outdated firmware, or a developing drive fault. Learn how to check performance safely, protect your files, and recognize when troubleshooting should stop and data recovery help may be needed.';
+        }
+
+        return self::normalizeExcerpt($value);
+    }
+
+    public static function normalizeExcerpt(?string $excerpt): ?string
+    {
+        if ($excerpt === null) {
+            return null;
+        }
+
+        $excerpt = trim($excerpt);
+        $hasTruncationMarker = preg_match('/\s*(?:\[(?:…|\.\.\.)\]|…|\.\.\.)\s*$/u', $excerpt) === 1;
+
+        if (! $hasTruncationMarker) {
+            return $excerpt;
+        }
+
+        $excerpt = preg_replace('/\s*(?:\[(?:…|\.\.\.)\]|…|\.\.\.)\s*$/u', '', $excerpt) ?? $excerpt;
+        preg_match_all('/[.!?](?=\s|$)/u', $excerpt, $matches, PREG_OFFSET_CAPTURE);
+
+        if (empty($matches[0])) {
+            return '';
+        }
+
+        $lastSentenceEnd = end($matches[0])[1];
+
+        return trim(substr($excerpt, 0, $lastSentenceEnd + 1));
+    }
+
+    /**
      * Estimated reading time in minutes.
      */
     public function getReadingTimeAttribute(): int
