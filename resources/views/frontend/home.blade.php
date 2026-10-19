@@ -212,52 +212,56 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($services as $service)
-                <div class="group bg-white rounded-3xl p-8 border border-slate-200/80 hover:border-cyan-500/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <!-- Icon & Order Badge -->
-                        <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-cyan-50 group-hover:bg-gradient-to-tr group-hover:from-cyan-600 group-hover:to-blue-600 text-cyan-600 group-hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm">
-                                <i data-lucide="{{ $service->icon ?: 'hard-drive' }}" class="w-6 h-6 stroke-[2]"></i>
+                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-xl">
+                    @include('frontend.partials.service-card-image', ['service' => $service])
+
+                    <div class="flex flex-1 flex-col justify-between p-6 sm:p-7">
+                        <div class="space-y-4">
+                            <!-- Icon & Order Badge -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600 shadow-sm transition-all duration-300 group-hover:bg-gradient-to-tr group-hover:from-cyan-600 group-hover:to-blue-600 group-hover:text-white">
+                                    <i data-lucide="{{ $service->icon ?: 'hard-drive' }}" class="h-6 w-6 stroke-[2]"></i>
+                                </div>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase text-slate-600">
+                                    98.6% SUCCESS
+                                </span>
                             </div>
-                            <span class="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
-                                98.6% SUCCESS
-                            </span>
+
+                            <!-- Title -->
+                            <h3 class="text-xl font-black text-slate-900 transition-colors group-hover:text-cyan-700">
+                                {{ $service->title }}
+                            </h3>
+
+                            <!-- Summary -->
+                            <p class="line-clamp-3 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                                {{ $service->summary }}
+                            </p>
+
+                            <!-- Key Features -->
+                            @if(!empty($service->features) && is_array($service->features))
+                                <ul class="space-y-1.5 border-t border-slate-100 pt-3">
+                                    @foreach(array_slice($service->features, 0, 3) as $feat)
+                                        <li class="flex items-center gap-2 text-xs font-medium text-slate-700">
+                                            <i data-lucide="check" class="h-3.5 w-3.5 shrink-0 text-cyan-600"></i>
+                                            <span class="truncate">{{ $feat }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         </div>
 
-                        <!-- Title -->
-                        <h3 class="text-xl font-black text-slate-900 group-hover:text-cyan-700 transition-colors">
-                            {{ $service->title }}
-                        </h3>
-
-                        <!-- Summary -->
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                            {{ $service->summary }}
-                        </p>
-
-                        <!-- Key Features -->
-                        @if(!empty($service->features) && is_array($service->features))
-                            <ul class="space-y-1.5 pt-2 border-t border-slate-100">
-                                @foreach(array_slice($service->features, 0, 3) as $feat)
-                                    <li class="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                                        <i data-lucide="check" class="w-3.5 h-3.5 text-cyan-600 shrink-0"></i>
-                                        <span class="truncate">{{ $feat }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
+                        <!-- Action Link -->
+                        <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+                            <a href="{{ url($service->slug) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 transition group-hover:text-cyan-700">
+                                <span>Explore Recovery Details</span>
+                                <i data-lucide="arrow-right" class="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"></i>
+                            </a>
+                            <a href="{{ route('contact') }}" class="text-[11px] font-semibold text-slate-400 hover:text-slate-800">
+                                Get Quote &rarr;
+                            </a>
+                        </div>
                     </div>
-
-                    <!-- Action Link -->
-                    <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
-                        <a href="{{ url($service->slug) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 group-hover:text-cyan-700 transition">
-                            <span>Explore Recovery Details</span>
-                            <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"></i>
-                        </a>
-                        <a href="{{ route('contact') }}" class="text-[11px] font-semibold text-slate-400 hover:text-slate-800">
-                            Get Quote &rarr;
-                        </a>
-                    </div>
-                </div>
+                </article>
             @endforeach
         </div>
     </section>
