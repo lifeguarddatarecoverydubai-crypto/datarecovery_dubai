@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Page;
+use App\Models\Post;
 use App\Models\RedirectRule;
+use App\Models\Service;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -73,6 +76,13 @@ class RedirectManagerMiddleware
         $match = RedirectRule::matchRequest($request);
 
         if ($match !== null) {
+            $slug = trim($path, '/');
+
+            // A published content URL takes precedence over stale SEO redirects.
+            if ($slug !== '' && ! str_contains($slug, '/') && $this->hasPublishedContent($slug)) {
+                return $next($request);
+            }
+
             // Track SEO traffic hit asynchronously / safely
             RedirectRule::recordHitById($match['rule_id']);
 
@@ -85,5 +95,12 @@ class RedirectManagerMiddleware
         }
 
         return $next($request);
+    }
+
+    private function hasPublishedContent(string $slug): bool
+    {
+        return Post::published()->where('slug', $slug)->exists()
+            || Page::published()->where('slug', $slug)->exists()
+            || Service::published()->where('slug', $slug)->exists();
     }
 }

@@ -42,7 +42,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about-us', [HomeController::class, 'about'])->name('about');
 Route::redirect('/about', '/about-us', 301);
-Route::redirect('/iphone-data-recovery', '/iphone-data-recovery-dubai', 301);
 
 // Services Routes
 Route::get('/services', [FrontendServiceController::class, 'index'])->name('services.index');
